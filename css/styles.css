@@ -358,6 +358,30 @@ a:hover {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  display: flex;
+  align-items: center;
+}
+
+.logo-img {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+  transition: all var(--transition-base);
+  filter: drop-shadow(0 0 10px rgba(0, 245, 255, 0.3));
+}
+
+.logo-img:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 0 15px rgba(0, 245, 255, 0.5));
+}
+
+/* Logo adjustments for light theme */
+[data-theme="light"] .logo-img {
+  filter: drop-shadow(0 0 8px rgba(0, 245, 255, 0.2));
+}
+
+[data-theme="light"] .logo-img:hover {
+  filter: drop-shadow(0 0 12px rgba(0, 245, 255, 0.4));
 }
 
 .nav-links {
@@ -500,6 +524,10 @@ a:hover {
   .footer-content {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .logo-img {
+    height: 40px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -539,6 +567,10 @@ a:hover {
   .footer-content {
     grid-template-columns: 1fr;
     gap: var(--spacing-lg);
+  }
+
+  .logo-img {
+    height: 35px;
   }
 }
 
