@@ -8,10 +8,10 @@
 
 /* === CSS CUSTOM PROPERTIES === */
 :root {
-  /* Colors - Dark Mode Primary */
-  --bg-primary: #0a0a0f;
-  --bg-secondary: #151520;
-  --bg-tertiary: #1a1a2e;
+  /* Colors - Dark Mode (Softer) */
+  --bg-primary: #0f1419;
+  --bg-secondary: #1a1f2e;
+  --bg-tertiary: #252d3d;
 
   /* Accent Colors */
   --accent-cyan: #00F5FF;
@@ -20,19 +20,19 @@
   --accent-green-glow: rgba(57, 255, 20, 0.5);
 
   /* Text Colors */
-  --text-primary: #ffffff;
-  --text-secondary: #b4b4c8;
-  --text-muted: #6e6e8f;
+  --text-primary: #f0f4f8;
+  --text-secondary: #c5cdd8;
+  --text-muted: #8b95a5;
 
   /* Glassmorphism */
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-bg-hover: rgba(255, 255, 255, 0.08);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-bg-hover: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.12);
   --glass-shadow: rgba(0, 0, 0, 0.3);
 
   /* Gradients */
   --gradient-primary: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-green) 100%);
-  --gradient-dark: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+  --gradient-dark: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
   --gradient-glow: radial-gradient(circle at 50% 50%, var(--accent-cyan-glow), transparent 70%);
 
   /* Spacing */
@@ -83,29 +83,29 @@
 
 /* === LIGHT THEME === */
 [data-theme="light"] {
-  /* Colors - Light Mode */
-  --bg-primary: #f5f5f7;
+  /* Colors - Light Mode (Warmer) */
+  --bg-primary: #f8f9fa;
   --bg-secondary: #ffffff;
-  --bg-tertiary: #e8e8ed;
+  --bg-tertiary: #e9ecef;
 
-  /* Text Colors */
-  --text-primary: #1d1d1f;
-  --text-secondary: #515154;
-  --text-muted: #86868b;
+  /* Text Colors - Better Contrast */
+  --text-primary: #212529;
+  --text-secondary: #495057;
+  --text-muted: #6c757d;
 
   /* Glassmorphism */
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-bg-hover: rgba(255, 255, 255, 0.9);
-  --glass-border: rgba(0, 0, 0, 0.1);
-  --glass-shadow: rgba(0, 0, 0, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-bg-hover: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-shadow: rgba(0, 0, 0, 0.08);
 
   /* Gradients */
-  --gradient-dark: linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 100%);
+  --gradient-dark: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 
   /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 /* === RESET & BASE === */
@@ -367,21 +367,21 @@ a:hover {
   width: auto;
   object-fit: contain;
   transition: all var(--transition-base);
-  filter: drop-shadow(0 0 10px rgba(0, 245, 255, 0.3));
+  filter: drop-shadow(0 0 8px rgba(0, 245, 255, 0.25));
 }
 
 .logo-img:hover {
   transform: scale(1.05);
-  filter: drop-shadow(0 0 15px rgba(0, 245, 255, 0.5));
+  filter: drop-shadow(0 0 12px rgba(0, 245, 255, 0.4));
 }
 
 /* Logo adjustments for light theme */
 [data-theme="light"] .logo-img {
-  filter: drop-shadow(0 0 8px rgba(0, 245, 255, 0.2));
+  filter: drop-shadow(0 0 6px rgba(0, 245, 255, 0.15));
 }
 
 [data-theme="light"] .logo-img:hover {
-  filter: drop-shadow(0 0 12px rgba(0, 245, 255, 0.4));
+  filter: drop-shadow(0 0 10px rgba(0, 245, 255, 0.3));
 }
 
 .nav-links {
