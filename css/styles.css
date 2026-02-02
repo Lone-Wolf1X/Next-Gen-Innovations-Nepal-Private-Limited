@@ -8,31 +8,31 @@
 
 /* === CSS CUSTOM PROPERTIES === */
 :root {
-  /* Colors - Dark Mode (Softer) */
-  --bg-primary: #0f1419;
-  --bg-secondary: #1a1f2e;
-  --bg-tertiary: #252d3d;
+  /* Colors - Light Blue Theme */
+  --bg-primary: #e0f2fe;
+  --bg-secondary: #f0f9ff;
+  --bg-tertiary: #bae6fd;
 
-  /* Accent Colors */
-  --accent-cyan: #00F5FF;
-  --accent-green: #39FF14;
-  --accent-cyan-glow: rgba(0, 245, 255, 0.5);
-  --accent-green-glow: rgba(57, 255, 20, 0.5);
+  /* Accent Colors - Light Blue Theme */
+  --accent-cyan: #3b82f6;
+  --accent-green: #60a5fa;
+  --accent-cyan-glow: rgba(59, 130, 246, 0.5);
+  --accent-green-glow: rgba(96, 165, 250, 0.5);
 
   /* Text Colors */
-  --text-primary: #f0f4f8;
-  --text-secondary: #c5cdd8;
-  --text-muted: #8b95a5;
+  --text-primary: #0c4a6e;
+  --text-secondary: #075985;
+  --text-muted: #0369a1;
 
   /* Glassmorphism */
-  --glass-bg: rgba(255, 255, 255, 0.06);
-  --glass-bg-hover: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-bg: rgba(255, 255, 255, 0.4);
+  --glass-bg-hover: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(59, 130, 246, 0.2);
   --glass-shadow: rgba(0, 0, 0, 0.3);
 
   /* Gradients */
   --gradient-primary: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-green) 100%);
-  --gradient-dark: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
+  --gradient-dark: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
   --gradient-glow: radial-gradient(circle at 50% 50%, var(--accent-cyan-glow), transparent 70%);
 
   /* Spacing */
@@ -367,21 +367,21 @@ a:hover {
   width: auto;
   object-fit: contain;
   transition: all var(--transition-base);
-  filter: drop-shadow(0 0 8px rgba(0, 245, 255, 0.25));
+  filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.4));
 }
 
 .logo-img:hover {
   transform: scale(1.05);
-  filter: drop-shadow(0 0 12px rgba(0, 245, 255, 0.4));
+  filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.6));
 }
 
 /* Logo adjustments for light theme */
 [data-theme="light"] .logo-img {
-  filter: drop-shadow(0 0 6px rgba(0, 245, 255, 0.15));
+  filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.15));
 }
 
 [data-theme="light"] .logo-img:hover {
-  filter: drop-shadow(0 0 10px rgba(0, 245, 255, 0.3));
+  filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.3));
 }
 
 .nav-links {
