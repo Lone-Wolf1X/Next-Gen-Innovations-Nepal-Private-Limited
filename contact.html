@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Contact Next Gen Innovations Nepal - Get in touch for web development, mobile apps, and IT solutions.">
+
+    <title>Contact Us | Next Gen Innovations Nepal</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/pages.css">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                Next Gen <span style="color: var(--accent-cyan);">Innovations</span>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="technologies.html">Technologies</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
+            </ul>
+
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <div class="container">
+            <h1 class="animate-fade-in-down">Let's <span class="text-gradient">Connect</span></h1>
+            <p class="page-hero-subtitle animate-fade-in-up delay-200">
+                Ready to build something extraordinary? We're here to help.
+            </p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section contact-section">
+        <div class="container">
+            <div class="contact-grid">
+
+                <!-- Contact Form -->
+                <div class="contact-form-wrapper scroll-reveal">
+                    <h2 class="mb-3">Send Us a Message</h2>
+                    <p class="text-secondary mb-4">
+                        Fill out the form below and we'll get back to you within 24 hours.
+                    </p>
+
+                    <form id="contactForm" class="contact-form">
+                        <div class="form-group">
+                            <label for="name">Full Name *</label>
+                            <input type="text" id="name" name="name" class="form-input" placeholder="Your name"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" class="form-input" placeholder="your@email.com"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" class="form-input" placeholder="+977 98XXXXXXXX">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="service">Service Interest</label>
+                            <select id="service" name="service" class="form-input">
+                                <option value="">Select a service</option>
+                                <option value="web">Web & SaaS Development</option>
+                                <option value="mobile">Mobile App Development</option>
+                                <option value="automation">Custom Software & Automation</option>
+                                <option value="design">UI/UX & Product Design</option>
+                                <option value="ai">AI & Machine Learning</option>
+                                <option value="cloud">Cloud & Digital Solutions</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Your Message *</label>
+                            <textarea id="message" name="message" class="form-input" rows="6"
+                                placeholder="Tell us about your project..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-large btn-ripple">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="contact-info-wrapper scroll-reveal delay-200">
+                    <div class="contact-info-card glass">
+                        <h3 class="mb-3">Get In Touch</h3>
+
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">📧</div>
+                            <div>
+                                <h4>Email</h4>
+                                <a href="mailto:info@nextgennepal.com">info@nextgennepal.com</a>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">📱</div>
+                            <div>
+                                <h4>Phone</h4>
+                                <a href="tel:+9779800000000">+977 980-0000000</a>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">📍</div>
+                            <div>
+                                <h4>Location</h4>
+                                <p>Kathmandu, Nepal</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-item">
+                            <div class="contact-info-icon">⏰</div>
+                            <div>
+                                <h4>Business Hours</h4>
+                                <p>Sun - Fri: 10:00 AM - 6:00 PM<br>Saturday: Closed</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-card glass mt-3">
+                        <h3 class="mb-3">Follow Us</h3>
+                        <div class="social-links">
+                            <a href="#" class="social-link glass hover-glow">
+                                <span>LinkedIn</span>
+                            </a>
+                            <a href="#" class="social-link glass hover-glow">
+                                <span>GitHub</span>
+                            </a>
+                            <a href="#" class="social-link glass hover-glow">
+                                <span>Facebook</span>
+                            </a>
+                            <a href="#" class="social-link glass hover-glow">
+                                <span>Twitter</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Contact Us -->
+    <section class="section why-contact" style="background: var(--bg-secondary);">
+        <div class="container">
+            <h2 class="section-title scroll-reveal">Why Work With Us?</h2>
+
+            <div class="grid grid-3">
+                <div class="feature-card scroll-reveal">
+                    <div class="feature-card-icon">⚡</div>
+                    <h4>Fast Response</h4>
+                    <p>We respond to all inquiries within 24 hours. Your time is valuable.</p>
+                </div>
+
+                <div class="feature-card scroll-reveal delay-100">
+                    <div class="feature-card-icon">💬</div>
+                    <h4>Free Consultation</h4>
+                    <p>Get expert advice on your project at no cost. No obligations.</p>
+                </div>
+
+                <div class="feature-card scroll-reveal delay-200">
+                    <div class="feature-card-icon">🎯</div>
+                    <h4>Tailored Solutions</h4>
+                    <p>Every project is unique. We create custom solutions for your needs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="section faq-section">
+        <div class="container">
+            <h2 class="section-title scroll-reveal">Frequently Asked Questions</h2>
+
+            <div class="faq-grid">
+                <div class="faq-item glass scroll-reveal">
+                    <h4>How long does a typical project take?</h4>
+                    <p>Project timelines vary based on complexity. A simple website might take 2-4 weeks, while a
+                        complex SaaS platform could take 3-6 months. We'll provide a detailed timeline after
+                        understanding your requirements.</p>
+                </div>
+
+                <div class="faq-item glass scroll-reveal delay-100">
+                    <h4>What are your pricing models?</h4>
+                    <p>We offer both fixed-price and hourly billing depending on the project. For well-defined projects,
+                        we prefer fixed pricing. For ongoing work or evolving requirements, hourly rates work better.
+                    </p>
+                </div>
+
+                <div class="faq-item glass scroll-reveal delay-200">
+                    <h4>Do you provide ongoing support?</h4>
+                    <p>Yes! We offer maintenance and support packages for all our projects. This includes bug fixes,
+                        updates, security patches, and feature enhancements.</p>
+                </div>
+
+                <div class="faq-item glass scroll-reveal delay-300">
+                    <h4>Can you work with our existing team?</h4>
+                    <p>Absolutely. We're experienced in collaborating with in-house teams, providing dedicated
+                        developers, or handling entire projects independently.</p>
+                </div>
+
+                <div class="faq-item glass scroll-reveal delay-400">
+                    <h4>What technologies do you specialize in?</h4>
+                    <p>We work with modern tech stacks including React, Next.js, Node.js, Python, Flutter, AWS, and
+                        more. Check our <a href="technologies.html">Technologies page</a> for the full list.</p>
+                </div>
+
+                <div class="faq-item glass scroll-reveal delay-500">
+                    <h4>Do you sign NDAs?</h4>
+                    <p>Yes, we're happy to sign Non-Disclosure Agreements to protect your intellectual property and
+                        business ideas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Next Gen Innovations</h4>
+                    <p class="text-secondary">
+                        नेक्स्ट जेन इनोभेसनस् नेपाल<br>
+                        Building the future with advanced IT solutions.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="portfolio.html">Portfolio</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="services.html#web">Web Development</a></li>
+                        <li><a href="services.html#mobile">Mobile Apps</a></li>
+                        <li><a href="services.html#ai">AI Solutions</a></li>
+                        <li><a href="services.html#cloud">Cloud Services</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="mailto:info@nextgennepal.com">info@nextgennepal.com</a></li>
+                        <li><a href="tel:+9779800000000">+977 980-0000000</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="#">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Next Gen Innovations Nepal. All rights reserved. | Built with 💚 in Nepal</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/animations.js"></script>
+
+</body>
+
+</html>

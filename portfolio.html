@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Next Gen Innovations Nepal Portfolio - Showcasing our best work in web development, mobile apps, and digital solutions.">
+
+    <title>Portfolio | Next Gen Innovations Nepal</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/pages.css">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                Next Gen <span style="color: var(--accent-cyan);">Innovations</span>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="technologies.html">Technologies</a></li>
+                <li><a href="portfolio.html" class="active">Portfolio</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+
+            <div class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <div class="container">
+            <h1 class="animate-fade-in-down">Our <span class="text-gradient">Portfolio</span></h1>
+            <p class="page-hero-subtitle animate-fade-in-up delay-200">
+                Real projects. Real results. Real impact.
+            </p>
+        </div>
+    </section>
+
+    <!-- Portfolio Filter -->
+    <section class="section">
+        <div class="container">
+            <div class="portfolio-filters scroll-reveal">
+                <button class="filter-btn active" data-filter="all">All Projects</button>
+                <button class="filter-btn" data-filter="web">Web Apps</button>
+                <button class="filter-btn" data-filter="mobile">Mobile Apps</button>
+                <button class="filter-btn" data-filter="saas">SaaS</button>
+                <button class="filter-btn" data-filter="ai">AI/ML</button>
+            </div>
+
+            <!-- Portfolio Grid -->
+            <div class="portfolio-grid">
+
+                <!-- Project 1 -->
+                <div class="portfolio-item glass scroll-reveal" data-category="saas">
+                    <div class="portfolio-image">
+                        <div class="portfolio-placeholder">
+                            <span class="portfolio-icon">💼</span>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3>Enterprise CRM Platform</h3>
+                        <p>Full-featured customer relationship management system with analytics, automation, and
+                            multi-user support.</p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">React</span>
+                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">PostgreSQL</span>
+                            <span class="tech-tag">AWS</span>
+                        </div>
+                        <div class="portfolio-stats">
+                            <div class="stat-mini">
+                                <strong>10,000+</strong>
+                                <span>Active Users</span>
+                            </div>
+                            <div class="stat-mini">
+                                <strong>99.9%</strong>
+                                <span>Uptime</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="portfolio-item glass scroll-reveal delay-100" data-category="mobile">
+                    <div class="portfolio-image">
+                        <div class="portfolio-placeholder">
+                            <span class="portfolio-icon">📱</span>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3>Food Delivery App</h3>
+                        <p>Cross-platform mobile app with real-time tracking, payment integration, and restaurant
+                            management.</p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">Flutter</span>
+                            <span class="tech-tag">Firebase</span>
+                            <span class="tech-tag">Google Maps</span>
+                        </div>
+                        <div class="portfolio-stats">
+                            <div class="stat-mini">
+                                <strong>50K+</strong>
+                                <span>Downloads</span>
+                            </div>
+                            <div class="stat-mini">
+                                <strong>4.8★</strong>
+                                <span>Rating</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="portfolio-item glass scroll-reveal delay-200" data-category="web">
+                    <div class="portfolio-image">
+                        <div class="portfolio-placeholder">
+                            <span class="portfolio-icon">🏪</span>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3>E-commerce Platform</h3>
+                        <p>High-performance online store with inventory management, payment gateway, and admin
+                            dashboard.</p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">Next.js</span>
+                            <span class="tech-tag">Stripe</span>
+                            <span class="tech-tag">MongoDB</span>
+                        </div>
+                        <div class="portfolio-stats">
+                            <div class="stat-mini">
+                                <strong>$500K+</strong>
+                                <span>Revenue/Month</span>
+                            </div>
+                            <div class="stat-mini">
+                                <strong>2.5s</strong>
+                                <span>Load Time</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="portfolio-item glass scroll-reveal delay-300" data-category="ai">
+                    <div class="portfolio-image">
+                        <div class="portfolio-placeholder">
+                            <span class="portfolio-icon">🤖</span>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3>AI Content Generator</h3>
+                        <p>Intelligent content creation tool powered by GPT-4, with custom training and brand voice
+                            adaptation.</p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">OpenAI</span>
+                            <span class="tech-tag">React</span>
+                        </div>
+                        <div class="portfolio-stats">
+                            <div class="stat-mini">
+                                <strong>100K+</strong>
+                                <span>Content Pieces</span>
+                            </div>
+                            <div class="stat-mini">
+                                <strong>85%</strong>
+                                <span>Time Saved</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 5 -->
+                <div class="portfolio-item glass scroll-reveal delay-400" data-category="web">
+                    <div class="portfolio-image">
+                        <div class="portfolio-placeholder">
+                            <span class="portfolio-icon">🎓</span>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3>Learning Management System</h3>
+                        <p>Complete LMS with video hosting, quizzes, progress tracking, and certificate generation.</p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">Vue.js</span>
+                            <span class="tech-tag">Laravel</span>
+                            <span class="tech-tag">MySQL</span>
+                        </div>
+                        <div class="portfolio-stats">
+                            <div class="stat-mini">
+                                <strong>5,000+</strong>
+                                <span>Students</span>
+                            </div>
+                            <div class="stat-mini">
+                                <strong>200+</strong>
+                                <span>Courses</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 6 -->
+                <div class="portfolio-item glass scroll-reveal delay-500" data-category="mobile">
+                    <div class="portfolio-image">
+                        <div class="portfolio-placeholder">
+                            <span class="portfolio-icon">💪</span>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <h3>Fitness Tracking App</h3>
+                        <p>Comprehensive fitness app with workout plans, nutrition tracking, and social features.</p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">React Native</span>
+                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">MongoDB</span>
+                        </div>
+                        <div class="portfolio-stats">
+                            <div class="stat-mini">
+                                <strong>30K+</strong>
+                                <span>Active Users</span>
+                            </div>
+                            <div class="stat-mini">
+                                <strong>1M+</strong>
+                                <span>Workouts Logged</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Client Testimonials -->
+    <section class="section testimonials-section" style="background: var(--bg-secondary);">
+        <div class="container">
+            <h2 class="section-title scroll-reveal">What Our Clients Say</h2>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card glass scroll-reveal">
+                    <div class="testimonial-quote">"</div>
+                    <p class="testimonial-text">
+                        "Next Gen delivered beyond expectations. The quality of code, attention to detail, and
+                        professionalism was outstanding. They truly understand modern web development."
+                    </p>
+                    <div class="testimonial-author">
+                        <strong>Rajesh Sharma</strong>
+                        <span>CEO, TechStart Nepal</span>
+                    </div>
+                </div>
+
+                <div class="testimonial-card glass scroll-reveal delay-100">
+                    <div class="testimonial-quote">"</div>
+                    <p class="testimonial-text">
+                        "Working with Next Gen was a game-changer for our business. They transformed our ideas into a
+                        beautiful, high-performing app that our users love."
+                    </p>
+                    <div class="testimonial-author">
+                        <strong>Priya Thapa</strong>
+                        <span>Founder, FoodHub</span>
+                    </div>
+                </div>
+
+                <div class="testimonial-card glass scroll-reveal delay-200">
+                    <div class="testimonial-quote">"</div>
+                    <p class="testimonial-text">
+                        "Impressed by their technical expertise and problem-solving skills. They didn't just build what
+                        we asked for—they improved it with smart suggestions."
+                    </p>
+                    <div class="testimonial-author">
+                        <strong>Amit Gurung</strong>
+                        <span>CTO, EduTech Solutions</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section cta-section glass">
+        <div class="container text-center">
+            <h2 class="scroll-reveal">Ready to Be Our Next Success Story?</h2>
+            <p class="text-secondary mb-3 scroll-reveal delay-100">
+                Let's create something amazing together.
+            </p>
+            <div class="scroll-reveal delay-200">
+                <a href="contact.html" class="btn btn-primary btn-large btn-ripple">Start Your Project</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Next Gen Innovations</h4>
+                    <p class="text-secondary">
+                        नेक्स्ट जेन इनोभेसनस् नेपाल<br>
+                        Building the future with advanced IT solutions.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="portfolio.html">Portfolio</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="services.html#web">Web Development</a></li>
+                        <li><a href="services.html#mobile">Mobile Apps</a></li>
+                        <li><a href="services.html#ai">AI Solutions</a></li>
+                        <li><a href="services.html#cloud">Cloud Services</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="mailto:info@nextgennepal.com">info@nextgennepal.com</a></li>
+                        <li><a href="tel:+9779800000000">+977 980-0000000</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="#">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Next Gen Innovations Nepal. All rights reserved. | Built with 💚 in Nepal</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/animations.js"></script>
+
+</body>
+
+</html>
