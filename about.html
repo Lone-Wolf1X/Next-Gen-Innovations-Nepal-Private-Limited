@@ -1,334 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="About Next Gen Innovations Nepal - Our story, mission, and the team building Nepal's digital future.">
-
-    <title>About Us | Next Gen Innovations Nepal</title>
-
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/pages.css">
-    <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="About Next Gen Innovations Nepal — Our story, mission, values, and the founding team behind Nepal's premier IT company.">
+  <title>About Us | Next Gen Innovations Nepal</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="icon" href="logo/logo.svg" type="image/svg+xml">
 </head>
-
 <body>
 
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="logo">
-                <img src="assets/Logo.png" alt="Next Gen Innovations Nepal" class="logo-img">
-            </div>
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo"><img src="logo/logo.svg" alt="Next Gen Innovations Nepal"></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html" class="active">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="technologies.html">Technologies</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+        <li><a href="contact.html" class="nav-cta">Contact Us</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
 
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html" class="active">About</a></li>
-                <li><a href="services.html">Services</a></li>
-                <li><a href="technologies.html">Technologies</a></li>
-                <li><a href="portfolio.html">Portfolio</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="container">
+      <span class="section-eyebrow">Who We Are</span>
+      <h1 class="section-title">About <span class="highlight">Next Gen</span></h1>
+      <p class="section-subtitle" style="margin:16px auto 0;">
+        An emerging Nepali IT company on a mission to bring cutting-edge technology solutions to Nepal and beyond.
+      </p>
+    </div>
+  </section>
 
-            <div class="mobile-menu-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+  <!-- OUR STORY -->
+  <section class="section">
+    <div class="container">
+      <div class="about-grid">
+        <div>
+          <span class="section-eyebrow reveal">Our Story</span>
+          <h2 class="section-title reveal reveal-delay-1">Built in Nepal.<br>Built for the World.</h2>
+          <p class="reveal reveal-delay-2" style="color:var(--text-body);line-height:1.8;margin-bottom:20px;">
+            Next Gen Innovations Nepal Private Limited was founded with a singular belief: that Nepali talent is capable of delivering world-class technology solutions. We started as a small team of passionate developers, united by the dream of building a company that would put Nepal on the global IT map.
+          </p>
+          <p class="reveal reveal-delay-3" style="color:var(--text-body);line-height:1.8;margin-bottom:32px;">
+            Today, we specialize in FinTech, enterprise software, mobile apps, AI research, and cloud infrastructure — serving clients across Nepal and internationally. Our work is driven by a relentless pursuit of quality, innovation, and impact.
+          </p>
+          <a href="contact.html" class="btn btn-primary reveal reveal-delay-4">Work With Us →</a>
         </div>
-    </nav>
-
-    <!-- Page Hero -->
-    <section class="page-hero">
-        <div class="container">
-            <h1 class="animate-fade-in-down">About <span class="text-gradient">Next Gen</span></h1>
-            <p class="page-hero-subtitle animate-fade-in-up delay-200">
-                Where Nepali talent meets global innovation
-            </p>
+        <div class="about-visual reveal">
+          <span class="big-num" data-target="2024">2024</span>
+          <span class="big-label">Founded</span>
+          <div class="about-mini-stats">
+            <div class="about-mini-stat"><div class="n" data-target="50" data-suffix="+">50+</div><div class="l">Projects Done</div></div>
+            <div class="about-mini-stat"><div class="n" data-target="30" data-suffix="+">30+</div><div class="l">Happy Clients</div></div>
+            <div class="about-mini-stat"><div class="n" data-target="4">4</div><div class="l">Core Team</div></div>
+            <div class="about-mini-stat"><div class="n" data-target="99" data-suffix="%">99%</div><div class="l">Success Rate</div></div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- Our Story -->
-    <section class="section">
-        <div class="container">
-            <div class="content-grid">
-                <div class="content-text scroll-reveal">
-                    <h2 class="text-gradient">Our Story</h2>
-                    <p>
-                        Next Gen Innovations Nepal was born from a simple belief: <strong>Nepal can compete globally in
-                            tech.</strong>
-                    </p>
-                    <p>
-                        We're not just another IT company. We're a movement of passionate engineers, designers, and
-                        innovators who refuse to accept mediocrity. Every line of code we write, every interface we
-                        design, every solution we deliver—it's all built to world-class standards.
-                    </p>
-                    <p>
-                        From Kathmandu to the cloud, we're proving that geography doesn't limit ambition. Our team
-                        combines deep technical expertise with an understanding of both local and global markets,
-                        creating solutions that work anywhere.
-                    </p>
-                </div>
-
-                <div class="content-visual scroll-reveal delay-200">
-                    <div class="glass-card">
-                        <div class="stat-large">
-                            <div class="stat-number counter" data-target="2020">2020</div>
-                            <div class="stat-label">Founded</div>
-                        </div>
-                        <div class="stat-large">
-                            <div class="stat-number counter" data-target="15">0</div>
-                            <div class="stat-label">Team Members</div>
-                        </div>
-                        <div class="stat-large">
-                            <div class="stat-number counter" data-target="50">0</div>
-                            <div class="stat-label">Projects Completed</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <!-- VISION & MISSION -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="text-center">
+        <span class="section-eyebrow reveal">Purpose</span>
+        <h2 class="section-title reveal reveal-delay-1">Vision & Mission</h2>
+      </div>
+      <div class="why-grid" style="margin-top:48px;">
+        <div class="why-card reveal">
+          <div class="why-icon">🌏</div>
+          <div class="why-text">
+            <h4>Our Vision</h4>
+            <p>To be Nepal's most trusted and innovative IT company — recognized globally for delivering transformative digital solutions that empower businesses and communities.</p>
+          </div>
         </div>
-    </section>
-
-    <!-- Mission & Vision -->
-    <section class="section mission-vision">
-        <div class="container">
-            <div class="grid grid-2">
-                <div class="mission-card glass scroll-reveal">
-                    <div class="mission-icon">🎯</div>
-                    <h3>Our Mission</h3>
-                    <p>
-                        To deliver cutting-edge IT solutions that empower businesses to thrive in the digital age. We
-                        build software that doesn't just work—it excels.
-                    </p>
-                    <p>
-                        Every project is an opportunity to showcase what Nepali tech talent can achieve when given the
-                        right tools, training, and mindset.
-                    </p>
-                </div>
-
-                <div class="mission-card glass scroll-reveal delay-200">
-                    <div class="mission-icon">🚀</div>
-                    <h3>Our Vision</h3>
-                    <p>
-                        To position Nepal as a recognized hub for advanced software development and digital innovation
-                        on the global stage.
-                    </p>
-                    <p>
-                        We envision a future where "Made in Nepal" is synonymous with quality, innovation, and technical
-                        excellence in the IT industry.
-                    </p>
-                </div>
-            </div>
+        <div class="why-card reveal reveal-delay-1">
+          <div class="why-icon">🎯</div>
+          <div class="why-text">
+            <h4>Our Mission</h4>
+            <p>To bridge the digital divide in Nepal by delivering premium-quality IT services, FinTech platforms, and research-backed technology that drives real economic growth.</p>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <!-- Core Values -->
-    <section class="section core-values">
-        <div class="container">
-            <h2 class="section-title scroll-reveal">What Drives Us</h2>
-
-            <div class="grid grid-3">
-                <div class="value-card scroll-reveal">
-                    <div class="value-icon">⚡</div>
-                    <h4>Innovation First</h4>
-                    <p>We don't follow trends—we set them. Continuous learning and experimentation are in our DNA.</p>
-                </div>
-
-                <div class="value-card scroll-reveal delay-100">
-                    <div class="value-icon">🎯</div>
-                    <h4>Quality Obsessed</h4>
-                    <p>Good enough isn't good enough. We obsess over every detail until it's exceptional.</p>
-                </div>
-
-                <div class="value-card scroll-reveal delay-200">
-                    <div class="value-icon">🤝</div>
-                    <h4>Client Success</h4>
-                    <p>Your win is our win. We measure success by the impact we create for your business.</p>
-                </div>
-
-                <div class="value-card scroll-reveal delay-300">
-                    <div class="value-icon">🔒</div>
-                    <h4>Integrity Always</h4>
-                    <p>Transparent communication, honest timelines, and ethical practices in everything we do.</p>
-                </div>
-
-                <div class="value-card scroll-reveal delay-400">
-                    <div class="value-icon">🌍</div>
-                    <h4>Global Mindset</h4>
-                    <p>Local roots, global reach. We think and build for international markets.</p>
-                </div>
-
-                <div class="value-card scroll-reveal delay-500">
-                    <div class="value-icon">💚</div>
-                    <h4>Nepal Pride</h4>
-                    <p>Showcasing Nepali talent and contributing to our nation's tech ecosystem.</p>
-                </div>
-            </div>
+  <!-- VALUES -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center">
+        <span class="section-eyebrow reveal">What Drives Us</span>
+        <h2 class="section-title reveal reveal-delay-1">Our Core Values</h2>
+      </div>
+      <div class="values-grid">
+        <div class="value-card reveal">
+          <div class="value-icon">💡</div>
+          <h4>Innovation First</h4>
+          <p>We challenge the status quo and embrace emerging technologies to deliver forward-thinking solutions.</p>
         </div>
-    </section>
-
-    <!-- Why Next Gen -->
-    <section class="section why-different">
-        <div class="container">
-            <h2 class="section-title scroll-reveal">Why We're Different</h2>
-
-            <div class="difference-grid">
-                <div class="difference-item scroll-reveal">
-                    <h3><span class="text-gradient">01.</span> No Outsourcing</h3>
-                    <p>Every project is handled by our core team. No middlemen, no quality compromises.</p>
-                </div>
-
-                <div class="difference-item scroll-reveal delay-100">
-                    <h3><span class="text-gradient">02.</span> Modern Stack Only</h3>
-                    <p>We work with cutting-edge technologies. Legacy systems? Not our style.</p>
-                </div>
-
-                <div class="difference-item scroll-reveal delay-200">
-                    <h3><span class="text-gradient">03.</span> Agile & Transparent</h3>
-                    <p>Real-time updates, sprint demos, and direct communication with developers.</p>
-                </div>
-
-                <div class="difference-item scroll-reveal delay-300">
-                    <h3><span class="text-gradient">04.</span> Performance Obsessed</h3>
-                    <p>Fast load times, optimized code, and scalable architecture are non-negotiable.</p>
-                </div>
-            </div>
+        <div class="value-card reveal reveal-delay-1">
+          <div class="value-icon">🤝</div>
+          <h4>Client Partnership</h4>
+          <p>We treat every client as a long-term partner, investing in their success as our own.</p>
         </div>
-    </section>
-
-    <!-- Our Team -->
-    <section class="section our-team" style="background: var(--bg-secondary);">
-        <div class="container">
-            <h2 class="section-title scroll-reveal">Meet Our Team</h2>
-            <p class="text-center text-secondary mb-4 scroll-reveal">
-                The brilliant minds driving Next Gen Innovations Nepal
-            </p>
-
-            <div class="team-grid">
-                <!-- Chairman -->
-                <div class="team-card glass scroll-reveal">
-                    <div class="team-avatar">
-                        <div class="team-avatar-placeholder">👑</div>
-                    </div>
-                    <h3 class="team-name">Rita Devi</h3>
-                    <p class="team-role">Chairman & Founder</p>
-                    <p class="team-bio">
-                        Visionary leader with a passion for technology and innovation. Driving the company's strategic
-                        direction and growth.
-                    </p>
-                </div>
-
-                <!-- CEO -->
-                <div class="team-card glass scroll-reveal delay-100">
-                    <div class="team-avatar">
-                        <div class="team-avatar-placeholder">🚀</div>
-                    </div>
-                    <h3 class="team-name">Abhishek</h3>
-                    <p class="team-role">Chief Executive Officer</p>
-                    <p class="team-bio">
-                        Leading operations and business development with a focus on delivering world-class IT solutions.
-                    </p>
-                </div>
-
-                <!-- Senior Developer 1 -->
-                <div class="team-card glass scroll-reveal delay-200">
-                    <div class="team-avatar">
-                        <div class="team-avatar-placeholder">💻</div>
-                    </div>
-                    <h3 class="team-name">Yuvaraj Kumar</h3>
-                    <p class="team-role">Senior Developer</p>
-                    <p class="team-bio">
-                        Expert in full-stack development with deep expertise in modern frameworks and scalable
-                        architectures.
-                    </p>
-                </div>
-
-                <!-- Senior Developer 2 -->
-                <div class="team-card glass scroll-reveal delay-300">
-                    <div class="team-avatar">
-                        <div class="team-avatar-placeholder">⚡</div>
-                    </div>
-                    <h3 class="team-name">Bidur Pasman</h3>
-                    <p class="team-role">Senior Developer</p>
-                    <p class="team-bio">
-                        Specialized in building high-performance applications with cutting-edge technologies and best
-                        practices.
-                    </p>
-                </div>
-            </div>
+        <div class="value-card reveal reveal-delay-2">
+          <div class="value-icon">⭐</div>
+          <h4>Excellence Always</h4>
+          <p>From code quality to client communication — we maintain the highest standards in everything we do.</p>
         </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="section cta-section glass">
-        <div class="container text-center">
-            <h2 class="scroll-reveal">Let's Build Something Great Together</h2>
-            <p class="text-secondary mb-3 scroll-reveal delay-100">
-                Ready to work with a team that's as ambitious as you are?
-            </p>
-            <div class="scroll-reveal delay-200">
-                <a href="contact.html" class="btn btn-primary btn-large btn-ripple">Start Your Project</a>
-            </div>
+        <div class="value-card reveal reveal-delay-1">
+          <div class="value-icon">🛡️</div>
+          <h4>Integrity & Trust</h4>
+          <p>Transparent, honest, and accountable — we build relationships as strong as the software we write.</p>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Next Gen Innovations</h4>
-                    <p class="text-secondary">
-                        नेक्स्ट जेन इनोभेसनस् नेपाल<br>
-                        Building the future with advanced IT solutions.
-                    </p>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="services.html">Services</a></li>
-                        <li><a href="portfolio.html">Portfolio</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Services</h4>
-                    <ul>
-                        <li><a href="services.html#web">Web Development</a></li>
-                        <li><a href="services.html#mobile">Mobile Apps</a></li>
-                        <li><a href="services.html#ai">AI Solutions</a></li>
-                        <li><a href="services.html#cloud">Cloud Services</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Connect</h4>
-                    <ul>
-                        <li><a href="mailto:info@nextgennepal.com">info@nextgennepal.com</a></li>
-                        <li><a href="tel:+9779800000000">+977 980-0000000</a></li>
-                        <li><a href="#">LinkedIn</a></li>
-                        <li><a href="#">GitHub</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p>&copy; 2026 Next Gen Innovations Nepal. All rights reserved. | Built with 💚 in Nepal</p>
-            </div>
+        <div class="value-card reveal reveal-delay-2">
+          <div class="value-icon">🌱</div>
+          <h4>Nepal Proud</h4>
+          <p>We celebrate Nepali talent and are committed to growing the IT ecosystem right here at home.</p>
         </div>
-    </footer>
+        <div class="value-card reveal reveal-delay-3">
+          <div class="value-icon">⚡</div>
+          <h4>Speed & Agility</h4>
+          <p>Lean, fast, and adaptable — we move at startup speed while maintaining enterprise-grade quality.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <script src="js/main.js"></script>
-    <script src="js/animations.js"></script>
+  <!-- TEAM FULL -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="text-center">
+        <span class="section-eyebrow reveal">The People</span>
+        <h2 class="section-title reveal reveal-delay-1">Meet Our Founders</h2>
+        <p class="section-subtitle reveal reveal-delay-2" style="margin:0 auto;">
+          Four founders. One dream. Building the next generation of Nepal's digital economy.
+        </p>
+      </div>
+      <div class="team-grid" style="margin-top:56px;">
+        <div class="team-card reveal">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#0F1C3F,#1A348A);">YP</div>
+          <div class="team-name">Yuvraj Paswan</div>
+          <div class="team-role">Founder</div>
+          <p style="font-size:0.82rem;color:var(--text-body);margin-top:12px;line-height:1.6;">Visionary entrepreneur with a passion for leveraging technology to solve real-world problems in Nepal.</p>
+        </div>
+        <div class="team-card reveal reveal-delay-1">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#1A348A,#2a4bc4);">AK</div>
+          <div class="team-name">Abhiseehk Kumar Paswan</div>
+          <div class="team-role">Senior Developer & CEO</div>
+          <p style="font-size:0.82rem;color:var(--text-body);margin-top:12px;line-height:1.6;">Full-stack architect and tech lead driving engineering excellence and company strategy.</p>
+        </div>
+        <div class="team-card reveal reveal-delay-2">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#00C9B1,#00aaa0);">BP</div>
+          <div class="team-name">Bidur Pasman</div>
+          <div class="team-role">Developer</div>
+          <p style="font-size:0.82rem;color:var(--text-body);margin-top:12px;line-height:1.6;">Backend specialist building robust, scalable server infrastructure and API layers.</p>
+        </div>
+        <div class="team-card reveal reveal-delay-3">
+          <div class="team-avatar" style="background:linear-gradient(135deg,#2a4bc4,#00C9B1);">BP</div>
+          <div class="team-name">Basu Pasman</div>
+          <div class="team-role">Developer</div>
+          <p style="font-size:0.82rem;color:var(--text-body);margin-top:12px;line-height:1.6;">Mobile & UI developer crafting beautiful, intuitive user experiences across platforms.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <!-- CTA -->
+  <section class="cta-banner">
+    <div class="container">
+      <h2 class="reveal">Let's Build Something Great Together</h2>
+      <p class="reveal reveal-delay-1">Have a project in mind? We'd love to hear about it.</p>
+      <a href="contact.html" class="btn btn-primary btn-lg btn-ripple reveal reveal-delay-2">Get in Touch →</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="logo/logo.svg" alt="Next Gen Innovations Nepal">
+          <p>नेक्स्ट जेन इनोभेसनस् नेपाल प्रा.लि.<br>Building Nepal's digital future — one innovation at a time.</p>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Services</h5>
+          <ul>
+            <li><a href="services.html#fintech">FinTech Solutions</a></li>
+            <li><a href="services.html#web">Web Development</a></li>
+            <li><a href="services.html#mobile">Mobile Apps</a></li>
+            <li><a href="services.html#ai">AI & ML</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Contact</h5>
+          <ul>
+            <li><a href="mailto:info@nextgennepal.com">info@nextgennepal.com</a></li>
+            <li><a href="tel:+9779800000000">+977 980-000-0000</a></li>
+            <li><a href="#">LinkedIn</a></li>
+            <li><a href="#">GitHub</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Next Gen Innovations Nepal Pvt. Ltd. | Built with 💚 in Nepal</p>
+        <div class="footer-socials">
+          <a href="#" class="social-btn">in</a>
+          <a href="#" class="social-btn">GH</a>
+          <a href="#" class="social-btn">fb</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/animations.js"></script>
 </body>
-
 </html>

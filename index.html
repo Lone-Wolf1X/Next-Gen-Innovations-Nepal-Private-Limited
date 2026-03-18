@@ -1,310 +1,395 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description"
-    content="Next Gen Innovations Nepal - Advanced IT solutions, web development, mobile apps, AI, and cloud services. Building the future with Nepali talent.">
-  <meta name="keywords"
-    content="IT company Nepal, web development, mobile apps, AI solutions, cloud services, software development">
-  <meta name="author" content="Next Gen Innovations Nepal">
-
-  <title>Next Gen Innovations Nepal | Advanced IT Solutions</title>
-
-  <!-- Stylesheets -->
+  <meta name="description" content="Next Gen Innovations Nepal — Premier IT company offering FinTech solutions, software development, AI, cloud services, and digital transformation in Nepal.">
+  <meta name="keywords" content="IT company Nepal, FinTech Nepal, software development, AI solutions, web development Kathmandu">
+  <meta name="author" content="Next Gen Innovations Nepal Private Limited">
+  <title>Next Gen Innovations Nepal | FinTech & IT Solutions</title>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/animations.css">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+  <link rel="icon" href="logo/logo.svg" type="image/svg+xml">
 </head>
-
 <body>
 
-  <!-- Navigation -->
-  <nav class="navbar">
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
     <div class="container">
-      <div class="logo">
-        <img src="assets/Logo.png" alt="Next Gen Innovations Nepal" class="logo-img">
-      </div>
-
-      <ul class="nav-links">
+      <a href="index.html" class="nav-logo">
+        <img src="logo/logo.svg" alt="Next Gen Innovations Nepal">
+      </a>
+      <ul class="nav-links" id="navLinks">
         <li><a href="index.html" class="active">Home</a></li>
         <li><a href="about.html">About</a></li>
         <li><a href="services.html">Services</a></li>
         <li><a href="technologies.html">Technologies</a></li>
         <li><a href="portfolio.html">Portfolio</a></li>
-        <li><a href="contact.html">Contact</a></li>
+        <li><a href="contact.html" class="nav-cta">Contact Us</a></li>
       </ul>
-
-      <div class="mobile-menu-toggle">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="hero animated-gradient">
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <canvas id="heroParticles" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.6;"></canvas>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
     <div class="container">
-      <div class="hero-content">
-        <h1 class="hero-title animate-fade-in-down">
-          We Build <span class="text-gradient">The Future</span>
-        </h1>
-        <p class="hero-subtitle animate-fade-in-up delay-200">
-          Advanced IT solutions powered by innovation and Nepali excellence
+      <div class="hero-inner">
+        <!-- LEFT -->
+        <div class="hero-left">
+          <div class="hero-badge anim-hero-badge">
+            <span class="dot"></span>
+            Nepal's Next Generation IT Company
+          </div>
+          <h1 class="anim-hero-title">
+            Powering Nepal's<br>
+            <span class="gradient-text-anim">Digital Future</span>
+          </h1>
+          <p class="hero-nepali anim-hero-nepali">नेक्स्ट जेन इनोभेसनस् नेपाल प्रा.लि.</p>
+          <p class="hero-sub anim-hero-sub">
+            We deliver world-class <strong id="typedText" class="text-indigo">FinTech Solutions</strong><br>
+            — from AI-powered banking platforms to enterprise software, built by Nepali talent for the world.
+          </p>
+          <div class="hero-btns anim-hero-btns">
+            <a href="services.html" class="btn btn-primary btn-lg btn-ripple">Explore Services</a>
+            <a href="contact.html" class="btn btn-outline btn-lg">Get a Free Quote →</a>
+          </div>
+          <div class="hero-stats anim-hero-stats">
+            <div class="stat-item">
+              <div class="stat-num" data-target="50" data-suffix="+">0</div>
+              <div class="stat-label">Projects Delivered</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num" data-target="30" data-suffix="+">0</div>
+              <div class="stat-label">Happy Clients</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num" data-target="99" data-suffix="%">0</div>
+              <div class="stat-label">Success Rate</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num" data-target="4">0</div>
+              <div class="stat-label">Expert Team</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT — floating cards -->
+        <div class="hero-visual anim-hero-visual">
+          <div class="hero-card-stack">
+            <div class="hero-float-card">
+              <div class="fc-icon blue">💰</div>
+              <div>
+                <div class="fc-title">FinTech Platform</div>
+                <div class="fc-sub">Digital Payment Gateway</div>
+              </div>
+            </div>
+            <div class="hero-float-card">
+              <div class="fc-icon teal">🤖</div>
+              <div>
+                <div class="fc-title">AI & Research</div>
+                <div class="fc-sub">ML-powered insights</div>
+              </div>
+            </div>
+            <div class="hero-float-card">
+              <div class="fc-num" data-target="99" data-suffix="%">99%</div>
+              <div class="fc-title" style="font-size:0.75rem;margin-top:4px;color:var(--text-body);">Uptime SLA</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES OVERVIEW -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center">
+        <span class="section-eyebrow reveal">What We Do</span>
+        <h2 class="section-title reveal reveal-delay-1">Our Core Services</h2>
+        <p class="section-subtitle reveal reveal-delay-2" style="margin:0 auto 0;">
+          From FinTech platforms to custom enterprise software — we bring Silicon Valley standards to Nepal.
         </p>
-        <p class="hero-nepali animate-fade-in-up delay-300">
-          नेक्स्ट जेन इनोभेसनस् नेपाल
+      </div>
+      <div class="services-grid">
+        <div class="service-card reveal">
+          <div class="svc-icon-wrap">💳</div>
+          <h3 class="svc-title">FinTech Solutions</h3>
+          <p class="svc-desc">Digital payment gateways, mobile banking apps, e-wallets, lending platforms, and compliance systems built for Nepal's financial ecosystem.</p>
+          <span class="svc-arrow">Learn more →</span>
+        </div>
+        <div class="service-card reveal reveal-delay-1">
+          <div class="svc-icon-wrap">💻</div>
+          <h3 class="svc-title">Web & SaaS Development</h3>
+          <p class="svc-desc">Scalable web applications and SaaS platforms with React, Next.js, and Node.js. Performance-optimized and cloud-ready.</p>
+          <span class="svc-arrow">Learn more →</span>
+        </div>
+        <div class="service-card reveal reveal-delay-2">
+          <div class="svc-icon-wrap">📱</div>
+          <h3 class="svc-title">Mobile App Development</h3>
+          <p class="svc-desc">Native and cross-platform apps for Android & iOS using Flutter and React Native. Sleek UI, fast performance.</p>
+          <span class="svc-arrow">Learn more →</span>
+        </div>
+        <div class="service-card reveal reveal-delay-1">
+          <div class="svc-icon-wrap">🤖</div>
+          <h3 class="svc-title">AI & Machine Learning</h3>
+          <p class="svc-desc">Predictive analytics, NLP, computer vision, and data-driven automation that gives your business a competitive edge.</p>
+          <span class="svc-arrow">Learn more →</span>
+        </div>
+        <div class="service-card reveal reveal-delay-2">
+          <div class="svc-icon-wrap">☁️</div>
+          <h3 class="svc-title">Cloud & Infrastructure</h3>
+          <p class="svc-desc">AWS, Firebase & cloud deployment pipelines. Scalable architecture, DevOps, and 99.9% uptime guarantees.</p>
+          <span class="svc-arrow">Learn more →</span>
+        </div>
+        <div class="service-card reveal reveal-delay-3">
+          <div class="svc-icon-wrap">🔬</div>
+          <h3 class="svc-title">IT Research & Consulting</h3>
+          <p class="svc-desc">Deep-dive technology research, digital strategy, feasibility studies, and architecture consulting for forward-thinking businesses.</p>
+          <span class="svc-arrow">Learn more →</span>
+        </div>
+      </div>
+      <div class="text-center" style="margin-top:48px;">
+        <a href="services.html" class="btn btn-primary">View All Services</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINTECH HIGHLIGHT -->
+  <section class="section fintech-section">
+    <div class="container">
+      <div class="fintech-grid">
+        <div class="fintech-left">
+          <span class="section-eyebrow reveal">FinTech Expertise</span>
+          <h2 class="section-title reveal reveal-delay-1">Nepal's Leading<br>FinTech Developers</h2>
+          <p class="section-subtitle reveal reveal-delay-2">We specialize in building secure, scalable financial technology platforms that connect businesses and citizens to the digital economy.</p>
+          <div class="fintech-items">
+            <div class="fintech-item reveal reveal-delay-1">
+              <div class="fintech-item-icon">💳</div>
+              <div>
+                <h4>Digital Payment Systems</h4>
+                <p>e-Wallets, QR payment, eSewa & Khalti integrations, POS systems.</p>
+              </div>
+            </div>
+            <div class="fintech-item reveal reveal-delay-2">
+              <div class="fintech-item-icon">🏦</div>
+              <div>
+                <h4>Digital Banking Platforms</h4>
+                <p>Internet banking, mobile banking, CBS integrations, loan management.</p>
+              </div>
+            </div>
+            <div class="fintech-item reveal reveal-delay-3">
+              <div class="fintech-item-icon">🛡️</div>
+              <div>
+                <h4>Compliance & Security</h4>
+                <p>NRB compliance, KYC/AML systems, encryption & audit trails.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="fintech-right">
+          <div class="fintech-stats-grid">
+            <div class="fintech-stat reveal">
+              <span class="fintech-stat-num" data-target="15" data-suffix="+">15+</span>
+              <div class="fintech-stat-label">FinTech Projects</div>
+            </div>
+            <div class="fintech-stat reveal reveal-delay-1">
+              <span class="fintech-stat-num" data-target="100" data-suffix="K+">100K+</span>
+              <div class="fintech-stat-label">Transactions Processed</div>
+            </div>
+            <div class="fintech-stat reveal reveal-delay-2">
+              <span class="fintech-stat-num" data-target="99" data-suffix=".9%">99.9%</span>
+              <div class="fintech-stat-label">Platform Uptime</div>
+            </div>
+            <div class="fintech-stat reveal reveal-delay-3">
+              <span class="fintech-stat-num" data-target="5" data-suffix="+">5+</span>
+              <div class="fintech-stat-label">Banks & NBFIs Served</div>
+            </div>
+          </div>
+          <div style="margin-top:28px;text-align:center;">
+            <a href="services.html#fintech" class="btn btn-teal">Explore FinTech Solutions</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM SECTION -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="text-center">
+        <span class="section-eyebrow reveal">The Team Behind It</span>
+        <h2 class="section-title reveal reveal-delay-1">Meet Our Founders</h2>
+        <p class="section-subtitle reveal reveal-delay-2" style="margin:0 auto;">
+          A passionate team of technologists, developers, and innovators building Nepal's digital future.
         </p>
-        <div class="hero-cta animate-fade-in-up delay-400">
-          <a href="contact.html" class="btn btn-primary btn-large btn-ripple">Start Your Project</a>
-          <a href="portfolio.html" class="btn btn-secondary btn-large">View Our Work</a>
+      </div>
+      <div class="team-grid">
+        <div class="team-card reveal">
+          <div class="team-avatar">YP</div>
+          <div class="team-name">Yuvraj Paswan</div>
+          <div class="team-role">Founder</div>
+          <span class="team-tag">Visionary Leader</span>
         </div>
-
-        <!-- Stats -->
-        <div class="hero-stats animate-fade-in-up delay-500">
-          <div class="stat-item">
-            <div class="stat-number counter" data-target="50">0</div>
-            <div class="stat-label">Projects Delivered</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number counter" data-target="30">0</div>
-            <div class="stat-label">Happy Clients</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number counter" data-target="99">0</div>
-            <div class="stat-label">Success Rate %</div>
-          </div>
+        <div class="team-card reveal reveal-delay-1">
+          <div class="team-avatar">AK</div>
+          <div class="team-name">Abhiseehk Kumar Paswan</div>
+          <div class="team-role">Senior Developer & CEO</div>
+          <span class="team-tag">Full-Stack Expert</span>
+        </div>
+        <div class="team-card reveal reveal-delay-2">
+          <div class="team-avatar">BP</div>
+          <div class="team-name">Bidur Pasman</div>
+          <div class="team-role">Developer</div>
+          <span class="team-tag">Backend Specialist</span>
+        </div>
+        <div class="team-card reveal reveal-delay-3">
+          <div class="team-avatar">BP</div>
+          <div class="team-name">Basu Pasman</div>
+          <div class="team-role">Developer</div>
+          <span class="team-tag">Mobile & UI Dev</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Services Overview -->
-  <section class="section services-overview">
+  <!-- WHY CHOOSE US -->
+  <section class="section">
     <div class="container">
-      <h2 class="section-title scroll-reveal">Our Core Services</h2>
-      <p class="text-center text-secondary mb-4 scroll-reveal">
-        Cutting-edge solutions that drive digital transformation
-      </p>
-
-      <div class="grid grid-3">
-        <div class="card service-card scroll-reveal hover-lift">
-          <div class="card-icon">💻</div>
-          <h3 class="card-title">Web & SaaS Development</h3>
-          <p class="card-description">
-            Scalable web applications and SaaS platforms built with modern frameworks. Performance-optimized and
-            cloud-ready.
-          </p>
-        </div>
-
-        <div class="card service-card scroll-reveal hover-lift delay-100">
-          <div class="card-icon">📱</div>
-          <h3 class="card-title">Mobile App Development</h3>
-          <p class="card-description">
-            Native and cross-platform mobile apps for Android and iOS. Flutter expertise for seamless experiences.
-          </p>
-        </div>
-
-        <div class="card service-card scroll-reveal hover-lift delay-200">
-          <div class="card-icon">⚙️</div>
-          <h3 class="card-title">Custom Software & Automation</h3>
-          <p class="card-description">
-            Tailored software solutions and intelligent automation systems that streamline your business operations.
-          </p>
-        </div>
-
-        <div class="card service-card scroll-reveal hover-lift delay-300">
-          <div class="card-icon">🎨</div>
-          <h3 class="card-title">UI/UX & Product Design</h3>
-          <p class="card-description">
-            User-centered design that converts. From wireframes to high-fidelity prototypes and design systems.
-          </p>
-        </div>
-
-        <div class="card service-card scroll-reveal hover-lift delay-400">
-          <div class="card-icon">🤖</div>
-          <h3 class="card-title">AI & Machine Learning</h3>
-          <p class="card-description">
-            Intelligent solutions powered by AI and ML. Predictive analytics, automation, and data-driven insights.
-          </p>
-        </div>
-
-        <div class="card service-card scroll-reveal hover-lift delay-500">
-          <div class="card-icon">☁️</div>
-          <h3 class="card-title">Cloud & Digital Solutions</h3>
-          <p class="card-description">
-            AWS, Firebase, and cloud infrastructure. Migration, deployment, and scalable architecture design.
-          </p>
-        </div>
+      <div class="text-center">
+        <span class="section-eyebrow reveal">Why Us?</span>
+        <h2 class="section-title reveal reveal-delay-1">Why Choose Next Gen?</h2>
       </div>
-
-      <div class="text-center mt-4">
-        <a href="services.html" class="btn btn-primary">Explore All Services</a>
+      <div class="why-grid">
+        <div class="why-card reveal">
+          <div class="why-icon">🚀</div>
+          <div class="why-text">
+            <h4>Silicon Valley Standards, Nepali Prices</h4>
+            <p>World-class engineering quality delivered cost-effectively from Nepal's growing tech talent pool.</p>
+          </div>
+        </div>
+        <div class="why-card reveal reveal-delay-1">
+          <div class="why-icon">⚡</div>
+          <div class="why-text">
+            <h4>Lightning-Fast Delivery</h4>
+            <p>Agile sprints, CI/CD pipelines, and a bias for action — ships faster without cutting corners.</p>
+          </div>
+        </div>
+        <div class="why-card reveal reveal-delay-2">
+          <div class="why-icon">🎯</div>
+          <div class="why-text">
+            <h4>Results-Driven Approach</h4>
+            <p>We measure success by your ROI, user retention, and business impact — not just lines of code.</p>
+          </div>
+        </div>
+        <div class="why-card reveal reveal-delay-3">
+          <div class="why-icon">🔒</div>
+          <div class="why-text">
+            <h4>Enterprise-Grade Security</h4>
+            <p>Security-first architecture, regular audits, NRB compliance, and international security standards.</p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Tech Stack Showcase -->
-  <section class="section tech-stack">
+  <!-- TECH STACK -->
+  <section class="section section-alt">
     <div class="container">
-      <h2 class="section-title scroll-reveal">Technologies We Master</h2>
-      <p class="text-center text-secondary mb-4 scroll-reveal">
-        Modern stack. Proven results. Future-ready solutions.
-      </p>
-
-      <div class="tech-categories">
-        <div class="tech-category scroll-reveal">
-          <h3 class="tech-category-title">Frontend</h3>
-          <div class="tech-items">
-            <div class="tech-item glass hover-glow">React</div>
-            <div class="tech-item glass hover-glow">Next.js</div>
-            <div class="tech-item glass hover-glow">Vue.js</div>
-            <div class="tech-item glass hover-glow">TypeScript</div>
-          </div>
-        </div>
-
-        <div class="tech-category scroll-reveal delay-100">
-          <h3 class="tech-category-title">Backend</h3>
-          <div class="tech-items">
-            <div class="tech-item glass hover-glow">Node.js</div>
-            <div class="tech-item glass hover-glow">Python</div>
-            <div class="tech-item glass hover-glow">PHP</div>
-            <div class="tech-item glass hover-glow">Express</div>
-          </div>
-        </div>
-
-        <div class="tech-category scroll-reveal delay-200">
-          <h3 class="tech-category-title">Mobile</h3>
-          <div class="tech-items">
-            <div class="tech-item glass hover-glow">Flutter</div>
-            <div class="tech-item glass hover-glow">React Native</div>
-            <div class="tech-item glass hover-glow">Android</div>
-            <div class="tech-item glass hover-glow">iOS</div>
-          </div>
-        </div>
-
-        <div class="tech-category scroll-reveal delay-300">
-          <h3 class="tech-category-title">Cloud & Database</h3>
-          <div class="tech-items">
-            <div class="tech-item glass hover-glow">AWS</div>
-            <div class="tech-item glass hover-glow">Firebase</div>
-            <div class="tech-item glass hover-glow">MongoDB</div>
-            <div class="tech-item glass hover-glow">PostgreSQL</div>
-          </div>
-        </div>
+      <div class="text-center">
+        <span class="section-eyebrow reveal">Stack</span>
+        <h2 class="section-title reveal reveal-delay-1">Technologies We Master</h2>
       </div>
-
-      <div class="text-center mt-4">
-        <a href="technologies.html" class="btn btn-secondary">View Full Tech Stack</a>
+      <div class="tech-pills" style="margin-top:40px;" data-stagger="0.05">
+        <span class="tech-pill reveal">React</span>
+        <span class="tech-pill reveal">Next.js</span>
+        <span class="tech-pill reveal">Vue.js</span>
+        <span class="tech-pill reveal">TypeScript</span>
+        <span class="tech-pill reveal">Node.js</span>
+        <span class="tech-pill reveal">Python</span>
+        <span class="tech-pill reveal">PHP</span>
+        <span class="tech-pill reveal">Flutter</span>
+        <span class="tech-pill reveal">React Native</span>
+        <span class="tech-pill reveal">AWS</span>
+        <span class="tech-pill reveal">Firebase</span>
+        <span class="tech-pill reveal">MongoDB</span>
+        <span class="tech-pill reveal">PostgreSQL</span>
+        <span class="tech-pill reveal">Docker</span>
+        <span class="tech-pill reveal">TensorFlow</span>
+        <span class="tech-pill reveal">Laravel</span>
+      </div>
+      <div class="text-center" style="margin-top:36px;">
+        <a href="technologies.html" class="btn btn-outline">View Full Tech Stack</a>
       </div>
     </div>
   </section>
 
-  <!-- Why Choose Us -->
-  <section class="section why-choose-us">
+  <!-- CTA BANNER -->
+  <section class="cta-banner">
     <div class="container">
-      <h2 class="section-title scroll-reveal">Why Next Gen?</h2>
-
-      <div class="grid grid-2">
-        <div class="feature-item scroll-reveal">
-          <div class="feature-icon">🚀</div>
-          <h3>Silicon Valley Standards</h3>
-          <p>World-class quality meets Nepali innovation. We don't just build software—we craft digital experiences that
-            compete globally.</p>
-        </div>
-
-        <div class="feature-item scroll-reveal delay-100">
-          <div class="feature-icon">⚡</div>
-          <h3>Lightning-Fast Delivery</h3>
-          <p>Agile methodology and modern DevOps practices ensure rapid development without compromising quality.</p>
-        </div>
-
-        <div class="feature-item scroll-reveal delay-200">
-          <div class="feature-icon">🎯</div>
-          <h3>Results-Driven Approach</h3>
-          <p>Your success is our metric. We focus on ROI, user engagement, and measurable business impact.</p>
-        </div>
-
-        <div class="feature-item scroll-reveal delay-300">
-          <div class="feature-icon">🔒</div>
-          <h3>Enterprise-Grade Security</h3>
-          <p>Security-first architecture, regular audits, and compliance with international standards.</p>
-        </div>
-      </div>
+      <h2 class="reveal">Ready to Build Something Amazing?</h2>
+      <p class="reveal reveal-delay-1">Let's transform your vision into reality. Our team is ready to start.</p>
+      <a href="contact.html" class="btn btn-primary btn-lg btn-ripple reveal reveal-delay-2">Start Your Project →</a>
     </div>
   </section>
 
-  <!-- CTA Section -->
-  <section class="section cta-section glass">
-    <div class="container text-center">
-      <h2 class="scroll-reveal">Ready to Build Something Amazing?</h2>
-      <p class="text-secondary mb-3 scroll-reveal delay-100">
-        Let's transform your vision into reality. Get in touch with our team today.
-      </p>
-      <div class="scroll-reveal delay-200">
-        <a href="contact.html" class="btn btn-primary btn-large btn-ripple animate-glow-pulse">Get Started Now</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
+  <!-- FOOTER -->
   <footer class="footer">
     <div class="container">
-      <div class="footer-content">
-        <div class="footer-section">
-          <h4>Next Gen Innovations</h4>
-          <p class="text-secondary">
-            नेक्स्ट जेन इनोभेसनस् नेपाल<br>
-            Building the future with advanced IT solutions.
-          </p>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="logo/logo.svg" alt="Next Gen Innovations Nepal" style="height:40px;margin-bottom:20px;">
+          <p>नेक्स्ट जेन इनोभेसनस् नेपाल प्रा.लि.<br>Building Nepal's digital future — one innovation at a time.</p>
+          <p style="margin-top:16px;font-size:0.82rem;color:rgba(255,255,255,0.4);">📍 Kathmandu, Nepal</p>
         </div>
-
-        <div class="footer-section">
-          <h4>Quick Links</h4>
+        <div class="footer-col">
+          <h5>Company</h5>
           <ul>
             <li><a href="about.html">About Us</a></li>
             <li><a href="services.html">Services</a></li>
             <li><a href="portfolio.html">Portfolio</a></li>
+            <li><a href="technologies.html">Technologies</a></li>
             <li><a href="contact.html">Contact</a></li>
           </ul>
         </div>
-
-        <div class="footer-section">
-          <h4>Services</h4>
+        <div class="footer-col">
+          <h5>Services</h5>
           <ul>
+            <li><a href="services.html#fintech">FinTech Solutions</a></li>
             <li><a href="services.html#web">Web Development</a></li>
             <li><a href="services.html#mobile">Mobile Apps</a></li>
-            <li><a href="services.html#ai">AI Solutions</a></li>
+            <li><a href="services.html#ai">AI & ML</a></li>
             <li><a href="services.html#cloud">Cloud Services</a></li>
           </ul>
         </div>
-
-        <div class="footer-section">
-          <h4>Connect</h4>
+        <div class="footer-col">
+          <h5>Contact</h5>
           <ul>
             <li><a href="mailto:info@nextgennepal.com">info@nextgennepal.com</a></li>
-            <li><a href="tel:+9779800000000">+977 980-0000000</a></li>
+            <li><a href="tel:+9779800000000">+977 980-000-0000</a></li>
             <li><a href="#">LinkedIn</a></li>
             <li><a href="#">GitHub</a></li>
+            <li><a href="#">Facebook</a></li>
           </ul>
         </div>
       </div>
-
       <div class="footer-bottom">
-        <p>&copy; 2026 Next Gen Innovations Nepal. All rights reserved. | Built with 💚 in Nepal</p>
+        <p>© 2026 Next Gen Innovations Nepal Pvt. Ltd. All rights reserved. | Built with 💚 in Nepal</p>
+        <div class="footer-socials">
+          <a href="#" class="social-btn" aria-label="LinkedIn">in</a>
+          <a href="#" class="social-btn" aria-label="GitHub">GH</a>
+          <a href="#" class="social-btn" aria-label="Facebook">fb</a>
+        </div>
       </div>
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script src="js/main.js"></script>
   <script src="js/animations.js"></script>
-
 </body>
-
 </html>

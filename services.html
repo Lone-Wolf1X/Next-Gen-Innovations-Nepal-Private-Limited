@@ -1,358 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Next Gen Innovations Nepal Services - Web development, mobile apps, AI solutions, cloud services, and custom software development.">
-
-    <title>Our Services | Next Gen Innovations Nepal</title>
-
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/pages.css">
-    <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Next Gen Innovations Nepal — IT Services including FinTech, Web Development, Mobile Apps, AI, Cloud, and IT Research & Consulting.">
+  <title>Services | Next Gen Innovations Nepal</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="icon" href="logo/logo.svg" type="image/svg+xml">
 </head>
-
 <body>
 
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="logo">
-                <img src="assets/Logo.png" alt="Next Gen Innovations Nepal" class="logo-img">
-            </div>
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo"><img src="logo/logo.svg" alt="Next Gen Innovations Nepal"></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html" class="active">Services</a></li>
+        <li><a href="technologies.html">Technologies</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+        <li><a href="contact.html" class="nav-cta">Contact Us</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
 
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="services.html" class="active">Services</a></li>
-                <li><a href="technologies.html">Technologies</a></li>
-                <li><a href="portfolio.html">Portfolio</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
+  <section class="page-hero">
+    <div class="container">
+      <span class="section-eyebrow">What We Offer</span>
+      <h1 class="section-title">Our <span class="highlight">Services</span></h1>
+      <p class="section-subtitle" style="margin:16px auto 0;">
+        From FinTech platforms to AI research — we deliver enterprise-grade solutions at startup speed.
+      </p>
+    </div>
+  </section>
 
-            <div class="mobile-menu-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+  <!-- FINTECH -->
+  <section class="section" id="fintech">
+    <div class="container">
+      <span class="section-eyebrow reveal">🔥 Flagship</span>
+      <h2 class="section-title reveal reveal-delay-1">FinTech Solutions</h2>
+      <p class="section-subtitle reveal reveal-delay-2">Nepal's financial sector is transforming fast. We power that transformation with secure, scalable FinTech platforms built for NRB compliance.</p>
+      <div class="service-detail-grid">
+        <div class="service-detail-card reveal">
+          <div class="svc-icon-wrap">💳</div>
+          <h3>Digital Payment Systems</h3>
+          <p>e-Wallet platforms, QR payment gateways, merchant payment integration, UPI/SWIFT connections, and real-time transaction processing with full audit trails.</p>
+          <div class="service-tags">
+            <span class="service-tag">e-Wallet</span>
+            <span class="service-tag">QR Pay</span>
+            <span class="service-tag">Gateway API</span>
+            <span class="service-tag">eSewa</span>
+            <span class="service-tag">Khalti</span>
+          </div>
         </div>
-    </nav>
-
-    <!-- Page Hero -->
-    <section class="page-hero">
-        <div class="container">
-            <h1 class="animate-fade-in-down">Our <span class="text-gradient">Services</span></h1>
-            <p class="page-hero-subtitle animate-fade-in-up delay-200">
-                Advanced solutions for modern businesses
-            </p>
+        <div class="service-detail-card reveal reveal-delay-1">
+          <div class="svc-icon-wrap">🏦</div>
+          <h3>Digital Banking Platforms</h3>
+          <p>Internet banking, mobile banking apps, CBS/core banking integrations, loan origination & management systems, account management portals.</p>
+          <div class="service-tags">
+            <span class="service-tag">Internet Banking</span>
+            <span class="service-tag">CBS Integration</span>
+            <span class="service-tag">Loan Management</span>
+          </div>
         </div>
-    </section>
-
-    <!-- Services -->
-    <section class="section" id="web">
-        <div class="container">
-            <div class="service-detail scroll-reveal">
-                <div class="service-detail-header">
-                    <div class="service-detail-icon">💻</div>
-                    <div>
-                        <h2>Advanced Web & SaaS Development</h2>
-                        <p class="service-tagline">Scalable. Fast. Future-proof.</p>
-                    </div>
-                </div>
-
-                <div class="service-detail-content">
-                    <p class="service-intro">
-                        We build web applications that don't just work—they excel. From MVPs to enterprise-grade SaaS
-                        platforms, our solutions are engineered for performance, scalability, and user delight.
-                    </p>
-
-                    <div class="service-features">
-                        <h4>What We Deliver:</h4>
-                        <ul>
-                            <li><strong>Custom Web Applications:</strong> Tailored solutions built with React, Next.js,
-                                Vue.js</li>
-                            <li><strong>SaaS Platforms:</strong> Multi-tenant architecture, subscription management,
-                                analytics</li>
-                            <li><strong>Progressive Web Apps:</strong> Offline-first, app-like experiences on the web
-                            </li>
-                            <li><strong>E-commerce Solutions:</strong> High-converting online stores with payment
-                                integration</li>
-                            <li><strong>API Development:</strong> RESTful and GraphQL APIs for seamless integrations
-                            </li>
-                            <li><strong>Performance Optimization:</strong> Sub-second load times, SEO-ready,
-                                accessibility compliant</li>
-                        </ul>
-                    </div>
-
-                    <div class="service-tech">
-                        <strong>Tech Stack:</strong> React, Next.js, Node.js, TypeScript, PostgreSQL, Redis, AWS
-                    </div>
-                </div>
-            </div>
+        <div class="service-detail-card reveal reveal-delay-2">
+          <div class="svc-icon-wrap">🛡️</div>
+          <h3>Compliance & KYC Systems</h3>
+          <p>Automated KYC/AML workflows, NRB regulatory compliance modules, digital onboarding, identity verification, and compliance reporting dashboards.</p>
+          <div class="service-tags">
+            <span class="service-tag">KYC</span>
+            <span class="service-tag">AML</span>
+            <span class="service-tag">NRB Compliance</span>
+          </div>
         </div>
-    </section>
-
-    <section class="section" id="mobile" style="background: var(--bg-secondary);">
-        <div class="container">
-            <div class="service-detail scroll-reveal">
-                <div class="service-detail-header">
-                    <div class="service-detail-icon">📱</div>
-                    <div>
-                        <h2>Mobile App Development</h2>
-                        <p class="service-tagline">Native performance. Cross-platform efficiency.</p>
-                    </div>
-                </div>
-
-                <div class="service-detail-content">
-                    <p class="service-intro">
-                        Beautiful, performant mobile apps for iOS and Android. Whether you need native development or
-                        cross-platform solutions, we deliver apps that users love.
-                    </p>
-
-                    <div class="service-features">
-                        <h4>What We Deliver:</h4>
-                        <ul>
-                            <li><strong>Flutter Development:</strong> Single codebase, native performance on iOS and
-                                Android</li>
-                            <li><strong>React Native Apps:</strong> Leverage web expertise for mobile development</li>
-                            <li><strong>Native iOS & Android:</strong> Maximum performance for demanding applications
-                            </li>
-                            <li><strong>App Modernization:</strong> Upgrade legacy apps with modern frameworks</li>
-                            <li><strong>Backend Integration:</strong> Firebase, REST APIs, real-time databases</li>
-                            <li><strong>App Store Deployment:</strong> End-to-end publishing and maintenance</li>
-                        </ul>
-                    </div>
-
-                    <div class="service-tech">
-                        <strong>Tech Stack:</strong> Flutter, React Native, Swift, Kotlin, Firebase, Node.js
-                    </div>
-                </div>
-            </div>
+        <div class="service-detail-card reveal reveal-delay-3">
+          <div class="svc-icon-wrap">📊</div>
+          <h3>Financial Analytics & Reporting</h3>
+          <p>Real-time dashboards, regulatory reporting, risk modeling, transaction analytics, and AI-powered fraud detection systems.</p>
+          <div class="service-tags">
+            <span class="service-tag">Analytics</span>
+            <span class="service-tag">Fraud Detection</span>
+            <span class="service-tag">Reporting</span>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 
-    <section class="section" id="automation">
-        <div class="container">
-            <div class="service-detail scroll-reveal">
-                <div class="service-detail-header">
-                    <div class="service-detail-icon">⚙️</div>
-                    <div>
-                        <h2>Custom Software & Automation</h2>
-                        <p class="service-tagline">Automate. Optimize. Scale.</p>
-                    </div>
-                </div>
-
-                <div class="service-detail-content">
-                    <p class="service-intro">
-                        Stop doing manually what software can do better. We build custom tools and automation systems
-                        that save time, reduce errors, and scale your operations.
-                    </p>
-
-                    <div class="service-features">
-                        <h4>What We Deliver:</h4>
-                        <ul>
-                            <li><strong>Business Process Automation:</strong> Workflow automation, data processing,
-                                reporting</li>
-                            <li><strong>Custom CRM/ERP:</strong> Tailored systems that fit your exact needs</li>
-                            <li><strong>Integration Solutions:</strong> Connect disparate systems seamlessly</li>
-                            <li><strong>Data Migration:</strong> Safe, efficient transfer of critical business data</li>
-                            <li><strong>Desktop Applications:</strong> Cross-platform desktop software with Electron
-                            </li>
-                            <li><strong>Scripting & Tools:</strong> Python automation, batch processing, data pipelines
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="service-tech">
-                        <strong>Tech Stack:</strong> Python, Node.js, Electron, PostgreSQL, MongoDB, RabbitMQ
-                    </div>
-                </div>
-            </div>
+  <!-- IT SERVICES -->
+  <section class="section section-alt" id="web">
+    <div class="container">
+      <span class="section-eyebrow reveal">IT Services</span>
+      <h2 class="section-title reveal reveal-delay-1">Software Development</h2>
+      <div class="service-detail-grid">
+        <div class="service-detail-card reveal" id="web">
+          <div class="svc-icon-wrap">💻</div>
+          <h3>Web & SaaS Development</h3>
+          <p>Full-stack web applications, SaaS platforms, e-commerce, admin dashboards, and progressive web apps built with modern frameworks.</p>
+          <div class="service-tags">
+            <span class="service-tag">React</span>
+            <span class="service-tag">Next.js</span>
+            <span class="service-tag">Node.js</span>
+            <span class="service-tag">PostgreSQL</span>
+          </div>
         </div>
-    </section>
-
-    <section class="section" id="design" style="background: var(--bg-secondary);">
-        <div class="container">
-            <div class="service-detail scroll-reveal">
-                <div class="service-detail-header">
-                    <div class="service-detail-icon">🎨</div>
-                    <div>
-                        <h2>UI/UX & Product Design</h2>
-                        <p class="service-tagline">Design that converts. Experiences that delight.</p>
-                    </div>
-                </div>
-
-                <div class="service-detail-content">
-                    <p class="service-intro">
-                        Great software starts with great design. We create user interfaces that are not just beautiful,
-                        but intuitive, accessible, and conversion-optimized.
-                    </p>
-
-                    <div class="service-features">
-                        <h4>What We Deliver:</h4>
-                        <ul>
-                            <li><strong>UX Research & Strategy:</strong> User interviews, personas, journey mapping</li>
-                            <li><strong>UI Design:</strong> High-fidelity mockups, interactive prototypes</li>
-                            <li><strong>Design Systems:</strong> Scalable component libraries and style guides</li>
-                            <li><strong>Mobile App Design:</strong> iOS and Android design guidelines compliance</li>
-                            <li><strong>Web Design:</strong> Responsive, accessible, conversion-focused interfaces</li>
-                            <li><strong>Branding & Identity:</strong> Logos, color schemes, visual language</li>
-                        </ul>
-                    </div>
-
-                    <div class="service-tech">
-                        <strong>Tools:</strong> Figma, Adobe XD, Sketch, Principle, InVision
-                    </div>
-                </div>
-            </div>
+        <div class="service-detail-card reveal reveal-delay-1" id="mobile">
+          <div class="svc-icon-wrap">📱</div>
+          <h3>Mobile App Development</h3>
+          <p>Cross-platform and native mobile apps for Android and iOS. Flutter specialists delivering pixel-perfect UIs with smooth performance.</p>
+          <div class="service-tags">
+            <span class="service-tag">Flutter</span>
+            <span class="service-tag">React Native</span>
+            <span class="service-tag">iOS</span>
+            <span class="service-tag">Android</span>
+          </div>
         </div>
-    </section>
-
-    <section class="section" id="ai">
-        <div class="container">
-            <div class="service-detail scroll-reveal">
-                <div class="service-detail-header">
-                    <div class="service-detail-icon">🤖</div>
-                    <div>
-                        <h2>AI & Machine Learning Solutions</h2>
-                        <p class="service-tagline">Intelligence. Automation. Insights.</p>
-                    </div>
-                </div>
-
-                <div class="service-detail-content">
-                    <p class="service-intro">
-                        Harness the power of AI to unlock new capabilities. From predictive analytics to intelligent
-                        automation, we build AI solutions that deliver real business value.
-                    </p>
-
-                    <div class="service-features">
-                        <h4>What We Deliver:</h4>
-                        <ul>
-                            <li><strong>AI Integration:</strong> OpenAI, Claude, Gemini API integration</li>
-                            <li><strong>Custom ML Models:</strong> Predictive analytics, classification, clustering</li>
-                            <li><strong>Natural Language Processing:</strong> Chatbots, sentiment analysis, text
-                                processing</li>
-                            <li><strong>Computer Vision:</strong> Image recognition, object detection, OCR</li>
-                            <li><strong>Recommendation Systems:</strong> Personalized content and product
-                                recommendations</li>
-                            <li><strong>Data Analytics:</strong> Business intelligence, dashboards, insights</li>
-                        </ul>
-                    </div>
-
-                    <div class="service-tech">
-                        <strong>Tech Stack:</strong> Python, TensorFlow, PyTorch, OpenAI API, Pandas, Scikit-learn
-                    </div>
-                </div>
-            </div>
+        <div class="service-detail-card reveal reveal-delay-2" id="ai">
+          <div class="svc-icon-wrap">🤖</div>
+          <h3>AI & Machine Learning</h3>
+          <p>Custom ML models, predictive analytics, NLP systems, computer vision, chatbots, and data science pipelines integrated into your products.</p>
+          <div class="service-tags">
+            <span class="service-tag">TensorFlow</span>
+            <span class="service-tag">Python</span>
+            <span class="service-tag">NLP</span>
+            <span class="service-tag">PyTorch</span>
+          </div>
         </div>
-    </section>
-
-    <section class="section" id="cloud" style="background: var(--bg-secondary);">
-        <div class="container">
-            <div class="service-detail scroll-reveal">
-                <div class="service-detail-header">
-                    <div class="service-detail-icon">☁️</div>
-                    <div>
-                        <h2>Cloud & Digital Solutions</h2>
-                        <p class="service-tagline">Scalable. Secure. Always available.</p>
-                    </div>
-                </div>
-
-                <div class="service-detail-content">
-                    <p class="service-intro">
-                        Move to the cloud with confidence. We design, deploy, and manage cloud infrastructure that
-                        scales with your business while keeping costs optimized.
-                    </p>
-
-                    <div class="service-features">
-                        <h4>What We Deliver:</h4>
-                        <ul>
-                            <li><strong>Cloud Migration:</strong> Seamless transition from on-premise to cloud</li>
-                            <li><strong>AWS Solutions:</strong> EC2, Lambda, S3, RDS, CloudFront, and more</li>
-                            <li><strong>Firebase Development:</strong> Real-time databases, authentication, hosting</li>
-                            <li><strong>DevOps & CI/CD:</strong> Automated deployments, monitoring, scaling</li>
-                            <li><strong>Serverless Architecture:</strong> Cost-effective, auto-scaling solutions</li>
-                            <li><strong>Cloud Security:</strong> IAM, encryption, compliance, backup strategies</li>
-                        </ul>
-                    </div>
-
-                    <div class="service-tech">
-                        <strong>Tech Stack:</strong> AWS, Firebase, Docker, Kubernetes, GitHub Actions, Terraform
-                    </div>
-                </div>
-            </div>
+        <div class="service-detail-card reveal reveal-delay-3" id="cloud">
+          <div class="svc-icon-wrap">☁️</div>
+          <h3>Cloud & Infrastructure</h3>
+          <p>AWS & Firebase deployment, containerization with Docker, CI/CD pipelines, DevOps automation, and scalable microservices architecture.</p>
+          <div class="service-tags">
+            <span class="service-tag">AWS</span>
+            <span class="service-tag">Firebase</span>
+            <span class="service-tag">Docker</span>
+            <span class="service-tag">CI/CD</span>
+          </div>
         </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="section cta-section glass">
-        <div class="container text-center">
-            <h2 class="scroll-reveal">Ready to Get Started?</h2>
-            <p class="text-secondary mb-3 scroll-reveal delay-100">
-                Let's discuss your project and find the perfect solution.
-            </p>
-            <div class="scroll-reveal delay-200">
-                <a href="contact.html" class="btn btn-primary btn-large btn-ripple">Contact Us Today</a>
-            </div>
+        <div class="service-detail-card reveal">
+          <div class="svc-icon-wrap">🎨</div>
+          <h3>UI/UX & Product Design</h3>
+          <p>User-centered design — wireframes, high-fidelity prototypes, design systems, and usability testing that converts visitors to customers.</p>
+          <div class="service-tags">
+            <span class="service-tag">Figma</span>
+            <span class="service-tag">Design System</span>
+            <span class="service-tag">Prototyping</span>
+          </div>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Next Gen Innovations</h4>
-                    <p class="text-secondary">
-                        नेक्स्ट जेन इनोभेसनस् नेपाल<br>
-                        Building the future with advanced IT solutions.
-                    </p>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="services.html">Services</a></li>
-                        <li><a href="portfolio.html">Portfolio</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Services</h4>
-                    <ul>
-                        <li><a href="services.html#web">Web Development</a></li>
-                        <li><a href="services.html#mobile">Mobile Apps</a></li>
-                        <li><a href="services.html#ai">AI Solutions</a></li>
-                        <li><a href="services.html#cloud">Cloud Services</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Connect</h4>
-                    <ul>
-                        <li><a href="mailto:info@nextgennepal.com">info@nextgennepal.com</a></li>
-                        <li><a href="tel:+9779800000000">+977 980-0000000</a></li>
-                        <li><a href="#">LinkedIn</a></li>
-                        <li><a href="#">GitHub</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p>&copy; 2026 Next Gen Innovations Nepal. All rights reserved. | Built with 💚 in Nepal</p>
-            </div>
+        <div class="service-detail-card reveal reveal-delay-1">
+          <div class="svc-icon-wrap">🔬</div>
+          <h3>IT Research & Consulting</h3>
+          <p>Technology feasibility studies, digital transformation roadmaps, architecture consulting, and IT strategy for enterprises and startups.</p>
+          <div class="service-tags">
+            <span class="service-tag">Strategy</span>
+            <span class="service-tag">Architecture</span>
+            <span class="service-tag">Research</span>
+          </div>
         </div>
-    </footer>
+      </div>
+    </div>
+  </section>
 
-    <script src="js/main.js"></script>
-    <script src="js/animations.js"></script>
+  <section class="cta-banner">
+    <div class="container">
+      <h2 class="reveal">Need a Custom Solution?</h2>
+      <p class="reveal reveal-delay-1">Every business is unique. Let's craft the perfect solution for yours.</p>
+      <a href="contact.html" class="btn btn-primary btn-lg btn-ripple reveal reveal-delay-2">Talk to Our Team →</a>
+    </div>
+  </section>
 
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="logo/logo.svg" alt="Next Gen Innovations Nepal">
+          <p>नेक्स्ट जेन इनोभेसनस् नेपाल प्रा.लि.<br>Building Nepal's digital future.</p>
+        </div>
+        <div class="footer-col"><h5>Company</h5><ul><li><a href="about.html">About Us</a></li><li><a href="services.html">Services</a></li><li><a href="portfolio.html">Portfolio</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+        <div class="footer-col"><h5>Services</h5><ul><li><a href="#fintech">FinTech</a></li><li><a href="#web">Web Dev</a></li><li><a href="#mobile">Mobile Apps</a></li><li><a href="#ai">AI & ML</a></li></ul></div>
+        <div class="footer-col"><h5>Contact</h5><ul><li><a href="mailto:info@nextgennepal.com">info@nextgennepal.com</a></li><li><a href="tel:+9779800000000">+977 980-000-0000</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Next Gen Innovations Nepal Pvt. Ltd. | Built with 💚 in Nepal</p>
+        <div class="footer-socials"><a href="#" class="social-btn">in</a><a href="#" class="social-btn">GH</a><a href="#" class="social-btn">fb</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/animations.js"></script>
 </body>
-
 </html>

@@ -1,400 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Technologies we use at Next Gen Innovations Nepal - Modern tech stack for building world-class software.">
-
-    <title>Technologies | Next Gen Innovations Nepal</title>
-
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/pages.css">
-    <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Technologies used by Next Gen Innovations Nepal — Frontend, Backend, Mobile, Cloud, AI, and FinTech tech stack.">
+  <title>Technologies | Next Gen Innovations Nepal</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="icon" href="logo/logo.svg" type="image/svg+xml">
 </head>
-
 <body>
 
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="logo">
-                <img src="assets/Logo.png" alt="Next Gen Innovations Nepal" class="logo-img">
-            </div>
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo"><img src="logo/logo.svg" alt="Next Gen Innovations Nepal"></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="technologies.html" class="active">Technologies</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+        <li><a href="contact.html" class="nav-cta">Contact Us</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
 
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="services.html">Services</a></li>
-                <li><a href="technologies.html" class="active">Technologies</a></li>
-                <li><a href="portfolio.html">Portfolio</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
+  <section class="page-hero">
+    <div class="container">
+      <span class="section-eyebrow">Our Stack</span>
+      <h1 class="section-title">Technologies We <span class="highlight">Master</span></h1>
+      <p class="section-subtitle" style="margin:16px auto 0;">
+        Modern stack. Proven results. Future-ready solutions that scale.
+      </p>
+    </div>
+  </section>
 
-            <div class="mobile-menu-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+  <section class="section">
+    <div class="container">
+
+      <div class="tech-cat-block reveal">
+        <div class="tech-cat-header">
+          <div class="tech-cat-icon">🖥️</div>
+          <h3>Frontend</h3>
         </div>
-    </nav>
-
-    <!-- Page Hero -->
-    <section class="page-hero">
-        <div class="container">
-            <h1 class="animate-fade-in-down">Our <span class="text-gradient">Tech Stack</span></h1>
-            <p class="page-hero-subtitle animate-fade-in-up delay-200">
-                Modern tools. Proven frameworks. Future-ready solutions.
-            </p>
+        <div class="tech-pill-grid">
+          <span class="tech-pill">React</span>
+          <span class="tech-pill">Next.js</span>
+          <span class="tech-pill">Vue.js</span>
+          <span class="tech-pill">TypeScript</span>
+          <span class="tech-pill">JavaScript (ES2024)</span>
+          <span class="tech-pill">HTML5 / CSS3</span>
+          <span class="tech-pill">Tailwind CSS</span>
+          <span class="tech-pill">Redux</span>
+          <span class="tech-pill">GraphQL (Client)</span>
         </div>
-    </section>
+      </div>
 
-    <!-- Tech Philosophy -->
-    <section class="section">
-        <div class="container text-center">
-            <div class="tech-philosophy scroll-reveal">
-                <h2 class="text-gradient mb-3">We Don't Chase Hype. We Choose What Works.</h2>
-                <p class="tech-philosophy-text">
-                    Our technology choices are driven by three principles: <strong>performance</strong>,
-                    <strong>scalability</strong>, and <strong>developer experience</strong>. We use battle-tested tools
-                    that have proven themselves in production at scale, while staying current with innovations that
-                    genuinely improve our craft.
-                </p>
-            </div>
+      <div class="tech-cat-block reveal reveal-delay-1">
+        <div class="tech-cat-header">
+          <div class="tech-cat-icon">⚙️</div>
+          <h3>Backend</h3>
         </div>
-    </section>
-
-    <!-- Frontend Technologies -->
-    <section class="section tech-section">
-        <div class="container">
-            <h2 class="section-title scroll-reveal">Frontend Development</h2>
-
-            <div class="grid grid-3">
-                <div class="tech-card glass scroll-reveal hover-lift">
-                    <h3>React</h3>
-                    <p>Component-based architecture for building dynamic, interactive user interfaces. Our go-to for
-                        complex web applications.</p>
-                    <div class="tech-badge">Primary</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-100">
-                    <h3>Next.js</h3>
-                    <p>React framework with SSR, SSG, and ISR. Perfect for SEO-critical applications and
-                        high-performance websites.</p>
-                    <div class="tech-badge">Primary</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-200">
-                    <h3>Vue.js</h3>
-                    <p>Progressive framework for building user interfaces. Lightweight and flexible for various project
-                        sizes.</p>
-                    <div class="tech-badge">Secondary</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-300">
-                    <h3>TypeScript</h3>
-                    <p>Type-safe JavaScript for catching errors early and improving code maintainability at scale.</p>
-                    <div class="tech-badge">Primary</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-400">
-                    <h3>Tailwind CSS</h3>
-                    <p>Utility-first CSS framework for rapid UI development with consistent design systems.</p>
-                    <div class="tech-badge">Preferred</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-500">
-                    <h3>Vite</h3>
-                    <p>Lightning-fast build tool that significantly improves developer experience and build times.</p>
-                    <div class="tech-badge">Build Tool</div>
-                </div>
-            </div>
+        <div class="tech-pill-grid">
+          <span class="tech-pill">Node.js</span>
+          <span class="tech-pill">Express.js</span>
+          <span class="tech-pill">Python</span>
+          <span class="tech-pill">Django</span>
+          <span class="tech-pill">FastAPI</span>
+          <span class="tech-pill">PHP</span>
+          <span class="tech-pill">Laravel</span>
+          <span class="tech-pill">REST API</span>
+          <span class="tech-pill">GraphQL</span>
+          <span class="tech-pill">WebSocket</span>
         </div>
-    </section>
+      </div>
 
-    <!-- Backend Technologies -->
-    <section class="section tech-section" style="background: var(--bg-secondary);">
-        <div class="container">
-            <h2 class="section-title scroll-reveal">Backend Development</h2>
-
-            <div class="grid grid-3">
-                <div class="tech-card glass scroll-reveal hover-lift">
-                    <h3>Node.js</h3>
-                    <p>JavaScript runtime for building scalable network applications. Excellent for real-time features
-                        and APIs.</p>
-                    <div class="tech-badge">Primary</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-100">
-                    <h3>Express.js</h3>
-                    <p>Minimalist web framework for Node.js. Fast, unopinionated, and perfect for RESTful APIs.</p>
-                    <div class="tech-badge">Framework</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-200">
-                    <h3>Python</h3>
-                    <p>Versatile language for backend services, data processing, automation, and AI/ML applications.</p>
-                    <div class="tech-badge">Primary</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-300">
-                    <h3>FastAPI</h3>
-                    <p>Modern Python framework for building APIs. High performance with automatic documentation.</p>
-                    <div class="tech-badge">Framework</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-400">
-                    <h3>PHP</h3>
-                    <p>Server-side scripting for web development. Laravel framework for elegant, expressive syntax.</p>
-                    <div class="tech-badge">Secondary</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-500">
-                    <h3>GraphQL</h3>
-                    <p>Query language for APIs providing flexible, efficient data fetching for modern applications.</p>
-                    <div class="tech-badge">API Layer</div>
-                </div>
-            </div>
+      <div class="tech-cat-block reveal reveal-delay-2">
+        <div class="tech-cat-header">
+          <div class="tech-cat-icon">📱</div>
+          <h3>Mobile</h3>
         </div>
-    </section>
-
-    <!-- Mobile Technologies -->
-    <section class="section tech-section">
-        <div class="container">
-            <h2 class="section-title scroll-reveal">Mobile Development</h2>
-
-            <div class="grid grid-3">
-                <div class="tech-card glass scroll-reveal hover-lift">
-                    <h3>Flutter</h3>
-                    <p>Google's UI toolkit for building natively compiled applications from a single codebase.</p>
-                    <div class="tech-badge">Primary</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-100">
-                    <h3>React Native</h3>
-                    <p>Build mobile apps using React. Share code between iOS and Android while maintaining native feel.
-                    </p>
-                    <div class="tech-badge">Primary</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-200">
-                    <h3>Swift</h3>
-                    <p>Native iOS development for maximum performance and access to latest Apple features.</p>
-                    <div class="tech-badge">Native iOS</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-300">
-                    <h3>Kotlin</h3>
-                    <p>Modern language for Android development. Concise, safe, and fully interoperable with Java.</p>
-                    <div class="tech-badge">Native Android</div>
-                </div>
-            </div>
+        <div class="tech-pill-grid">
+          <span class="tech-pill">Flutter</span>
+          <span class="tech-pill">Dart</span>
+          <span class="tech-pill">React Native</span>
+          <span class="tech-pill">Android (Kotlin)</span>
+          <span class="tech-pill">iOS (Swift)</span>
+          <span class="tech-pill">Firebase FCM</span>
+          <span class="tech-pill">Stripe SDK</span>
         </div>
-    </section>
+      </div>
 
-    <!-- Database & Storage -->
-    <section class="section tech-section" style="background: var(--bg-secondary);">
-        <div class="container">
-            <h2 class="section-title scroll-reveal">Databases & Storage</h2>
-
-            <div class="grid grid-3">
-                <div class="tech-card glass scroll-reveal hover-lift">
-                    <h3>PostgreSQL</h3>
-                    <p>Advanced open-source relational database. ACID compliant with powerful features.</p>
-                    <div class="tech-badge">Primary SQL</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-100">
-                    <h3>MongoDB</h3>
-                    <p>Document-oriented NoSQL database. Flexible schema for rapidly evolving applications.</p>
-                    <div class="tech-badge">Primary NoSQL</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-200">
-                    <h3>Redis</h3>
-                    <p>In-memory data structure store. Perfect for caching, sessions, and real-time analytics.</p>
-                    <div class="tech-badge">Cache/Queue</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-300">
-                    <h3>MySQL</h3>
-                    <p>Reliable relational database management system. Widely used and well-documented.</p>
-                    <div class="tech-badge">Secondary SQL</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-400">
-                    <h3>Firebase Firestore</h3>
-                    <p>Cloud-hosted NoSQL database with real-time synchronization and offline support.</p>
-                    <div class="tech-badge">Real-time</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-500">
-                    <h3>Amazon S3</h3>
-                    <p>Object storage service for scalable, secure file storage and content delivery.</p>
-                    <div class="tech-badge">Object Storage</div>
-                </div>
-            </div>
+      <div class="tech-cat-block reveal">
+        <div class="tech-cat-header">
+          <div class="tech-cat-icon">🗄️</div>
+          <h3>Databases</h3>
         </div>
-    </section>
-
-    <!-- Cloud & DevOps -->
-    <section class="section tech-section">
-        <div class="container">
-            <h2 class="section-title scroll-reveal">Cloud & DevOps</h2>
-
-            <div class="grid grid-3">
-                <div class="tech-card glass scroll-reveal hover-lift">
-                    <h3>AWS</h3>
-                    <p>Comprehensive cloud platform. EC2, Lambda, S3, RDS, CloudFront, and more.</p>
-                    <div class="tech-badge">Primary Cloud</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-100">
-                    <h3>Firebase</h3>
-                    <p>Google's app development platform. Authentication, hosting, analytics, and databases.</p>
-                    <div class="tech-badge">BaaS</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-200">
-                    <h3>Docker</h3>
-                    <p>Containerization platform for consistent development and deployment environments.</p>
-                    <div class="tech-badge">Containers</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-300">
-                    <h3>Kubernetes</h3>
-                    <p>Container orchestration for automating deployment, scaling, and management.</p>
-                    <div class="tech-badge">Orchestration</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-400">
-                    <h3>GitHub Actions</h3>
-                    <p>CI/CD automation directly in GitHub. Automated testing, building, and deployment.</p>
-                    <div class="tech-badge">CI/CD</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-500">
-                    <h3>Terraform</h3>
-                    <p>Infrastructure as code for provisioning and managing cloud resources.</p>
-                    <div class="tech-badge">IaC</div>
-                </div>
-            </div>
+        <div class="tech-pill-grid">
+          <span class="tech-pill">PostgreSQL</span>
+          <span class="tech-pill">MySQL</span>
+          <span class="tech-pill">MongoDB</span>
+          <span class="tech-pill">Redis</span>
+          <span class="tech-pill">Firebase Firestore</span>
+          <span class="tech-pill">SQLite</span>
+          <span class="tech-pill">Elasticsearch</span>
+          <span class="tech-pill">Prisma ORM</span>
         </div>
-    </section>
+      </div>
 
-    <!-- AI & ML -->
-    <section class="section tech-section" style="background: var(--bg-secondary);">
-        <div class="container">
-            <h2 class="section-title scroll-reveal">AI & Machine Learning</h2>
-
-            <div class="grid grid-3">
-                <div class="tech-card glass scroll-reveal hover-lift">
-                    <h3>OpenAI API</h3>
-                    <p>GPT models for natural language processing, content generation, and intelligent features.</p>
-                    <div class="tech-badge">LLM</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-100">
-                    <h3>TensorFlow</h3>
-                    <p>Open-source machine learning framework for training and deploying ML models.</p>
-                    <div class="tech-badge">ML Framework</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-200">
-                    <h3>PyTorch</h3>
-                    <p>Deep learning framework with dynamic computation graphs and strong GPU acceleration.</p>
-                    <div class="tech-badge">Deep Learning</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-300">
-                    <h3>Scikit-learn</h3>
-                    <p>Machine learning library for classification, regression, and clustering algorithms.</p>
-                    <div class="tech-badge">ML Library</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-400">
-                    <h3>Pandas</h3>
-                    <p>Data manipulation and analysis library. Essential for data preprocessing and exploration.</p>
-                    <div class="tech-badge">Data Analysis</div>
-                </div>
-
-                <div class="tech-card glass scroll-reveal hover-lift delay-500">
-                    <h3>Hugging Face</h3>
-                    <p>Transformers library for state-of-the-art NLP models and pre-trained models.</p>
-                    <div class="tech-badge">NLP</div>
-                </div>
-            </div>
+      <div class="tech-cat-block reveal reveal-delay-1">
+        <div class="tech-cat-header">
+          <div class="tech-cat-icon">☁️</div>
+          <h3>Cloud & DevOps</h3>
         </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="section cta-section glass">
-        <div class="container text-center">
-            <h2 class="scroll-reveal">Let's Build With The Best Tools</h2>
-            <p class="text-secondary mb-3 scroll-reveal delay-100">
-                Ready to leverage modern technology for your project?
-            </p>
-            <div class="scroll-reveal delay-200">
-                <a href="contact.html" class="btn btn-primary btn-large btn-ripple">Start Your Project</a>
-            </div>
+        <div class="tech-pill-grid">
+          <span class="tech-pill">AWS (EC2, S3, Lambda)</span>
+          <span class="tech-pill">Firebase</span>
+          <span class="tech-pill">Google Cloud</span>
+          <span class="tech-pill">Docker</span>
+          <span class="tech-pill">Kubernetes</span>
+          <span class="tech-pill">GitHub Actions</span>
+          <span class="tech-pill">Nginx</span>
+          <span class="tech-pill">Vercel</span>
+          <span class="tech-pill">Cloudflare</span>
         </div>
-    </section>
+      </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Next Gen Innovations</h4>
-                    <p class="text-secondary">
-                        नेक्स्ट जेन इनोभेसनस् नेपाल<br>
-                        Building the future with advanced IT solutions.
-                    </p>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="services.html">Services</a></li>
-                        <li><a href="portfolio.html">Portfolio</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Services</h4>
-                    <ul>
-                        <li><a href="services.html#web">Web Development</a></li>
-                        <li><a href="services.html#mobile">Mobile Apps</a></li>
-                        <li><a href="services.html#ai">AI Solutions</a></li>
-                        <li><a href="services.html#cloud">Cloud Services</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-section">
-                    <h4>Connect</h4>
-                    <ul>
-                        <li><a href="mailto:info@nextgennepal.com">info@nextgennepal.com</a></li>
-                        <li><a href="tel:+9779800000000">+977 980-0000000</a></li>
-                        <li><a href="#">LinkedIn</a></li>
-                        <li><a href="#">GitHub</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p>&copy; 2026 Next Gen Innovations Nepal. All rights reserved. | Built with 💚 in Nepal</p>
-            </div>
+      <div class="tech-cat-block reveal reveal-delay-2">
+        <div class="tech-cat-header">
+          <div class="tech-cat-icon">🤖</div>
+          <h3>AI & Data Science</h3>
         </div>
-    </footer>
+        <div class="tech-pill-grid">
+          <span class="tech-pill">TensorFlow</span>
+          <span class="tech-pill">PyTorch</span>
+          <span class="tech-pill">Scikit-learn</span>
+          <span class="tech-pill">Pandas</span>
+          <span class="tech-pill">OpenAI API</span>
+          <span class="tech-pill">LangChain</span>
+          <span class="tech-pill">Hugging Face</span>
+          <span class="tech-pill">Jupyter</span>
+          <span class="tech-pill">Power BI</span>
+        </div>
+      </div>
 
-    <script src="js/main.js"></script>
-    <script src="js/animations.js"></script>
+      <div class="tech-cat-block reveal">
+        <div class="tech-cat-header">
+          <div class="tech-cat-icon">💳</div>
+          <h3>FinTech & Payments</h3>
+        </div>
+        <div class="tech-pill-grid">
+          <span class="tech-pill">eSewa API</span>
+          <span class="tech-pill">Khalti SDK</span>
+          <span class="tech-pill">ConnectIPS</span>
+          <span class="tech-pill">Stripe</span>
+          <span class="tech-pill">Razorpay</span>
+          <span class="tech-pill">NRB Standards</span>
+          <span class="tech-pill">ISO 20022</span>
+          <span class="tech-pill">KYC/AML Tools</span>
+        </div>
+      </div>
 
+    </div>
+  </section>
+
+  <section class="cta-banner">
+    <div class="container">
+      <h2 class="reveal">Ready to Leverage These Technologies?</h2>
+      <p class="reveal reveal-delay-1">Our expert team is ready to build your next great product.</p>
+      <a href="contact.html" class="btn btn-primary btn-lg btn-ripple reveal reveal-delay-2">Start Building →</a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand"><img src="logo/logo.svg" alt="Next Gen Innovations Nepal"><p>Building Nepal's digital future.</p></div>
+        <div class="footer-col"><h5>Company</h5><ul><li><a href="about.html">About Us</a></li><li><a href="services.html">Services</a></li><li><a href="portfolio.html">Portfolio</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+        <div class="footer-col"><h5>Services</h5><ul><li><a href="services.html#fintech">FinTech</a></li><li><a href="services.html#web">Web Dev</a></li><li><a href="services.html#mobile">Mobile</a></li><li><a href="services.html#ai">AI & ML</a></li></ul></div>
+        <div class="footer-col"><h5>Contact</h5><ul><li><a href="mailto:info@nextgennepal.com">info@nextgennepal.com</a></li><li><a href="tel:+9779800000000">+977 980-000-0000</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Next Gen Innovations Nepal Pvt. Ltd. | Built with 💚 in Nepal</p>
+        <div class="footer-socials"><a href="#" class="social-btn">in</a><a href="#" class="social-btn">GH</a><a href="#" class="social-btn">fb</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/animations.js"></script>
 </body>
-
 </html>
