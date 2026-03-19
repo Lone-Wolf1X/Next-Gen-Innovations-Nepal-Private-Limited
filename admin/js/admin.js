@@ -137,7 +137,8 @@ function saveNotice() {
 
 // Terms logic
 function renderTerms(data) {
-    document.getElementById('termsTitle').value = data.title;
+    if (!data || !data.sections) return; // Guard for empty Firestore doc
+    document.getElementById('termsTitle').value = data.title || '';
     const list = document.getElementById('termsSectionsList');
     list.innerHTML = '';
     data.sections.forEach(s => {

@@ -61,10 +61,10 @@ async function loadTerms() {
     if (!container) return;
 
     const terms = await fetchWebData('terms');
-    if (!terms) return;
+    if (!terms || !terms.sections) return;
 
-    document.getElementById('termsHeaderTitle').textContent = terms.title;
-    document.getElementById('lastUpdated').textContent = `Last Updated: ${terms.lastUpdated}`;
+    document.getElementById('termsHeaderTitle').textContent = terms.title || 'Terms & Conditions';
+    document.getElementById('lastUpdated').textContent = `Last Updated: ${terms.lastUpdated || ''}`;
 
     container.innerHTML = terms.sections.map(s => `
         <div class="terms-section">
