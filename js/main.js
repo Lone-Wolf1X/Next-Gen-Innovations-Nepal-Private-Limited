@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
       logoImg.style.display = 'none';
       const span = document.createElement('span');
       span.textContent = 'NEXT GEN';
-      span.style.cssText = 'font-family:Outfit,sans-serif;font-weight:900;color:#0F1C3F;font-size:1.2rem;letter-spacing:1px;';
+      span.style.cssText = 'font-family:Outfit,sans-serif;font-weight:900;color:#FFFFFF;font-size:1.2rem;letter-spacing:1px;';
       logoImg.parentNode.appendChild(span);
     });
   }

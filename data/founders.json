@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "Yuvraj Paswan",
+    "role": "Founder",
+    "avatar": "YP",
+    "bio": "Visionary entrepreneur with a passion for leveraging technology to solve real-world problems in Nepal.",
+    "color": "linear-gradient(135deg,#0F1C3F,#1A348A)",
+    "tag": "Visionary Leader"
+  },
+  {
+    "id": 2,
+    "name": "Abhiseehk Kumar Paswan",
+    "role": "Senior Developer & CEO",
+    "avatar": "AK",
+    "bio": "Full-stack architect and tech lead driving engineering excellence and company strategy.",
+    "color": "linear-gradient(135deg,#1A348A,#2a4bc4)",
+    "tag": "Full-Stack Expert"
+  },
+  {
+    "id": 3,
+    "name": "Bidur Pasman",
+    "role": "Developer",
+    "avatar": "BP",
+    "bio": "Backend specialist building robust, scalable server infrastructure and API layers.",
+    "color": "linear-gradient(135deg,#00C9B1,#00aaa0)",
+    "tag": "Backend Specialist"
+  },
+  {
+    "id": 4,
+    "name": "Basu Pasman",
+    "role": "Developer",
+    "avatar": "BP",
+    "bio": "Mobile & UI developer crafting beautiful, intuitive user experiences across platforms.",
+    "color": "linear-gradient(135deg,#2a4bc4,#00C9B1)",
+    "tag": "Mobile & UI Dev"
+  }
+]

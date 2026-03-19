@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Careers | Next Gen Innovations Nepal</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="icon" href="logo/logo.svg" type="image/svg+xml">
+  <style>
+    .job-card-web {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 16px;
+        padding: 32px;
+        margin-bottom: 24px;
+        transition: transform 0.3s;
+    }
+    .job-card-web:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent-primary);
+    }
+    .job-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+    .job-badge {
+        background: var(--accent-primary);
+        color: #000;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+    .job-meta {
+        color: #888;
+        font-size: 0.9rem;
+        margin-bottom: 16px;
+    }
+    .job-desc {
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+    .job-requirements ul {
+        list-style: none;
+        padding: 0;
+        margin: 12px 0 24px 0;
+    }
+    .job-requirements li {
+        position: relative;
+        padding-left: 20px;
+        margin-bottom: 8px;
+        color: #ccc;
+    }
+    .job-requirements li::before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: var(--accent-primary);
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-logo"><img src="logo/logo.svg" alt="Next Gen Innovations Nepal"></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="technologies.html">Technologies</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+        <li><a href="contact.html" class="nav-cta">Contact Us</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <section class="page-hero">
+    <div class="container">
+      <span class="section-eyebrow">Join Our Team</span>
+      <h1 class="section-title">Build the <span class="highlight">Future</span> With Us</h1>
+      <p class="section-subtitle" style="margin-top:16px;">
+        We are always looking for passionate people who want to make a real impact in Nepal's tech ecosystem.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div id="careersContainer" class="careers-grid">
+        <!-- Dynamically loaded -->
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="logo/logo.svg" alt="Next Gen Innovations Nepal">
+          <p>नेक्स्ट जेन इनोभेसनस् नेपाल प्रा.लि.<br>Building Nepal's digital future — one innovation at a time.</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Next Gen Innovations Nepal Pvt. Ltd. | Built with 💚 in Nepal</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/data-loader.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "title": "Senior Full Stack Developer",
+    "department": "Engineering",
+    "location": "Kathmandu, Nepal (Remote/On-site)",
+    "type": "Full-time",
+    "description": "We are looking for an experienced developer to lead our React and Node.js projects.",
+    "requirements": ["5+ years experience", "Strong React/Next.js skills", "Database management"],
+    "status": "open"
+  },
+  {
+    "id": 2,
+    "title": "UI/UX Designer",
+    "department": "Design",
+    "location": "Kathmandu, Nepal",
+    "type": "Contract",
+    "description": "Craft beautiful and intuitive user experiences for our FinTech clients.",
+    "requirements": ["Figma mastery", "Understanding of modern UI trends", "Portfolio required"],
+    "status": "open"
+  }
+]

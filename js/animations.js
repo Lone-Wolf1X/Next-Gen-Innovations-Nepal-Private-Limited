@@ -100,12 +100,37 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', init);
   }
 
-  /* ── STAGGER CHILDREN ────────────────────────────────── */
-  document.querySelectorAll('[data-stagger]').forEach(parent => {
-    const delay = parseFloat(parent.dataset.stagger) || 0.1;
-    parent.children && Array.from(parent.children).forEach((child, i) => {
-      child.style.animationDelay = (i * delay) + 's';
-    });
-  });
+  /* ── SCROLL REVEAL ────────────────────────────────────── */
+  window.initializeScrollAnimations = function() {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
 
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal').forEach(el => {
+      observer.observe(el);
+    });
+  };
+
+  /* ── STAGGER CHILDREN ────────────────────────────────── */
+  window.initializeStagger = function() {
+    document.querySelectorAll('[data-stagger]').forEach(parent => {
+      const delay = parseFloat(parent.dataset.stagger) || 0.1;
+      parent.children && Array.from(parent.children).forEach((child, i) => {
+        child.style.animationDelay = (i * delay) + 's';
+      });
+    });
+  };
+
+  initializeScrollAnimations();
+  initializeStagger();
 });

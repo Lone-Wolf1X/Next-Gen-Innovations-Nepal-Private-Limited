@@ -1,0 +1,26 @@
+{
+  "name": "next-gen",
+  "version": "1.0.0",
+  "description": "**Advanced IT Solutions | Building the Future with Nepali Talent**",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lone-Wolf1X/Next-Gen-Innovations-Nepal-Private-Limited.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Lone-Wolf1X/Next-Gen-Innovations-Nepal-Private-Limited/issues"
+  },
+  "homepage": "https://github.com/Lone-Wolf1X/Next-Gen-Innovations-Nepal-Private-Limited#readme",
+  "dependencies": {
+    "body-parser": "^2.2.2",
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
+}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Next Gen Innovations</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+    <header class="admin-header">
+        <div class="container container-flex">
+            <h1 class="admin-title">Admin Dashboard</h1>
+            <div id="loginSection" class="login-section">
+                <input type="password" id="adminPassword" placeholder="Enter Password">
+                <button onclick="login()" class="btn btn-primary btn-sm">Sign In</button>
+            </div>
+            <div id="adminNav" class="admin-nav" style="display:none;">
+                <span id="loginStatus">Logged In</span>
+                <button onclick="logout()" class="btn btn-outline btn-sm">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <main id="adminMain" class="container" style="display:none;">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('founders')">Founders</button>
+            <button class="tab-btn" onclick="showTab('notices')">Notice Board</button>
+            <button class="tab-btn" onclick="showTab('terms')">Terms & Conditions</button>
+            <button class="tab-btn" onclick="showTab('careers')">Careers</button>
+        </div>
+
+        <!-- FOUNDERS SECTION -->
+        <section id="foundersTab" class="admin-tab">
+            <div class="tab-header">
+                <h2>Manage Founders</h2>
+                <button onclick="saveFounders()" class="btn btn-teal">Save Changes</button>
+            </div>
+            <div id="foundersList" class="edit-grid"></div>
+        </section>
+
+        <!-- NOTICE SECTION -->
+        <section id="noticesTab" class="admin-tab" style="display:none;">
+            <div class="tab-header">
+                <h2>Banner Notice</h2>
+                <button onclick="saveNotice()" class="btn btn-teal">Save Changes</button>
+            </div>
+            <div id="noticeEditForm" class="edit-form card">
+                <div class="form-group">
+                    <label>Active</label>
+                    <input type="checkbox" id="noticeActive">
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <input type="text" id="noticeMessage" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <select id="noticeType" class="form-control">
+                        <option value="info">Info (Blue)</option>
+                        <option value="warning">Warning (Orange)</option>
+                        <option value="success">Success (Green)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Link (optional)</label>
+                    <input type="text" id="noticeLink" class="form-control">
+                </div>
+            </div>
+        </section>
+
+        <!-- TERMS SECTION -->
+        <section id="termsTab" class="admin-tab" style="display:none;">
+            <div class="tab-header">
+                <h2>Terms & Conditions</h2>
+                <button onclick="saveTerms()" class="btn btn-teal">Save Changes</button>
+            </div>
+            <div id="termsEditForm" class="edit-form card">
+                 <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="termsTitle" class="form-control">
+                </div>
+                <div id="termsSectionsList"></div>
+                <button onclick="addTermsSection()" class="btn btn-outline btn-sm">+ Add Section</button>
+            </div>
+        </section>
+
+        <!-- CAREERS SECTION -->
+        <section id="careersTab" class="admin-tab" style="display:none;">
+            <div class="tab-header">
+                <h2>Job Openings</h2>
+                <button onclick="saveCareers()" class="btn btn-teal">Save Changes</button>
+            </div>
+            <div id="careersList" class="edit-grid"></div>
+            <button onclick="addCareer()" class="btn btn-outline btn-sm">+ Add Job Opening</button>
+        </section>
+    </main>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>
