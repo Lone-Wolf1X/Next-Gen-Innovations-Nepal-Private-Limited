@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E '\\\\.\\(html|js|css|json|md|png|svg\\)$|^\\\\.\\\\/[a-zA-Z_]+$')",
+      "Bash(node scripts/seed-firestore.js)",
+      "Bash(firebase login:list)",
+      "Bash(gcloud auth:*)",
+      "Bash(psql -U postgres -c \"CREATE DATABASE next_gen_db;\")",
+      "Bash(psql -U postgres -d next_gen_db -f scripts/schema.sql)",
+      "Bash(psql -U postgres -d next_gen_db -f scripts/seed.sql)",
+      "Bash(psql -U postgres -c \"SELECT version\\(\\);\")",
+      "Bash(PGPASSWORD=12345 psql -U postgres -c \"SELECT version\\(\\);\")",
+      "Bash(PGPASSWORD=12345 psql -U postgres -c \"CREATE DATABASE next_gen_db;\")",
+      "Bash(PGPASSWORD=12345 psql -U postgres -d next_gen_db -f \"d:/Next Gen/scripts/seed.sql\")"
+    ]
+  }
+}

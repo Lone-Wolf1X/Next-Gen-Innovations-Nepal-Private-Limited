@@ -1,26 +1,35 @@
 let currentTab = 'founders';
 let adminPassword = '';
-const API_BASE = '/api';
+
+// Use Express server URL when opened via Live Server (5500/5501),
+// otherwise use relative path (works in production via Express on port 3001)
+const API_BASE = (window.location.port === '5500' || window.location.port === '5501')
+    ? 'http://localhost:3001/api'
+    : '/api';
+let allQueries = [];
 
 // Auth
 function login() {
+    const user = document.getElementById('adminUsername').value.trim();
     const pass = document.getElementById('adminPassword').value;
-    if (!pass) return showNotification('Please enter a password', 'error');
-    
-    // Test auth with a simple GET
+    if (!user) return showNotification('Please enter username', 'error');
+    if (!pass) return showNotification('Please enter password', 'error');
+
     adminPassword = pass;
-    fetchData('notices').then(data => {
-        if (data && !data.error) {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('adminNav').style.display = 'flex';
-            document.getElementById('adminMain').style.display = 'block';
-            loadCurrentTabData();
-            showNotification('Welcome back, Admin!', 'success');
-        } else {
-            showNotification('Invalid password', 'error');
-            adminPassword = '';
-        }
-    });
+    fetch(`${API_BASE}/notices`, { headers: { 'Authorization': 'Basic ' + btoa(user + ':' + pass) } })
+        .then(r => r.json())
+        .then(data => {
+            if (data && !data.error) {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('adminMainWrapper').style.display = 'flex';
+                loadCurrentTabData();
+                showNotification('Welcome back, Admin!', 'success');
+            } else {
+                showNotification('Invalid credentials', 'error');
+                adminPassword = '';
+            }
+        })
+        .catch(() => { showNotification('Connection error', 'error'); adminPassword = ''; });
 }
 
 function logout() {
@@ -67,7 +76,18 @@ async function saveData(resource, data) {
 // UI Rendering
 function showTab(tab) {
     currentTab = tab;
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+    const titles = {
+        'founders':    'Manage Founders',
+        'notices':     'Banner Notice Settings',
+        'terms':       'Terms & Conditions',
+        'careers':     'Job Openings',
+        'heroBanners': 'Hero Banner Slider',
+        'queries':     'Customer Queries'
+    };
+    document.getElementById('currentTabTitle').textContent = titles[tab] || tab;
+
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelector(`[onclick="showTab('${tab}')"]`).classList.add('active');
     
     document.querySelectorAll('.admin-tab').forEach(t => t.style.display = 'none');
@@ -77,6 +97,14 @@ function showTab(tab) {
 }
 
 function loadCurrentTabData() {
+    if (currentTab === 'heroBanners') {
+        loadBanners();
+        return;
+    }
+    if (currentTab === 'queries') {
+        loadQueries();
+        return;
+    }
     fetchData(currentTab).then(data => {
         if (currentTab === 'founders') renderFounders(data);
         if (currentTab === 'notices') renderNotice(data);
@@ -89,7 +117,7 @@ function loadCurrentTabData() {
 function renderFounders(data) {
     const list = document.getElementById('foundersList');
     list.innerHTML = '';
-    data.forEach((f, index) => {
+    data.forEach((f) => {
         const card = document.createElement('div');
         card.className = 'card founder-card';
         card.innerHTML = `
@@ -209,10 +237,344 @@ function saveCareers() {
     saveData('careers', data);
 }
 
+// ─── HERO BANNERS ─────────────────────────────────────────────────────────────
+async function loadBanners() {
+    const list = document.getElementById('bannersList');
+    list.innerHTML = '<p style="color:#64748b;padding:20px;">Loading banners…</p>';
+    try {
+        const res = await fetch(`${API_BASE}/heroBanners/all`, { headers: getAuthHeader() });
+        const data = await res.json();
+        renderBanners(data.banners || []);
+    } catch (e) {
+        list.innerHTML = '<p style="color:#ef4444;">Failed to load banners.</p>';
+    }
+}
+
+function renderBanners(banners) {
+    const list = document.getElementById('bannersList');
+    list.innerHTML = '';
+    if (!banners.length) {
+        list.innerHTML = '<div class="glass-card" style="text-align:center;padding:48px;color:#64748b;">No banners yet. Click <strong>+ Add Banner</strong> to create one.</div>';
+        return;
+    }
+    banners.forEach((b, i) => {
+        const card = document.createElement('div');
+        card.className = 'card banner-card';
+        card.dataset.index = i;
+        card.innerHTML = `
+            <div class="banner-preview">
+                ${b.imageData
+                    ? `<img src="${b.imageData}" alt="Banner preview">`
+                    : `<div class="banner-placeholder"><span>🖼️</span><span>No image</span></div>`}
+                <span class="banner-status-pill ${b.active !== false ? 'active' : 'inactive'}">
+                    ${b.active !== false ? 'Active' : 'Inactive'}
+                </span>
+            </div>
+            <div class="banner-fields">
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Title</label>
+                        <input type="text" class="form-control b-title" value="${b.title || ''}" placeholder="Banner headline">
+                    </div>
+                    <div class="form-group half">
+                        <label>Tag Label (optional)</label>
+                        <input type="text" class="form-control b-tag" value="${b.tag || ''}" placeholder="e.g. New Offer">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Subtitle / Description</label>
+                    <input type="text" class="form-control b-subtitle" value="${b.subtitle || ''}" placeholder="Short description shown below the title">
+                </div>
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Button Text</label>
+                        <input type="text" class="form-control b-cta-text" value="${b.ctaText || ''}" placeholder="e.g. Learn More">
+                    </div>
+                    <div class="form-group half">
+                        <label>Button Link</label>
+                        <input type="text" class="form-control b-cta-link" value="${b.ctaLink || ''}" placeholder="https://...">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Replace Image</label>
+                    <div class="file-upload-area" onclick="this.querySelector('input').click()">
+                        <span>📁 Click to upload image (JPEG / PNG / WebP)</span>
+                        <input type="file" accept="image/*" style="display:none;" onchange="previewBannerImage(this, ${i})">
+                    </div>
+                </div>
+                <div class="banner-card-footer">
+                    <label class="toggle-label" style="color:#94a3b8;font-size:0.85rem;">
+                        <label class="switch" style="margin-right:8px;">
+                            <input type="checkbox" class="b-active" ${b.active !== false ? 'checked' : ''}>
+                            <span class="slider round"></span>
+                        </label>
+                        Show on website
+                    </label>
+                    <button onclick="removeBannerCard(this)" class="remove-btn">🗑 Remove</button>
+                </div>
+            </div>`;
+        list.appendChild(card);
+    });
+}
+
+function addBanner() {
+    const list = document.getElementById('bannersList');
+    // Clear "no banners" message if present
+    if (list.querySelector('.glass-card')) list.innerHTML = '';
+    const count = list.querySelectorAll('.banner-card').length;
+    const tmp = document.createElement('div');
+    tmp.innerHTML = `<div class="card banner-card" data-index="${count}">
+        <div class="banner-preview">
+            <div class="banner-placeholder"><span>🖼️</span><span>No image uploaded</span></div>
+            <span class="banner-status-pill active">Active</span>
+        </div>
+        <div class="banner-fields">
+            <div class="form-row">
+                <div class="form-group half">
+                    <label>Title</label>
+                    <input type="text" class="form-control b-title" placeholder="Banner headline">
+                </div>
+                <div class="form-group half">
+                    <label>Tag Label (optional)</label>
+                    <input type="text" class="form-control b-tag" placeholder="e.g. Limited Offer">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Subtitle / Description</label>
+                <input type="text" class="form-control b-subtitle" placeholder="Short description shown below the title">
+            </div>
+            <div class="form-row">
+                <div class="form-group half">
+                    <label>Button Text</label>
+                    <input type="text" class="form-control b-cta-text" placeholder="e.g. Get Started">
+                </div>
+                <div class="form-group half">
+                    <label>Button Link</label>
+                    <input type="text" class="form-control b-cta-link" placeholder="https://...">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Upload Image</label>
+                <div class="file-upload-area" onclick="this.querySelector('input').click()">
+                    <span>📁 Click to upload image (JPEG / PNG / WebP)</span>
+                    <input type="file" accept="image/*" style="display:none;" onchange="previewBannerImage(this, ${count})">
+                </div>
+            </div>
+            <div class="banner-card-footer">
+                <label class="toggle-label" style="color:#94a3b8;font-size:0.85rem;">
+                    <label class="switch" style="margin-right:8px;">
+                        <input type="checkbox" class="b-active" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    Show on website
+                </label>
+                <button onclick="removeBannerCard(this)" class="remove-btn">🗑 Remove</button>
+            </div>
+        </div>
+    </div>`;
+    list.appendChild(tmp.firstElementChild);
+}
+
+function previewBannerImage(input, index) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    if (file.size > 3 * 1024 * 1024) {
+        showNotification('Image too large (max 3MB)', 'error');
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const card = document.querySelectorAll('.banner-card')[index] || input.closest('.banner-card');
+        const preview = card.querySelector('.banner-preview');
+        let img = preview.querySelector('img');
+        if (!img) {
+            preview.querySelector('.banner-placeholder')?.remove();
+            img = document.createElement('img');
+            preview.insertBefore(img, preview.firstChild);
+        }
+        img.src = e.target.result;
+        // Store base64 on the card for saving
+        card.dataset.imageData = e.target.result;
+        showNotification('Image loaded — click Save Banners to apply', 'success');
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeBannerCard(btn) {
+    btn.closest('.banner-card').remove();
+    const list = document.getElementById('bannersList');
+    if (!list.querySelectorAll('.banner-card').length) {
+        list.innerHTML = '<div class="glass-card" style="text-align:center;padding:48px;color:#64748b;">No banners yet. Click <strong>+ Add Banner</strong> to create one.</div>';
+    }
+}
+
+async function saveBanners() {
+    const cards = document.querySelectorAll('.banner-card');
+    const banners = Array.from(cards).map(c => {
+        const existingImg = c.querySelector('.banner-preview img');
+        return {
+            title:     c.querySelector('.b-title').value.trim(),
+            tag:       c.querySelector('.b-tag').value.trim(),
+            subtitle:  c.querySelector('.b-subtitle').value.trim(),
+            ctaText:   c.querySelector('.b-cta-text').value.trim(),
+            ctaLink:   c.querySelector('.b-cta-link').value.trim(),
+            active:    c.querySelector('.b-active').checked,
+            imageData: c.dataset.imageData || (existingImg ? existingImg.src : '')
+        };
+    });
+
+    try {
+        const res = await fetch(`${API_BASE}/heroBanners`, {
+            method: 'POST',
+            headers: { ...getAuthHeader(), 'Content-Type': 'application/json' },
+            body: JSON.stringify({ banners })
+        });
+        const result = await res.json();
+        if (result.success) showNotification('Hero banners saved!', 'success');
+        else showNotification(result.error || 'Save failed', 'error');
+    } catch (e) {
+        showNotification('Network error', 'error');
+    }
+}
+
+// ─── CUSTOMER QUERIES ──────────────────────────────────────────────────────────
+async function loadQueries() {
+    const list = document.getElementById('queriesList');
+    list.innerHTML = '<p style="color:#64748b;padding:20px;">Loading queries…</p>';
+    try {
+        const res = await fetch(`${API_BASE}/queries`, { headers: getAuthHeader() });
+        allQueries = await res.json();
+        renderQueriesSummary(allQueries);
+        renderQueries(allQueries);
+        updateUnreadBadge(allQueries);
+    } catch (e) {
+        list.innerHTML = '<p style="color:#ef4444;">Failed to load queries.</p>';
+    }
+}
+
+function renderQueriesSummary(queries) {
+    const summary = document.getElementById('queriesSummary');
+    const total  = queries.length;
+    const unread = queries.filter(q => !q.read).length;
+    const today  = queries.filter(q => {
+        if (!q.timestamp) return false;
+        const d = new Date(q.timestamp);
+        const now = new Date();
+        return d.toDateString() === now.toDateString();
+    }).length;
+    summary.style.display = 'flex';
+    summary.innerHTML = `
+        <div class="query-stat-card"><div class="q-stat-num">${total}</div><div class="q-stat-label">Total</div></div>
+        <div class="query-stat-card"><div class="q-stat-num" style="color:#f59e0b;">${unread}</div><div class="q-stat-label">Unread</div></div>
+        <div class="query-stat-card"><div class="q-stat-num" style="color:#10b981;">${today}</div><div class="q-stat-label">Today</div></div>`;
+}
+
+function updateUnreadBadge(queries) {
+    const badge = document.getElementById('unreadBadge');
+    const count = queries.filter(q => !q.read).length;
+    if (count > 0) { badge.textContent = count; badge.style.display = 'inline-flex'; }
+    else badge.style.display = 'none';
+}
+
+function filterQueries() {
+    const filter = document.getElementById('queryFilter').value;
+    if (filter === 'all') renderQueries(allQueries);
+    else if (filter === 'new') renderQueries(allQueries.filter(q => !q.read));
+    else if (filter === 'read') renderQueries(allQueries.filter(q => q.read));
+}
+
+function renderQueries(queries) {
+    const list = document.getElementById('queriesList');
+    list.innerHTML = '';
+    if (!queries.length) {
+        list.innerHTML = '<div class="glass-card" style="text-align:center;padding:48px;color:#64748b;">No queries found.</div>';
+        return;
+    }
+    queries.forEach(q => {
+        const card = document.createElement('div');
+        card.className = `query-card glass-card ${!q.read ? 'unread' : ''}`;
+        const date = q.timestamp ? new Date(q.timestamp).toLocaleString('en-NP', { dateStyle: 'medium', timeStyle: 'short' }) : 'Unknown date';
+        card.innerHTML = `
+            <div class="query-header">
+                <div class="query-identity">
+                    <div class="query-avatar">${(q.firstName || '?')[0].toUpperCase()}</div>
+                    <div>
+                        <div class="query-name">${q.firstName || ''} ${q.lastName || ''}</div>
+                        <div class="query-meta">${q.email || ''}${q.phone ? ' · ' + q.phone : ''}</div>
+                    </div>
+                </div>
+                <div class="query-right">
+                    <span class="query-service-tag">${q.service || 'General'}</span>
+                    <span class="query-date">${date}</span>
+                    ${!q.read ? '<span class="new-badge">NEW</span>' : ''}
+                </div>
+            </div>
+            <div class="query-message">${q.message || ''}</div>
+            <div class="query-actions">
+                ${!q.read
+                    ? `<button onclick="markRead('${q.id}', this)" class="btn btn-outline btn-sm">✔ Mark as Read</button>`
+                    : `<button class="btn btn-sm" style="background:rgba(255,255,255,0.04);color:#64748b;border:1px solid rgba(255,255,255,0.06);cursor:default;">✔ Read</button>`}
+                <a href="mailto:${q.email}" class="btn btn-outline btn-sm">✉ Reply</a>
+                <button onclick="deleteQuery('${q.id}', this)" class="remove-btn" style="margin-top:0;">🗑 Delete</button>
+            </div>`;
+        list.appendChild(card);
+    });
+}
+
+async function markRead(id, btn) {
+    try {
+        const res = await fetch(`${API_BASE}/queries/${id}`, {
+            method: 'PATCH',
+            headers: { ...getAuthHeader(), 'Content-Type': 'application/json' },
+            body: JSON.stringify({ read: true, status: 'read' })
+        });
+        const result = await res.json();
+        if (result.success) {
+            const q = allQueries.find(x => x.id === id);
+            if (q) q.read = true;
+            const card = btn.closest('.query-card');
+            card.classList.remove('unread');
+            btn.outerHTML = `<button class="btn btn-sm" style="background:rgba(255,255,255,0.04);color:#64748b;border:1px solid rgba(255,255,255,0.06);cursor:default;">✔ Read</button>`;
+            card.querySelector('.new-badge')?.remove();
+            updateUnreadBadge(allQueries);
+            renderQueriesSummary(allQueries);
+        }
+    } catch (e) {
+        showNotification('Failed to update', 'error');
+    }
+}
+
+async function deleteQuery(id, btn) {
+    if (!confirm('Delete this query? This cannot be undone.')) return;
+    try {
+        const res = await fetch(`${API_BASE}/queries/${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeader()
+        });
+        const result = await res.json();
+        if (result.success) {
+            btn.closest('.query-card').remove();
+            allQueries = allQueries.filter(q => q.id !== id);
+            updateUnreadBadge(allQueries);
+            renderQueriesSummary(allQueries);
+            showNotification('Query deleted', 'success');
+        }
+    } catch (e) {
+        showNotification('Failed to delete', 'error');
+    }
+}
+
 function showNotification(msg, type) {
     const n = document.getElementById('notification');
-    n.textContent = msg;
-    n.className = `notification show ${type}`;
+    const msgSpan = document.getElementById('toastMessage');
+    const iconSpan = n.querySelector('.toast-icon');
+
+    msgSpan.textContent = msg;
+    n.className = `glass-toast show ${type}`;
+    
+    if(type === 'success') iconSpan.textContent = '✅';
+    else if(type === 'error') iconSpan.textContent = '❌';
+
     setTimeout(() => {
         n.classList.remove('show');
     }, 3000);

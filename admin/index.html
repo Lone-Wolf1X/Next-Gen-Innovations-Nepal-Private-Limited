@@ -3,100 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Next Gen Innovations</title>
+    <title>Admin Portal | Next Gen Innovations</title>
+    <!-- Use main styles for fonts and some utilities -->
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="css/admin.css">
 </head>
 <body class="admin-body">
-    <header class="admin-header">
-        <div class="container container-flex">
-            <h1 class="admin-title">Admin Dashboard</h1>
-            <div id="loginSection" class="login-section">
-                <input type="password" id="adminPassword" placeholder="Enter Password">
-                <button onclick="login()" class="btn btn-primary btn-sm">Sign In</button>
+
+    <!-- LOGIN OVERLAY -->
+    <div id="loginSection" class="login-overlay">
+        <a href="../index.html" class="home-return-btn" style="position: absolute; top: 24px; left: 24px; color: var(--navy, #0F1C3F); font-size: 1rem; font-weight: 600; background: rgba(255,255,255,0.8); padding: 8px 16px; border-radius: 50px; text-decoration: none; backdrop-filter: blur(8px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.2s;">
+            ← Return to Homepage
+        </a>
+        <div class="login-glass-card">
+            <div class="login-brand">
+                <img src="../logo/logo.svg" alt="Logo" class="admin-logo">
+                <h2>Admin Portal</h2>
+                <p>Enter your credentials to continue</p>
             </div>
-            <div id="adminNav" class="admin-nav" style="display:none;">
-                <span id="loginStatus">Logged In</span>
-                <button onclick="logout()" class="btn btn-outline btn-sm">Logout</button>
+            <div class="form-group">
+                <input type="text" id="adminUsername" class="form-control" placeholder="Username" autocomplete="username" autofocus>
             </div>
+            <div class="form-group">
+                <input type="password" id="adminPassword" class="form-control" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter') login()">
+            </div>
+            <button onclick="login()" class="btn btn-primary btn-full">Authenticate Access</button>
         </div>
-    </header>
+    </div>
 
-    <main id="adminMain" class="container" style="display:none;">
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('founders')">Founders</button>
-            <button class="tab-btn" onclick="showTab('notices')">Notice Board</button>
-            <button class="tab-btn" onclick="showTab('terms')">Terms & Conditions</button>
-            <button class="tab-btn" onclick="showTab('careers')">Careers</button>
-        </div>
-
-        <!-- FOUNDERS SECTION -->
-        <section id="foundersTab" class="admin-tab">
-            <div class="tab-header">
-                <h2>Manage Founders</h2>
-                <button onclick="saveFounders()" class="btn btn-teal">Save Changes</button>
+    <!-- MAIN APP WRAPPER -->
+    <div id="adminMainWrapper" class="admin-wrapper" style="display:none;">
+        
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <img src="../logo/logo.svg" alt="Next Gen" class="sidebar-logo">
+                <span class="sidebar-title">Next Gen</span>
             </div>
-            <div id="foundersList" class="edit-grid"></div>
-        </section>
+            
+            <nav class="sidebar-nav">
+                <p class="nav-label">Dashboards</p>
+                <button class="nav-btn active" onclick="showTab('founders')">
+                    <span class="nav-icon">👥</span> Founders
+                </button>
+                <button class="nav-btn" onclick="showTab('notices')">
+                    <span class="nav-icon">📢</span> Notice Board
+                </button>
+                <button class="nav-btn" onclick="showTab('terms')">
+                    <span class="nav-icon">📝</span> Terms & Conditions
+                </button>
+                <button class="nav-btn" onclick="showTab('careers')">
+                    <span class="nav-icon">💼</span> Careers
+                </button>
 
-        <!-- NOTICE SECTION -->
-        <section id="noticesTab" class="admin-tab" style="display:none;">
-            <div class="tab-header">
-                <h2>Banner Notice</h2>
-                <button onclick="saveNotice()" class="btn btn-teal">Save Changes</button>
-            </div>
-            <div id="noticeEditForm" class="edit-form card">
-                <div class="form-group">
-                    <label>Active</label>
-                    <input type="checkbox" id="noticeActive">
+                <p class="nav-label" style="margin-top:20px;">Website</p>
+                <button class="nav-btn" onclick="showTab('heroBanners')">
+                    <span class="nav-icon">🖼️</span> Hero Banners
+                </button>
+                <button class="nav-btn" onclick="showTab('queries')">
+                    <span class="nav-icon">📩</span> Customer Queries
+                    <span id="unreadBadge" class="unread-badge" style="display:none;">0</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="admin-user-info">
+                    <div class="admin-avatar">A</div>
+                    <div class="admin-details">
+                        <span class="admin-name">Administrator</span>
+                        <span class="admin-status">Online</span>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Message</label>
-                    <input type="text" id="noticeMessage" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Type</label>
-                    <select id="noticeType" class="form-control">
-                        <option value="info">Info (Blue)</option>
-                        <option value="warning">Warning (Orange)</option>
-                        <option value="success">Success (Green)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Link (optional)</label>
-                    <input type="text" id="noticeLink" class="form-control">
-                </div>
+                <button onclick="logout()" class="btn-logout">
+                    <span>🚪</span> Logout
+                </button>
             </div>
-        </section>
+        </aside>
 
-        <!-- TERMS SECTION -->
-        <section id="termsTab" class="admin-tab" style="display:none;">
-            <div class="tab-header">
-                <h2>Terms & Conditions</h2>
-                <button onclick="saveTerms()" class="btn btn-teal">Save Changes</button>
-            </div>
-            <div id="termsEditForm" class="edit-form card">
-                 <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" id="termsTitle" class="form-control">
+        <!-- MAIN CONTENT AREA -->
+        <main class="admin-content">
+            <header class="content-header glass-panel">
+                <h1 id="currentTabTitle">Manage Founders</h1>
+                <div class="header-actions">
+                    <span id="loginStatus" class="status-badge">Secure Connection</span>
                 </div>
-                <div id="termsSectionsList"></div>
-                <button onclick="addTermsSection()" class="btn btn-outline btn-sm">+ Add Section</button>
-            </div>
-        </section>
+            </header>
 
-        <!-- CAREERS SECTION -->
-        <section id="careersTab" class="admin-tab" style="display:none;">
-            <div class="tab-header">
-                <h2>Job Openings</h2>
-                <button onclick="saveCareers()" class="btn btn-teal">Save Changes</button>
-            </div>
-            <div id="careersList" class="edit-grid"></div>
-            <button onclick="addCareer()" class="btn btn-outline btn-sm">+ Add Job Opening</button>
-        </section>
-    </main>
+            <div class="content-body">
+                <!-- FOUNDERS SECTION -->
+                <section id="foundersTab" class="admin-tab">
+                    <div class="tab-toolbar">
+                        <p class="text-muted">Update founder profiles, roles, and biographies.</p>
+                        <button onclick="saveFounders()" class="btn btn-teal">💾 Save Changes</button>
+                    </div>
+                    <div id="foundersList" class="edit-grid"></div>
+                </section>
 
-    <div id="notification" class="notification"></div>
+                <!-- NOTICE SECTION -->
+                <section id="noticesTab" class="admin-tab" style="display:none;">
+                    <div class="tab-toolbar">
+                        <p class="text-muted">Manage the global site banner notice.</p>
+                        <button onclick="saveNotice()" class="btn btn-teal">💾 Save Notice</button>
+                    </div>
+                    <div id="noticeEditForm" class="edit-form glass-card">
+                        <div class="form-group toggle-group">
+                            <label class="toggle-label">Enable Banner Notice</label>
+                            <label class="switch">
+                                <input type="checkbox" id="noticeActive">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>Display Message</label>
+                            <input type="text" id="noticeMessage" class="form-control" placeholder="e.g. Welcome to our new website!">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label>Notice Type (Color)</label>
+                                <select id="noticeType" class="form-control">
+                                    <option value="info">Info (Blue)</option>
+                                    <option value="warning">Warning (Orange)</option>
+                                    <option value="success">Success (Green)</option>
+                                </select>
+                            </div>
+                            <div class="form-group half">
+                                <label>Action Link (Optional)</label>
+                                <input type="text" id="noticeLink" class="form-control" placeholder="https://...">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TERMS SECTION -->
+                <section id="termsTab" class="admin-tab" style="display:none;">
+                    <div class="tab-toolbar">
+                        <p class="text-muted">Edit legal terms and conditions sections.</p>
+                        <button onclick="saveTerms()" class="btn btn-teal">💾 Save Document</button>
+                    </div>
+                    <div id="termsEditForm" class="edit-form glass-card">
+                         <div class="form-group">
+                            <label>Document Title</label>
+                            <input type="text" id="termsTitle" class="form-control" placeholder="e.g. Terms and Conditions">
+                        </div>
+                        <hr class="glass-divider">
+                        <div id="termsSectionsList"></div>
+                        <div class="text-center" style="margin-top: 20px;">
+                            <button onclick="addTermsSection()" class="btn btn-outline btn-sm">+ Add New Section</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CAREERS SECTION -->
+                <section id="careersTab" class="admin-tab" style="display:none;">
+                    <div class="tab-toolbar">
+                        <p class="text-muted">Manage open job positions and requirements.</p>
+                        <div>
+                            <button onclick="addCareer()" class="btn btn-outline" style="margin-right: 10px;">+ Add Job</button>
+                            <button onclick="saveCareers()" class="btn btn-teal">💾 Save Jobs</button>
+                        </div>
+                    </div>
+                    <div id="careersList" class="edit-grid"></div>
+                </section>
+
+                <!-- HERO BANNERS SECTION -->
+                <section id="heroBannersTab" class="admin-tab" style="display:none;">
+                    <div class="tab-toolbar">
+                        <p class="text-muted">Upload and manage promotional banner images shown in the hero slider.</p>
+                        <div>
+                            <button onclick="addBanner()" class="btn btn-outline" style="margin-right:10px;">+ Add Banner</button>
+                            <button onclick="saveBanners()" class="btn btn-teal">💾 Save Banners</button>
+                        </div>
+                    </div>
+                    <div class="banner-upload-tip glass-card" style="margin-bottom:24px;padding:16px 20px;display:flex;align-items:center;gap:12px;">
+                        <span style="font-size:1.4rem;">💡</span>
+                        <p style="margin:0;color:#94a3b8;font-size:0.88rem;">Upload images (JPEG/PNG/WebP). Recommended size: <strong style="color:#e2e8f0;">1920×600px</strong>. Max ~3MB per image. Toggle each banner active/inactive from the card.</p>
+                    </div>
+                    <div id="bannersList" class="banners-grid"></div>
+                </section>
+
+                <!-- CUSTOMER QUERIES SECTION -->
+                <section id="queriesTab" class="admin-tab" style="display:none;">
+                    <div class="tab-toolbar">
+                        <p class="text-muted">View and manage customer contact form submissions.</p>
+                        <div style="display:flex;gap:10px;align-items:center;">
+                            <select id="queryFilter" class="form-control" style="width:160px;padding:8px 12px;" onchange="filterQueries()">
+                                <option value="all">All Queries</option>
+                                <option value="new">New Only</option>
+                                <option value="read">Read Only</option>
+                            </select>
+                            <button onclick="loadCurrentTabData()" class="btn btn-outline">↻ Refresh</button>
+                        </div>
+                    </div>
+                    <div id="queriesSummary" class="queries-summary" style="display:none;"></div>
+                    <div id="queriesList" class="queries-list"></div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="notification" class="glass-toast">
+        <span class="toast-icon">✨</span>
+        <span id="toastMessage">Success</span>
+    </div>
 
     <script src="js/admin.js"></script>
 </body>

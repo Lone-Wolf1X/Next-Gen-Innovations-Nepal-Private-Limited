@@ -79,30 +79,39 @@
           </div>
         </div>
 
-        <!-- RIGHT — floating cards -->
-        <div class="hero-visual anim-hero-visual">
-          <div class="hero-card-stack">
-            <div class="hero-float-card">
-              <div class="fc-icon blue">💰</div>
-              <div>
-                <div class="fc-title">FinTech Platform</div>
-                <div class="fc-sub">Digital Payment Gateway</div>
-              </div>
-            </div>
-            <div class="hero-float-card">
+        <!-- RIGHT — floating 3D Visual & cards -->
+        <div class="hero-visual anim-hero-visual" style="position: relative; display: flex; justify-content: center; align-items: center;">
+          <img src="assets/hero-3d.png" alt="Premium 3D FinTech Asset" style="width: 100%; max-width: 500px; animation: float 6s ease-in-out infinite; filter: drop-shadow(0 20px 40px rgba(26,52,138,0.3)); border-radius: 24px;">
+          
+          <!-- Keep some float cards overlaying the image for depth -->
+          <div class="hero-card-stack" style="position: absolute; inset: 0; pointer-events: none;">
+            <div class="hero-float-card" style="top: 10%; right: -10%;">
               <div class="fc-icon teal">🤖</div>
               <div>
-                <div class="fc-title">AI & Research</div>
-                <div class="fc-sub">ML-powered insights</div>
+                <div class="fc-title">FinTech AI</div>
+                <div class="fc-sub">Next-Gen Intelligence</div>
               </div>
             </div>
-            <div class="hero-float-card">
+            <div class="hero-float-card" style="bottom: 10%; left: -10%; flex-direction: column; text-align: center; padding: 16px 24px;">
               <div class="fc-num" data-target="99" data-suffix="%">99%</div>
-              <div class="fc-title" style="font-size:0.75rem;margin-top:4px;color:var(--text-body);">Uptime SLA</div>
+              <div class="fc-title" style="font-size:0.75rem; margin-top:4px;">Enterprise Uptime</div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- PROMOTIONAL BANNER CAROUSEL -->
+  <section class="promo-slider-section" id="promoBannerSection" style="display:none;">
+    <div class="promo-slider-container" id="promoSliderContainer">
+      <div class="promo-progress" id="promoProgress"></div>
+      <div class="promo-slides-track" id="promoSlidesTrack">
+        <!-- Slides injected dynamically -->
+      </div>
+      <button class="promo-nav prev" id="promoPrev" aria-label="Previous slide">&#8249;</button>
+      <button class="promo-nav next" id="promoNext" aria-label="Next slide">&#8250;</button>
+      <div class="promo-dots" id="promoDots"></div>
     </div>
   </section>
 
@@ -372,5 +381,91 @@
   <script src="js/main.js"></script>
   <script src="js/animations.js"></script>
   <script src="js/data-loader.js"></script>
+  <script>
+    // ── Promotional Banner Carousel ──────────────────────────────
+    (function () {
+      const API = (window.location.port === '5500' || window.location.port === '5501')
+        ? 'http://localhost:3001/api/heroBanners'
+        : '/api/heroBanners';
+      let slides = [], current = 0, timer = null, progressTimer = null, progressStart = null;
+      const INTERVAL = 5000;
+
+      const track    = document.getElementById('promoSlidesTrack');
+      const dots     = document.getElementById('promoDots');
+      const section  = document.getElementById('promoBannerSection');
+      const progress = document.getElementById('promoProgress');
+
+      function buildSlide(b) {
+        const div = document.createElement('div');
+        div.className = 'promo-slide';
+        const img = b.imageData
+          ? `<img src="${b.imageData}" alt="${b.title || 'Promotion'}" loading="lazy">`
+          : `<div style="background:linear-gradient(135deg,#0F1C3F,#1A348A);width:100%;height:100%;"></div>`;
+        const tag = b.tag ? `<span class="promo-slide-tag">${b.tag}</span>` : '';
+        const cta = (b.ctaText && b.ctaLink)
+          ? `<a href="${b.ctaLink}" class="btn btn-teal btn-lg btn-ripple">${b.ctaText} →</a>`
+          : '';
+        div.innerHTML = `
+          ${img}
+          <div class="promo-slide-overlay">
+            <div class="promo-slide-content">
+              ${tag}
+              ${b.title    ? `<h2 class="promo-slide-title">${b.title}</h2>` : ''}
+              ${b.subtitle ? `<p class="promo-slide-subtitle">${b.subtitle}</p>` : ''}
+              ${cta}
+            </div>
+          </div>`;
+        return div;
+      }
+
+      function goTo(index) {
+        current = (index + slides.length) % slides.length;
+        track.style.transform = `translateX(-${current * 100}%)`;
+        document.querySelectorAll('.promo-dot').forEach((d, i) =>
+          d.classList.toggle('active', i === current));
+        resetProgress();
+      }
+
+      function resetProgress() {
+        clearInterval(progressTimer);
+        progressStart = Date.now();
+        progress.style.width = '0%';
+        progressTimer = setInterval(() => {
+          const elapsed = Date.now() - progressStart;
+          const pct = Math.min((elapsed / INTERVAL) * 100, 100);
+          progress.style.width = pct + '%';
+        }, 50);
+      }
+
+      function startAuto() {
+        clearInterval(timer);
+        if (slides.length > 1) {
+          timer = setInterval(() => goTo(current + 1), INTERVAL);
+        }
+      }
+
+      function init(banners) {
+        if (!banners || !banners.length) return;
+        slides = banners;
+        track.innerHTML = '';
+        dots.innerHTML  = '';
+        banners.forEach((b, i) => {
+          track.appendChild(buildSlide(b));
+          const dot = document.createElement('button');
+          dot.className = 'promo-dot' + (i === 0 ? ' active' : '');
+          dot.setAttribute('aria-label', `Slide ${i + 1}`);
+          dot.addEventListener('click', () => { goTo(i); startAuto(); });
+          dots.appendChild(dot);
+        });
+        section.style.display = 'block';
+        goTo(0);
+        startAuto();
+        document.getElementById('promoPrev').addEventListener('click', () => { goTo(current - 1); startAuto(); });
+        document.getElementById('promoNext').addEventListener('click', () => { goTo(current + 1); startAuto(); });
+      }
+
+      fetch(API).then(r => r.json()).then(d => init(d.banners || [])).catch(() => {});
+    })();
+  </script>
 </body>
 </html>

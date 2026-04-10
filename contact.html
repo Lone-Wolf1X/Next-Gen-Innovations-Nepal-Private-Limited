@@ -161,5 +161,47 @@
 
   <script src="js/main.js"></script>
   <script src="js/animations.js"></script>
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const btn = this.querySelector('button[type="submit"]');
+      const original = btn.innerHTML;
+      btn.innerHTML = 'Sending...';
+      btn.disabled = true;
+
+      const data = {
+        firstName: document.getElementById('firstName').value,
+        lastName:  document.getElementById('lastName').value,
+        email:     document.getElementById('email').value,
+        phone:     document.getElementById('phone').value,
+        service:   document.getElementById('service').value,
+        message:   document.getElementById('message').value
+      };
+
+      try {
+        const apiBase = (window.location.port === '5500' || window.location.port === '5501')
+          ? 'http://localhost:3001/api'
+          : '/api';
+        const res = await fetch(apiBase + '/queries', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (result.success) {
+          btn.innerHTML = '✅ Message Sent!';
+          btn.style.background = '#10b981';
+          this.reset();
+          setTimeout(() => { btn.innerHTML = original; btn.style.background = ''; btn.disabled = false; }, 4000);
+        } else {
+          throw new Error(result.error || 'Failed');
+        }
+      } catch (err) {
+        btn.innerHTML = '❌ Error — Try Again';
+        btn.style.background = '#ef4444';
+        setTimeout(() => { btn.innerHTML = original; btn.style.background = ''; btn.disabled = false; }, 3000);
+      }
+    });
+  </script>
 </body>
 </html>
