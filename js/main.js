@@ -1,5 +1,5 @@
 /* =========================================================
-   Next Gen Innovations Nepal — main.js
+   Next Gen Innovations Private Limited — main.js
    ========================================================= */
 
 document.addEventListener('DOMContentLoaded', () => {
