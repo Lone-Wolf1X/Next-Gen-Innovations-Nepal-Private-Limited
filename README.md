@@ -146,3 +146,6 @@ We welcome contributions! Please feel free to submit a Pull Request.
 **Built with 💚 in Nepal**
 
 *Website herne bittikai feel aaos — "Yo company ta next level ma cha!"*
+
+
+cd /var/www/next-gen-innovations
