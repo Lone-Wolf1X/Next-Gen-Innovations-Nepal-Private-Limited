@@ -1,4 +1,4 @@
-# Next Gen Innovations Nepal 🚀
+# Next Gen Innovations Private Limited 🚀
 
 **Advanced IT Solutions | Building the Future with Nepali Talent**
 
@@ -135,11 +135,11 @@ We welcome contributions! Please feel free to submit a Pull Request.
 
 - **Email**: info@nextgennepal.com
 - **Phone**: +977 980-0000000
-- **Location**: Kathmandu, Nepal
+- **Location**: Mahalaxmi-5, Lalitpur
 
 ## 📝 License
 
-© 2026 Next Gen Innovations Nepal. All rights reserved.
+© 2026 Next Gen Innovations Private Limited. All rights reserved.
 
 ---
 

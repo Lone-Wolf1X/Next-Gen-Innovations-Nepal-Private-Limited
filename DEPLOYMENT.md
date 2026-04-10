@@ -39,7 +39,7 @@ Follow these steps to make your website live:
 Once live, you can share:
 
 ```
-🚀 Next Gen Innovations Nepal
+🚀 Next Gen Innovations Private Limited
 https://lone-wolf1x.github.io/Next-Gen-Innovations-Nepal-Private-Limited/
 
 Premium IT company website featuring:
