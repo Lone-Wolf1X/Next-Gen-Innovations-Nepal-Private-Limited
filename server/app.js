@@ -25,7 +25,7 @@ app.use(cors({
         'http://localhost:3001'
     ]
 }));
-app.use(bodyParser.json({ limit: '10mb' })); // large enough for base64 banner images
+app.use(bodyParser.json({ limit: '50mb' })); // large enough for multiple base64 images
 
 // Serve the whole project as static files
 app.use(express.static(path.join(__dirname, '../')));

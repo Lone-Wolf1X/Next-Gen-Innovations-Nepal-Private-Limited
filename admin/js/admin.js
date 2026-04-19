@@ -146,7 +146,7 @@ function renderFounders(data) {
 function previewFounderImage(input, index) {
     if (!input.files || !input.files[0]) return;
     const file = input.files[0];
-    if (file.size > 2 * 1024 * 1024) return showNotification('Image too large (max 2MB)', 'error');
+    if (file.size > 10 * 1024 * 1024) return showNotification('Image too large (max 10MB)', 'error');
     
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -417,8 +417,8 @@ function addBanner() {
 function previewBannerImage(input, index) {
     if (!input.files || !input.files[0]) return;
     const file = input.files[0];
-    if (file.size > 3 * 1024 * 1024) {
-        showNotification('Image too large (max 3MB)', 'error');
+    if (file.size > 10 * 1024 * 1024) {
+        showNotification('Image too large (max 10MB)', 'error');
         return;
     }
     const reader = new FileReader();
