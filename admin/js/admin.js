@@ -117,12 +117,23 @@ function loadCurrentTabData() {
 function renderFounders(data) {
     const list = document.getElementById('foundersList');
     list.innerHTML = '';
-    data.forEach((f) => {
+    data.forEach((f, i) => {
         const card = document.createElement('div');
         card.className = 'card founder-card';
+        card.dataset.index = i;
         card.innerHTML = `
+            <div class="founder-preview-area" style="margin-bottom:16px;">
+                ${f.image_data 
+                    ? `<img src="${f.image_data}" alt="${f.name}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:8px;border:2px solid var(--border);">`
+                    : `<div style="width:80px;height:80px;border-radius:50%;background:${f.color || '#ddd'};display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1.5rem;color:white;margin-bottom:8px;">${f.avatar}</div>`}
+                <div class="file-upload-area" style="padding:10px;font-size:0.8rem;" onclick="this.querySelector('input').click()">
+                    <span>Click to change photo</span>
+                    <input type="file" accept="image/*" style="display:none;" onchange="previewFounderImage(this, ${i})">
+                </div>
+            </div>
             <div class="form-group"><label>Name</label><input type="text" value="${f.name}" class="form-control f-name"></div>
             <div class="form-group"><label>Role</label><input type="text" value="${f.role}" class="form-control f-role"></div>
+            <div class="form-group"><label>Education</label><input type="text" value="${f.education || ''}" class="form-control f-education"></div>
             <div class="form-group"><label>Avatar Initials</label><input type="text" value="${f.avatar}" class="form-control f-avatar"></div>
             <div class="form-group"><label>Bio</label><textarea class="form-control f-bio">${f.bio}</textarea></div>
             <div class="form-group"><label>Color Gradient</label><input type="text" value="${f.color}" class="form-control f-color"></div>
@@ -132,16 +143,44 @@ function renderFounders(data) {
     });
 }
 
+function previewFounderImage(input, index) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    if (file.size > 2 * 1024 * 1024) return showNotification('Image too large (max 2MB)', 'error');
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const card = document.querySelectorAll('.founder-card')[index];
+        const previewArea = card.querySelector('.founder-preview-area');
+        let img = previewArea.querySelector('img');
+        if (!img) {
+            previewArea.querySelector('div').remove(); // remove initials div
+            img = document.createElement('img');
+            img.style.cssText = "width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:8px;border:2px solid var(--border);";
+            previewArea.insertBefore(img, previewArea.firstChild);
+        }
+        img.src = e.target.result;
+        card.dataset.imageData = e.target.result;
+        showNotification('Photo ready - click Save to apply', 'success');
+    };
+    reader.readAsDataURL(file);
+}
+
 function saveFounders() {
     const cards = document.querySelectorAll('.founder-card');
-    const data = Array.from(cards).map(c => ({
-        name: c.querySelector('.f-name').value,
-        role: c.querySelector('.f-role').value,
-        avatar: c.querySelector('.f-avatar').value,
-        bio: c.querySelector('.f-bio').value,
-        color: c.querySelector('.f-color').value,
-        tag: c.querySelector('.f-tag').value
-    }));
+    const data = Array.from(cards).map(c => {
+        const img = c.querySelector('img');
+        return {
+            name: c.querySelector('.f-name').value,
+            role: c.querySelector('.f-role').value,
+            education: c.querySelector('.f-education').value,
+            avatar: c.querySelector('.f-avatar').value,
+            bio: c.querySelector('.f-bio').value,
+            color: c.querySelector('.f-color').value,
+            tag: c.querySelector('.f-tag').value,
+            imageData: c.dataset.imageData || (img ? img.src : '')
+        };
+    });
     saveData('founders', data);
 }
 

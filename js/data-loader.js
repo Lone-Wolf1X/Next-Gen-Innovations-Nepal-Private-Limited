@@ -27,11 +27,14 @@ async function loadFounders() {
 
     container.innerHTML = founders.map(f => `
         <div class="team-card reveal">
-            <div class="team-avatar" style="background: ${f.color || 'var(--accent-primary)'}">${f.avatar}</div>
+            <div class="team-avatar" style="${f.image_data ? `background-image:url(${f.image_data});background-size:cover;background-position:center;` : `background:${f.color || 'var(--accent-primary)'};`}">
+                ${f.image_data ? '' : f.avatar}
+            </div>
             <div class="team-name">${f.name}</div>
             <div class="team-role">${f.role}</div>
             ${f.tag ? `<span class="team-tag">${f.tag}</span>` : ''}
-            ${f.bio ? `<p style="font-size:0.82rem;color:var(--text-body);margin-top:12px;line-height:1.6;">${f.bio}</p>` : ''}
+            ${f.education ? `<div class="team-education" style="font-size:0.75rem; color:var(--indigo); font-weight:600; margin-top:8px;">🎓 ${f.education}</div>` : ''}
+            ${f.bio ? `<p class="team-bio" style="font-size:0.82rem;color:var(--text-body);margin-top:12px;line-height:1.6;">${f.bio}</p>` : ''}
         </div>
     `).join('');
     

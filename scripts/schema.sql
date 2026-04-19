@@ -12,13 +12,15 @@ CREATE TABLE IF NOT EXISTS admin_auth (
 
 -- Founders
 CREATE TABLE IF NOT EXISTS founders (
-    id     SERIAL PRIMARY KEY,
-    name   VARCHAR(255) NOT NULL,
-    role   VARCHAR(255),
-    avatar VARCHAR(10),
-    bio    TEXT,
-    color  TEXT,
-    tag    VARCHAR(100)
+    id         SERIAL PRIMARY KEY,
+    name       VARCHAR(255) NOT NULL,
+    role       VARCHAR(255),
+    avatar     VARCHAR(10),
+    bio        TEXT,
+    education  TEXT,
+    color      TEXT,
+    tag        VARCHAR(100),
+    image_data TEXT            -- base64 encoded image
 );
 
 -- Site notice banner

@@ -648,11 +648,14 @@ ul { list-style: none; }
   background: white;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 36px 24px;
+  padding: 40px 28px;
   text-align: center;
   transition: all var(--transition);
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .team-card::after {
@@ -666,22 +669,25 @@ ul { list-style: none; }
   transition: transform var(--transition);
 }
 
-.team-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.team-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); }
 .team-card:hover::after { transform: scaleX(1); }
 
 .team-avatar {
-  width: 90px; height: 90px;
+  width: 110px; height: 110px;
   border-radius: 50%;
-  margin: 0 auto 20px;
+  margin: 0 auto 24px;
   background: linear-gradient(135deg, var(--indigo), var(--teal));
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Outfit', sans-serif;
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 800;
   color: white;
-  border: 4px solid var(--surface);
+  border: 4px solid var(--white);
+  box-shadow: 0 8px 24px rgba(26,52,138,0.15);
+  background-size: cover;
+  background-position: center;
 }
 
 .team-name {

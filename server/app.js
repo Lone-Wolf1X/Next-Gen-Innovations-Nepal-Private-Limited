@@ -67,8 +67,8 @@ app.post('/api/founders', checkAuth, async (req, res) => {
         await client.query('TRUNCATE founders RESTART IDENTITY');
         for (const f of req.body) {
             await client.query(
-                'INSERT INTO founders (name, role, avatar, bio, color, tag) VALUES ($1,$2,$3,$4,$5,$6)',
-                [f.name, f.role, f.avatar, f.bio, f.color, f.tag || '']
+                'INSERT INTO founders (name, role, avatar, bio, education, color, tag, image_data) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)',
+                [f.name, f.role, f.avatar, f.bio, f.education || '', f.color, f.tag || '', f.imageData || '']
             );
         }
         await client.query('COMMIT');

@@ -13,7 +13,7 @@ TRUNCATE founders RESTART IDENTITY;
 
 INSERT INTO founders (name, role, avatar, bio, color, tag) VALUES
 (
-    'Yuvraj Paswan',
+    'Yubaraj Paswan',
     'Founder',
     'YP',
     'Visionary entrepreneur with a passion for leveraging technology to solve real-world problems in Nepal.',
