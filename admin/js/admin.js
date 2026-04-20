@@ -8,6 +8,10 @@ const API_BASE = (window.location.port === '5500' || window.location.port === '5
     : '/api';
 let allQueries = [];
 
+// Cropper globals
+let cropper = null;
+let currentCropTarget = null; // { index: number, input: HTMLElement, card: HTMLElement }
+
 // Auth
 function login() {
     const user = document.getElementById('adminUsername').value.trim();
@@ -151,19 +155,81 @@ function previewFounderImage(input, index) {
     const reader = new FileReader();
     reader.onload = (e) => {
         const card = document.querySelectorAll('.founder-card')[index];
-        const previewArea = card.querySelector('.founder-preview-area');
-        let img = previewArea.querySelector('img');
-        if (!img) {
-            previewArea.querySelector('div').remove(); // remove initials div
-            img = document.createElement('img');
-            img.style.cssText = "width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:8px;border:2px solid var(--border);";
-            previewArea.insertBefore(img, previewArea.firstChild);
-        }
-        img.src = e.target.result;
-        card.dataset.imageData = e.target.result;
-        showNotification('Photo ready - click Save to apply', 'success');
+        openCropper(e.target.result, { index, input, card });
     };
     reader.readAsDataURL(file);
+}
+
+// ─── CROPPER FUNCTIONS ───────────────────────────────────────
+function openCropper(imageSrc, target) {
+    currentCropTarget = target;
+    const modal = document.getElementById('cropperModal');
+    const image = document.getElementById('cropperImage');
+    
+    image.src = imageSrc;
+    modal.style.display = 'flex';
+    
+    if (cropper) cropper.destroy();
+    
+    cropper = new Cropper(image, {
+        aspectRatio: 1, // Force square for founders
+        viewMode: 1,
+        dragMode: 'move',
+        autoCropArea: 1,
+        restore: false,
+        guides: true,
+        center: true,
+        highlight: false,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        toggleDragModeOnDblclick: false,
+    });
+}
+
+function closeCropper() {
+    document.getElementById('cropperModal').style.display = 'none';
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+    // Reset file input so same file can be selected again
+    if (currentCropTarget && currentCropTarget.input) {
+        currentCropTarget.input.value = '';
+    }
+}
+
+function rotateCrop(deg) {
+    if (cropper) cropper.rotate(deg);
+}
+
+function applyCrop() {
+    if (!cropper) return;
+    
+    const canvas = cropper.getCroppedCanvas({
+        width: 600, // Good resolution for avatars
+        height: 600,
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high',
+    });
+    
+    const croppedDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+    const { index, card } = currentCropTarget;
+    
+    const previewArea = card.querySelector('.founder-preview-area');
+    let img = previewArea.querySelector('img');
+    if (!img) {
+        const initialDiv = previewArea.querySelector('div:not(.file-upload-area)');
+        if (initialDiv) initialDiv.remove();
+        img = document.createElement('img');
+        img.style.cssText = "width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:8px;border:2px solid var(--border);";
+        previewArea.insertBefore(img, previewArea.firstChild);
+    }
+    
+    img.src = croppedDataUrl;
+    card.dataset.imageData = croppedDataUrl;
+    
+    showNotification('Photo adjusted & applied', 'success');
+    closeCropper();
 }
 
 function saveFounders() {
@@ -424,6 +490,56 @@ function previewBannerImage(input, index) {
     const reader = new FileReader();
     reader.onload = (e) => {
         const card = document.querySelectorAll('.banner-card')[index] || input.closest('.banner-card');
+        openCropper(e.target.result, { isBanner: true, index, input, card });
+    };
+    reader.readAsDataURL(file);
+}
+
+// Updated openCropper to handle different aspect ratios
+function openCropper(imageSrc, target) {
+    currentCropTarget = target;
+    const modal = document.getElementById('cropperModal');
+    const image = document.getElementById('cropperImage');
+    const headerTitle = modal.querySelector('h3');
+    
+    headerTitle.textContent = target.isBanner ? 'Crop Hero Banner (3.2:1)' : 'Crop Founder Avatar (1:1)';
+    image.src = imageSrc;
+    modal.style.display = 'flex';
+    
+    if (cropper) cropper.destroy();
+    
+    cropper = new Cropper(image, {
+        aspectRatio: target.isBanner ? (1920 / 600) : 1,
+        viewMode: 1,
+        dragMode: 'move',
+        autoCropArea: 1,
+        restore: false,
+        guides: true,
+        center: true,
+        highlight: false,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        toggleDragModeOnDblclick: false,
+    });
+}
+
+// Updated applyCrop to handle banners too
+function applyCrop() {
+    if (!cropper) return;
+    
+    const isBanner = currentCropTarget.isBanner;
+    
+    const canvas = cropper.getCroppedCanvas({
+        width: isBanner ? 1920 : 600,
+        height: isBanner ? 600 : 600,
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high',
+    });
+    
+    const croppedDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+    const { card } = currentCropTarget;
+    
+    if (isBanner) {
         const preview = card.querySelector('.banner-preview');
         let img = preview.querySelector('img');
         if (!img) {
@@ -431,12 +547,23 @@ function previewBannerImage(input, index) {
             img = document.createElement('img');
             preview.insertBefore(img, preview.firstChild);
         }
-        img.src = e.target.result;
-        // Store base64 on the card for saving
-        card.dataset.imageData = e.target.result;
-        showNotification('Image loaded — click Save Banners to apply', 'success');
-    };
-    reader.readAsDataURL(file);
+        img.src = croppedDataUrl;
+    } else {
+        const previewArea = card.querySelector('.founder-preview-area');
+        let img = previewArea.querySelector('img');
+        if (!img) {
+            const initialDiv = previewArea.querySelector('div:not(.file-upload-area)');
+            if (initialDiv) initialDiv.remove();
+            img = document.createElement('img');
+            img.style.cssText = "width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:8px;border:2px solid var(--border);";
+            previewArea.insertBefore(img, previewArea.firstChild);
+        }
+        img.src = croppedDataUrl;
+    }
+    
+    card.dataset.imageData = croppedDataUrl;
+    showNotification('Image adjusted & applied', 'success');
+    closeCropper();
 }
 
 function removeBannerCard(btn) {
