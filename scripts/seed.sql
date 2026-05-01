@@ -72,7 +72,7 @@ INSERT INTO term_sections (term_id, heading, content, "order") VALUES
  'The materials on Next Gen Innovations Nepal Private Limited''s website are provided on an ''as is'' basis. Next Gen Innovations Nepal makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties.',
  2),
 (1, '4. Privacy Policy',
- 'We collect only the information necessary to provide our services. Your data is never sold to third parties. Contact info@nextgennepal.com for any data-related requests.',
+ 'We collect only the information necessary to provide our services. Your data is never sold to third parties. Contact info@nextgeninnovations.com.np for any data-related requests.',
  3);
 
 -- ─── CAREERS ─────────────────────────────────────────────────

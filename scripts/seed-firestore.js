@@ -74,7 +74,7 @@ const terms = {
     },
     {
       heading: '4. Privacy Policy',
-      content: 'We collect only the information necessary to provide our services. Your data is never sold to third parties. Contact info@nextgennepal.com for any data-related requests.'
+      content: 'We collect only the information necessary to provide our services. Your data is never sold to third parties. Contact info@nextgeninnovations.com.np for any data-related requests.'
     }
   ]
 };

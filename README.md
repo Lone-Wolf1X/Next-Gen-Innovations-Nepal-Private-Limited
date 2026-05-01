@@ -133,8 +133,8 @@ We welcome contributions! Please feel free to submit a Pull Request.
 
 ## 📧 Contact
 
-- **Email**: info@nextgennepal.com
-- **Phone**: +977 980-0000000
+- **Email**: info@nextgeninnovations.com.np
+- **Phone**: +977-9852860110
 - **Location**: Mahalaxmi-5, Lalitpur
 
 ## 📝 License
