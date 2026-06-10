@@ -43,6 +43,7 @@ async function fetchRealMatches() {
         const teamB = e.competitions[0].competitors[1];
         return {
           id: 'real_' + index,
+          rawId: e.id,
           teamA: teamA.team.displayName || teamA.team.name,
           flagA: teamA.team.logo || 'https://flagcdn.com/w160/un.png',
           teamB: teamB.team.displayName || teamB.team.name,
@@ -144,7 +145,7 @@ function renderMatches() {
           </div>
         </div>
         <div style="text-align:center; margin-top:10px;">
-          <button class="btn btn-outline" style="padding:4px 12px; font-size:0.75rem;" onclick="viewLineup('${match.id}', '${teamA.team.displayName}', '${teamB.team.displayName}')">View Lineup & Details</button>
+          <button class="btn btn-outline" style="padding:4px 12px; font-size:0.75rem;" onclick="viewLineup('${m.rawId}', '${m.teamA.replace(/'/g, "\\'")}', '${m.teamB.replace(/'/g, "\\'")}')">View Lineup & Details</button>
         </div>
         <div class="prediction-inputs">
           <input type="number" id="scoreA_${m.id}" class="score-input" min="0" max="15" value="0">
