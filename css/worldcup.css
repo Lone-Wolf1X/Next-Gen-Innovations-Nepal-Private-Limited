@@ -575,30 +575,32 @@ body.worldcup-theme {
    DASHBOARD & FIXTURES OVERHAUL
    ========================================================= */
 body.dashboard-active {
-  background: #030712 !important; /* Darker, premium dashboard background */
+  background: linear-gradient(135deg, #0B1120 0%, #172554 100%) !important; /* Premium deep blue/slate gradient */
 }
 
 body.dashboard-active .wc-hero {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(11, 17, 32, 0.9));
-  min-height: 40vh;
-  padding: 100px 20px 40px;
+  background: transparent;
+  min-height: auto;
+  padding: 80px 20px 40px;
 }
 
 body.dashboard-active .wc-card {
-  background: rgba(31, 41, 55, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
+  background: rgba(31, 41, 55, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .dashboard-header {
-  background: rgba(11, 17, 32, 0.95);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(255,255,255,0.15);
   padding: 15px 0;
   position: sticky;
   top: 70px;
   z-index: 90;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
   display: none; /* Shown via JS */
 }
 
@@ -618,10 +620,11 @@ body.dashboard-active .wc-card {
 }
 
 .dashboard-user-info img {
-  width: 50px;
-  height: 50px;
+  width: 55px;
+  height: 55px;
   border-radius: 50%;
-  border: 2px solid #10b981;
+  border: 3px solid #10b981;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
 }
 
 .dashboard-stats {
@@ -630,13 +633,15 @@ body.dashboard-active .wc-card {
 }
 
 .stat-box {
-  background: rgba(255,255,255,0.05);
-  padding: 10px 20px;
-  border-radius: 8px;
+  background: rgba(255,255,255,0.08);
+  padding: 12px 25px;
+  border-radius: 12px;
   text-align: center;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
-.stat-box .value { font-size: 1.2rem; font-weight: 700; color: #10b981; }
-.stat-box .label { font-size: 0.75rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; }
+.stat-box .value { font-size: 1.4rem; font-weight: 800; color: #10b981; text-shadow: 0 0 10px rgba(16,185,129,0.3); }
+.stat-box .label { font-size: 0.75rem; color: #e5e7eb; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
 
 /* FIXTURES GRID */
 .fixtures-grid {
