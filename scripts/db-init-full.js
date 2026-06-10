@@ -52,11 +52,12 @@ async function init() {
         // 4. Seed Data
         console.log('Seeding data...');
         const founders = [
-            { name: "Yubaraj Paswan", role: "Director/Shareholder", education: "Diploma in Agriculture from CTEVT", avatar: "YP", bio: "Visionary leader with a background in agricultural innovation.", color: "linear-gradient(135deg, #0F1C3F, #1A348A)", tag: "Founder" },
-            { name: "Abhishek Kumar Paswan", role: "Senior Developer", education: "BBS from Tribhubhan University, pursuing MBA from NOU", avatar: "AP", bio: "Expert developer specializing in scalable enterprise solutions.", color: "linear-gradient(135deg, #1A348A, #2a4bc4)", tag: "Tech Lead" },
-            { name: "Payal Kumari Paswan", role: "CFO/CEO & Brand Ambassador", education: "Management Professional", avatar: "PP", bio: "Leading the company's financial operations and brand presence.", color: "linear-gradient(135deg, #00C9B1, #00e5cf)", tag: "Management" },
-            { name: "Bidur Paswan", role: "Junior Developer", education: "SLC from Pashupati MA Vi Lahan, pursuing +2 from NEB", avatar: "BP", bio: "Passionate developer focused on modern web technologies.", color: "linear-gradient(135deg, #4f46e5, #00C9B1)", tag: "Developer" },
-            { name: "Basu Paswan", role: "Junior Developer", education: "Class 2", avatar: "BP", bio: "Enthusiastic junior developer learning and contributing.", color: "linear-gradient(135deg, #6366f1, #a855f7)", tag: "Developer" }
+            { name: "Yubraj Paswan", role: "Founder", education: "Diploma in Agriculture from CTEVT", avatar: "YP", bio: "Visionary leader driving strategic growth and digital inclusion in Nepal.", color: "linear-gradient(135deg, #0F1C3F, #1A348A)", tag: "Founder" },
+            { name: "Abhishek Kumar Paswan", role: "Senior Developer & Business Lead", education: "BBS from Tribhubhan University, pursuing MBA from NOU", avatar: "AP", bio: "Expert developer specializing in scalable enterprise software and technology leadership.", color: "linear-gradient(135deg, #1A348A, #2a4bc4)", tag: "Tech Lead" },
+            { name: "Payal Paswan", role: "Business Development Head", education: "Management Professional", avatar: "PP", bio: "Leading strategic relations, brand representation, and company growth initiatives.", color: "linear-gradient(135deg, #00C9B1, #00e5cf)", tag: "Management" },
+            { name: "Bidur Paswan", role: "Developer", education: "SLC from Pashupati MA Vi Lahan, pursuing +2 from NEB", avatar: "BP", bio: "Passionate developer focused on modern web technologies and frontend engineering.", color: "linear-gradient(135deg, #4f46e5, #00C9B1)", tag: "Developer" },
+            { name: "Basu Paswan", role: "Developer", education: "Class 2", avatar: "BP", bio: "Enthusiastic developer learning new frameworks and building robust services.", color: "linear-gradient(135deg, #6366f1, #a855f7)", tag: "Developer" },
+            { name: "Barsha Paswan", role: "Business Analyst", education: "BBS", avatar: "BP", bio: "Business analyst analyzing client requirements, systems workflow, and project design.", color: "linear-gradient(135deg, #ec4899, #f43f5e)", tag: "Analysis" }
         ];
 
         await client.query('TRUNCATE founders RESTART IDENTITY');

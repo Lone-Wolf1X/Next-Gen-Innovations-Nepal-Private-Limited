@@ -11,38 +11,60 @@ ON CONFLICT (username) DO UPDATE SET password_hash = 'admin';
 -- ─── FOUNDERS ────────────────────────────────────────────────
 TRUNCATE founders RESTART IDENTITY;
 
-INSERT INTO founders (name, role, avatar, bio, color, tag) VALUES
+INSERT INTO founders (name, role, avatar, bio, color, tag, education) VALUES
 (
-    'Yubaraj Paswan',
+    'Yubraj Paswan',
     'Founder',
     'YP',
-    'Visionary entrepreneur with a passion for leveraging technology to solve real-world problems in Nepal.',
+    'Visionary leader driving strategic growth and digital inclusion in Nepal.',
     'linear-gradient(135deg,#0F1C3F,#1A348A)',
-    'Visionary Leader'
+    'Founder',
+    'Diploma in Agriculture from CTEVT'
 ),
 (
     'Abhishek Kumar Paswan',
-    'Senior Developer & CEO',
-    'AK',
-    'Full-stack architect and tech lead driving engineering excellence and company strategy.',
+    'Senior Developer & Business Lead',
+    'AP',
+    'Expert developer specializing in scalable enterprise software and technology leadership.',
     'linear-gradient(135deg,#1A348A,#2a4bc4)',
-    'Full-Stack Expert'
+    'Tech Lead',
+    'BBS from Tribhubhan University, pursuing MBA from NOU'
+),
+(
+    'Payal Paswan',
+    'Business Development Head',
+    'PP',
+    'Leading strategic relations, brand representation, and company growth initiatives.',
+    'linear-gradient(135deg,#00C9B1,#00e5cf)',
+    'Management',
+    'Management Professional'
 ),
 (
     'Bidur Paswan',
     'Developer',
     'BP',
-    'Backend specialist building robust, scalable server infrastructure and API layers.',
-    'linear-gradient(135deg,#00C9B1,#00aaa0)',
-    'Backend Specialist'
+    'Passionate developer focused on modern web technologies and frontend engineering.',
+    'linear-gradient(135deg,#4f46e5,#00C9B1)',
+    'Developer',
+    'SLC from Pashupati MA Vi Lahan, pursuing +2 from NEB'
 ),
 (
     'Basu Paswan',
     'Developer',
     'BP',
-    'Mobile & UI developer crafting beautiful, intuitive user experiences across platforms.',
-    'linear-gradient(135deg,#2a4bc4,#00C9B1)',
-    'Mobile & UI Dev'
+    'Enthusiastic developer learning new frameworks and building robust services.',
+    'linear-gradient(135deg,#6366f1,#a855f7)',
+    'Developer',
+    'Class 2'
+),
+(
+    'Barsha Paswan',
+    'Business Analyst',
+    'BP',
+    'Business analyst analyzing client requirements, systems workflow, and project design.',
+    'linear-gradient(135deg,#ec4899,#f43f5e)',
+    'Analysis',
+    'BBS'
 );
 
 -- ─── NOTICE ──────────────────────────────────────────────────

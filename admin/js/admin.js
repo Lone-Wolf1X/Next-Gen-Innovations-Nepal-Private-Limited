@@ -124,7 +124,6 @@ function renderFounders(data) {
     data.forEach((f, i) => {
         const card = document.createElement('div');
         card.className = 'card founder-card';
-        card.dataset.index = i;
         card.innerHTML = `
             <div class="founder-preview-area" style="margin-bottom:16px;">
                 ${f.image_data 
@@ -132,7 +131,7 @@ function renderFounders(data) {
                     : `<div style="width:80px;height:80px;border-radius:50%;background:${f.color || '#ddd'};display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1.5rem;color:white;margin-bottom:8px;">${f.avatar}</div>`}
                 <div class="file-upload-area" style="padding:10px;font-size:0.8rem;" onclick="this.querySelector('input').click()">
                     <span>Click to change photo</span>
-                    <input type="file" accept="image/*" style="display:none;" onchange="previewFounderImage(this, ${i})">
+                    <input type="file" accept="image/*" style="display:none;" onchange="previewFounderImage(this)">
                 </div>
             </div>
             <div class="form-group"><label>Name</label><input type="text" value="${f.name}" class="form-control f-name"></div>
@@ -142,94 +141,47 @@ function renderFounders(data) {
             <div class="form-group"><label>Bio</label><textarea class="form-control f-bio">${f.bio}</textarea></div>
             <div class="form-group"><label>Color Gradient</label><input type="text" value="${f.color}" class="form-control f-color"></div>
             <div class="form-group"><label>Tag</label><input type="text" value="${f.tag || ''}" class="form-control f-tag"></div>
+            <button onclick="this.parentElement.remove()" class="remove-btn" style="width:100%;margin-top:16px;">🗑 Remove Member</button>
         `;
         list.appendChild(card);
     });
 }
 
-function previewFounderImage(input, index) {
+function addFounder() {
+    const list = document.getElementById('foundersList');
+    const card = document.createElement('div');
+    card.className = 'card founder-card';
+    card.innerHTML = `
+        <div class="founder-preview-area" style="margin-bottom:16px;">
+            <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg, #1A348A, #00C9B1);display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1.5rem;color:white;margin-bottom:8px;">NF</div>
+            <div class="file-upload-area" style="padding:10px;font-size:0.8rem;" onclick="this.querySelector('input').click()">
+                <span>Click to change photo</span>
+                <input type="file" accept="image/*" style="display:none;" onchange="previewFounderImage(this)">
+            </div>
+        </div>
+        <div class="form-group"><label>Name</label><input type="text" value="" class="form-control f-name" placeholder="Member Name"></div>
+        <div class="form-group"><label>Role</label><input type="text" value="" class="form-control f-role" placeholder="e.g. Developer"></div>
+        <div class="form-group"><label>Education</label><input type="text" value="" class="form-control f-education" placeholder="e.g. BBS"></div>
+        <div class="form-group"><label>Avatar Initials</label><input type="text" value="NF" class="form-control f-avatar"></div>
+        <div class="form-group"><label>Bio</label><textarea class="form-control f-bio" placeholder="Short bio..."></textarea></div>
+        <div class="form-group"><label>Color Gradient</label><input type="text" value="linear-gradient(135deg, #1a348a, #00c9b1)" class="form-control f-color"></div>
+        <div class="form-group"><label>Tag</label><input type="text" value="" class="form-control f-tag" placeholder="e.g. Tech"></div>
+        <button onclick="this.parentElement.remove()" class="remove-btn" style="width:100%;margin-top:16px;">🗑 Remove Member</button>
+    `;
+    list.appendChild(card);
+}
+
+function previewFounderImage(input) {
     if (!input.files || !input.files[0]) return;
     const file = input.files[0];
     if (file.size > 10 * 1024 * 1024) return showNotification('Image too large (max 10MB)', 'error');
     
     const reader = new FileReader();
     reader.onload = (e) => {
-        const card = document.querySelectorAll('.founder-card')[index];
-        openCropper(e.target.result, { index, input, card });
+        const card = input.closest('.founder-card');
+        openCropper(e.target.result, { isBanner: false, input, card });
     };
     reader.readAsDataURL(file);
-}
-
-// ─── CROPPER FUNCTIONS ───────────────────────────────────────
-function openCropper(imageSrc, target) {
-    currentCropTarget = target;
-    const modal = document.getElementById('cropperModal');
-    const image = document.getElementById('cropperImage');
-    
-    image.src = imageSrc;
-    modal.style.display = 'flex';
-    
-    if (cropper) cropper.destroy();
-    
-    cropper = new Cropper(image, {
-        aspectRatio: 1, // Force square for founders
-        viewMode: 1,
-        dragMode: 'move',
-        autoCropArea: 1,
-        restore: false,
-        guides: true,
-        center: true,
-        highlight: false,
-        cropBoxMovable: true,
-        cropBoxResizable: true,
-        toggleDragModeOnDblclick: false,
-    });
-}
-
-function closeCropper() {
-    document.getElementById('cropperModal').style.display = 'none';
-    if (cropper) {
-        cropper.destroy();
-        cropper = null;
-    }
-    // Reset file input so same file can be selected again
-    if (currentCropTarget && currentCropTarget.input) {
-        currentCropTarget.input.value = '';
-    }
-}
-
-function rotateCrop(deg) {
-    if (cropper) cropper.rotate(deg);
-}
-
-function applyCrop() {
-    if (!cropper) return;
-    
-    const canvas = cropper.getCroppedCanvas({
-        width: 600, // Good resolution for avatars
-        height: 600,
-        imageSmoothingEnabled: true,
-        imageSmoothingQuality: 'high',
-    });
-    
-    const croppedDataUrl = canvas.toDataURL('image/jpeg', 0.9);
-    const { index, card } = currentCropTarget;
-    
-    const previewArea = card.querySelector('.founder-preview-area');
-    let img = previewArea.querySelector('img');
-    if (!img) {
-        const initialDiv = previewArea.querySelector('div:not(.file-upload-area)');
-        if (initialDiv) initialDiv.remove();
-        img = document.createElement('img');
-        img.style.cssText = "width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:8px;border:2px solid var(--border);";
-        previewArea.insertBefore(img, previewArea.firstChild);
-    }
-    
-    img.src = croppedDataUrl;
-    card.dataset.imageData = croppedDataUrl;
-    
-    showNotification('Photo adjusted & applied', 'success');
-    closeCropper();
 }
 
 function saveFounders() {

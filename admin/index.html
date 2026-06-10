@@ -98,7 +98,10 @@
                 <section id="foundersTab" class="admin-tab">
                     <div class="tab-toolbar">
                         <p class="text-muted">Update founder profiles, roles, and biographies.</p>
-                        <button onclick="saveFounders()" class="btn btn-teal">💾 Save Changes</button>
+                        <div>
+                            <button onclick="addFounder()" class="btn btn-outline" style="margin-right: 10px;">+ Add Member</button>
+                            <button onclick="saveFounders()" class="btn btn-teal">💾 Save Changes</button>
+                        </div>
                     </div>
                     <div id="foundersList" class="edit-grid"></div>
                 </section>
