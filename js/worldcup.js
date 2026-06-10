@@ -66,17 +66,23 @@ async function fetchRealMatches() {
   }
 }
 
-/// --- AUTHENTICATION UI ---
 window.updateAuthUI = function() {
   const panel = document.getElementById('authPanel');
-  const profile = document.getElementById('userProfile');
+  const dashHeader = document.getElementById('dashboardHeader');
+  const heroTitle = document.querySelector('.wc-title');
+  const heroSubtitle = document.querySelector('.wc-subtitle');
   
   if (window.currentUser) {
     panel.style.display = 'none';
-    profile.style.display = 'inline-flex';
-    document.getElementById('userName').innerText = window.currentUser.name;
-    document.getElementById('userAvatar').src = window.currentUser.avatar;
-    document.getElementById('userPoints').innerText = window.currentUser.points;
+    dashHeader.style.display = 'block';
+    document.body.classList.add('dashboard-active');
+    
+    document.getElementById('dashName').innerText = window.currentUser.name;
+    document.getElementById('dashAvatar').src = window.currentUser.avatar;
+    document.getElementById('dashPoints').innerText = window.currentUser.points;
+    
+    heroTitle.innerHTML = `My Prediction <span class="highlight-green">Dashboard</span>`;
+    heroSubtitle.innerHTML = `Lock in your predictions below and climb the leaderboard to win the Grand Prize.`;
     
     // Enable all prediction buttons
     document.querySelectorAll('.btn-lock').forEach(btn => {
@@ -87,7 +93,11 @@ window.updateAuthUI = function() {
     });
   } else {
     panel.style.display = 'inline-flex';
-    profile.style.display = 'none';
+    dashHeader.style.display = 'none';
+    document.body.classList.remove('dashboard-active');
+    
+    heroTitle.innerHTML = `World Cup Predictor <span class="highlight-green">Arena</span>`;
+    heroSubtitle.innerHTML = `Predict the exact score of today's matches. Stand a chance to win a <b>Smartwatch</b>, Next Gen T-Shirts, and a Daily <b>100 NPR Recharge</b> via the Spin Wheel!`;
     
     // Disable all prediction buttons
     document.querySelectorAll('.btn-lock').forEach(btn => {
@@ -270,10 +280,10 @@ async function fetchStandings() {
 async function fetchFixtures() {
   const container = document.getElementById('fixturesContainer');
   try {
-    // Get upcoming matches for next 7 days
+    // Get matches for next 30 days
     const today = new Date();
     const future = new Date();
-    future.setDate(today.getDate() + 7);
+    future.setDate(today.getDate() + 30);
     
     const formatDate = (d) => d.toISOString().slice(0,10).replace(/-/g, '');
     const datesStr = `${formatDate(today)}-${formatDate(future)}`;
@@ -282,35 +292,43 @@ async function fetchFixtures() {
     const data = await res.json();
     
     if (data && data.events && data.events.length > 0) {
-      let html = '<div style="display: flex; flex-direction: column; gap: 15px;">';
+      let html = '<div class="fixtures-grid">';
       
       data.events.forEach(e => {
         const teamA = e.competitions[0].competitors[0];
         const teamB = e.competitions[0].competitors[1];
         
         const nameA = teamA.team.displayName || teamA.team.name;
-        const flagA = teamA.team.logo || 'https://flagcdn.com/w40/un.png';
+        const flagA = teamA.team.logo || 'https://flagcdn.com/w160/un.png';
         const nameB = teamB.team.displayName || teamB.team.name;
-        const flagB = teamB.team.logo || 'https://flagcdn.com/w40/un.png';
-        const dateStr = new Date(e.date).toLocaleString([], {weekday:'short', month:'short', day:'numeric', hour: '2-digit', minute:'2-digit'}) + ' NPT';
+        const flagB = teamB.team.logo || 'https://flagcdn.com/w160/un.png';
+        
+        const d = new Date(e.date);
+        const dayStr = d.toLocaleString([], {weekday:'short', month:'short', day:'numeric'});
+        const timeStr = d.toLocaleString([], {hour: '2-digit', minute:'2-digit'}) + ' NPT';
         const status = e.status.type.shortDetail;
         
         html += `
-          <div class="wc-card" style="display:flex; justify-content:space-between; align-items:center; padding: 15px 20px;">
-            <div style="flex:1; display:flex; align-items:center; gap: 15px; justify-content:flex-end;">
-              <span style="font-weight:700; font-size:1.1rem;">${nameA}</span>
-              <img src="${flagA}" style="width:40px; height:25px; border-radius:4px; border:1px solid #ddd; object-fit:cover; background:#fff;">
+          <div class="fixture-card-modern">
+            <div class="date-badge">${dayStr}</div>
+            
+            <div style="text-align:center; font-size:0.8rem; color:#9ca3af; margin-top:5px; margin-bottom:5px;">
+              ${timeStr} | <span style="color:#10b981;">${status}</span>
             </div>
             
-            <div style="flex:1; text-align:center;">
-              <div style="font-size:0.8rem; color:#6b7280; margin-bottom:8px; font-weight:600;">${dateStr}</div>
-              <div style="font-weight:900; color:#111827; background:#f3f4f6; padding:6px 16px; border-radius:20px; display:inline-block; border:1px solid rgba(0,0,0,0.1);">${status}</div>
+            <div class="fixture-teams-modern">
+              <div class="fixture-team-modern">
+                <img src="${flagA}" alt="${nameA}">
+                <span>${nameA}</span>
+              </div>
+              <div class="fixture-vs-modern">VS</div>
+              <div class="fixture-team-modern">
+                <img src="${flagB}" alt="${nameB}">
+                <span>${nameB}</span>
+              </div>
             </div>
             
-            <div style="flex:1; display:flex; align-items:center; gap: 15px; justify-content:flex-start;">
-              <img src="${flagB}" style="width:40px; height:25px; border-radius:4px; border:1px solid #ddd; object-fit:cover; background:#fff;">
-              <span style="font-weight:700; font-size:1.1rem;">${nameB}</span>
-            </div>
+            <button class="btn btn-outline" style="width:100%; border-color: rgba(255,255,255,0.2); color: #fff;" onclick="viewLineup('${e.id}', '${nameA.replace(/'/g, "\\'")}', '${nameB.replace(/'/g, "\\'")}')">View Match Details</button>
           </div>
         `;
       });
@@ -324,7 +342,9 @@ async function fetchFixtures() {
         </div>
       `;
     }
-  } catch (err) {}
+  } catch (err) {
+    console.error("Failed to fetch fixtures", err);
+  }
 }
 
 // --- LOCK PREDICTION & SHARE ---

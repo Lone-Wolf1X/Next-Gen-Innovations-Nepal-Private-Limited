@@ -570,3 +570,155 @@ body.worldcup-theme {
   border-radius: 50%;
   border: 2px solid white;
 }
+
+/* =========================================================
+   DASHBOARD & FIXTURES OVERHAUL
+   ========================================================= */
+body.dashboard-active {
+  background: #030712 !important; /* Darker, premium dashboard background */
+}
+
+body.dashboard-active .wc-hero {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(11, 17, 32, 0.9));
+  min-height: 40vh;
+  padding: 100px 20px 40px;
+}
+
+body.dashboard-active .wc-card {
+  background: rgba(31, 41, 55, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+}
+
+.dashboard-header {
+  background: rgba(11, 17, 32, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 15px 0;
+  position: sticky;
+  top: 70px;
+  z-index: 90;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  display: none; /* Shown via JS */
+}
+
+.dashboard-header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.dashboard-user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.dashboard-user-info img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #10b981;
+}
+
+.dashboard-stats {
+  display: flex;
+  gap: 20px;
+}
+
+.stat-box {
+  background: rgba(255,255,255,0.05);
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+.stat-box .value { font-size: 1.2rem; font-weight: 700; color: #10b981; }
+.stat-box .label { font-size: 0.75rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px; }
+
+/* FIXTURES GRID */
+.fixtures-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 25px;
+  margin-top: 20px;
+}
+
+.fixture-card-modern {
+  background: #1f2937;
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(255,255,255,0.05);
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.fixture-card-modern:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.fixture-card-modern .date-badge {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #10b981;
+  color: white;
+  font-size: 0.7rem;
+  padding: 4px 15px;
+  border-radius: 0 0 8px 8px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.fixture-teams-modern {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.fixture-team-modern {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.fixture-team-modern img {
+  width: 50px;
+  height: 35px;
+  border-radius: 4px;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.fixture-team-modern span {
+  font-weight: 600;
+  color: #f3f4f6;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.fixture-vs-modern {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #4b5563;
+  padding: 0 15px;
+}
+
+@media(max-width: 768px) {
+  .dashboard-header-inner { flex-direction: column; gap: 15px; }
+  .dashboard-stats { width: 100%; justify-content: center; }
+  .fixtures-grid { grid-template-columns: 1fr; }
+}
+
