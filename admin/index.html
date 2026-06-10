@@ -26,7 +26,7 @@
                 <p>Enter your credentials to continue</p>
             </div>
             <div class="form-group">
-                <input type="text" id="adminUsername" class="form-control" placeholder="Username" autocomplete="username" autofocus>
+                <input type="text" id="adminUsername" class="form-control" placeholder="Username or Email" autocomplete="username" autofocus>
             </div>
             <div class="form-group">
                 <input type="password" id="adminPassword" class="form-control" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter') login()">
@@ -67,6 +67,9 @@
                 <button class="nav-btn" onclick="showTab('queries')">
                     <span class="nav-icon">📩</span> Customer Queries
                     <span id="unreadBadge" class="unread-badge" style="display:none;">0</span>
+                </button>
+                <button class="nav-btn" onclick="showTab('worldcup')" style="margin-top: 10px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);">
+                    <span class="nav-icon">🏆</span> World Cup
                 </button>
             </nav>
 
@@ -203,6 +206,29 @@
                     </div>
                     <div id="queriesSummary" class="queries-summary" style="display:none;"></div>
                     <div id="queriesList" class="queries-list"></div>
+                </section>
+
+                <!-- WORLD CUP SECTION -->
+                <section id="worldcupTab" class="admin-tab" style="display:none;">
+                    <div class="tab-toolbar">
+                        <p class="text-muted">Manage World Cup Predictor users, their points, and notification preferences.</p>
+                        <button onclick="loadCurrentTabData()" class="btn btn-outline">↻ Refresh List</button>
+                    </div>
+                    <div class="glass-card" style="padding: 0; overflow: hidden;">
+                        <table class="wc-admin-table" style="width: 100%; border-collapse: collapse; color: #fff;">
+                            <thead style="background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                <tr>
+                                    <th style="padding: 15px; text-align: left;">User Name</th>
+                                    <th style="padding: 15px; text-align: left;">Email</th>
+                                    <th style="padding: 15px; text-align: center;">Total Points</th>
+                                    <th style="padding: 15px; text-align: center;">Wants Notifications?</th>
+                                </tr>
+                            </thead>
+                            <tbody id="worldcupUsersList">
+                                <!-- Data populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
                 </section>
             </div>
         </main>

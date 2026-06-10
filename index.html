@@ -491,6 +491,19 @@
       fetch(API).then(r => r.json()).then(d => init(d.banners || [])).catch(() => { });
     })();
   </script>
+  <!-- WORLD CUP POPUP BANNER -->
+  <div id="wcPopup" style="position:fixed;bottom:20px;right:20px;background:linear-gradient(135deg,#0B1120,#10B981);color:white;padding:20px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.4);z-index:9999;max-width:320px;display:none;animation:slideUp 0.5s ease-out forwards;">
+    <button onclick="document.getElementById('wcPopup').style.display='none'" style="position:absolute;top:10px;right:10px;background:none;border:none;color:white;cursor:pointer;font-size:20px;">&times;</button>
+    <h3 style="margin-bottom:8px;font-family:'Outfit',sans-serif;font-weight:800;font-size:1.2rem;">🏆 World Cup 2026 Craze Fest!</h3>
+    <p style="font-size:0.9rem;margin-bottom:12px;opacity:0.9;">Predict exact match scores and win Next Gen T-Shirts, a Smartwatch & Daily Recharges!</p>
+    <a href="worldcup.html" class="btn btn-teal" style="width:100%;text-align:center;justify-content:center;padding:10px;">Play Now & Win!</a>
+  </div>
+  <style>
+    @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  </style>
+  <script>
+    setTimeout(() => { document.getElementById('wcPopup').style.display = 'block'; }, 2000);
+  </script>
 </body>
 
 </html>

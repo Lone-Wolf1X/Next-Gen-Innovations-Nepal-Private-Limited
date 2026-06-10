@@ -109,12 +109,50 @@ function loadCurrentTabData() {
         loadQueries();
         return;
     }
+    if (currentTab === 'worldcup') {
+        loadWorldCupUsers();
+        return;
+    }
     fetchData(currentTab).then(data => {
         if (currentTab === 'founders') renderFounders(data);
         if (currentTab === 'notices') renderNotice(data);
         if (currentTab === 'terms') renderTerms(data);
         if (currentTab === 'careers') renderCareers(data);
     });
+}
+
+// --- WORLD CUP MODULE ---
+async function loadWorldCupUsers() {
+    try {
+        const response = await fetch(`${API_BASE}/worldcup/users`, {
+            headers: { 'Authorization': getAuthHeader() }
+        });
+        if (!response.ok) throw new Error('Failed to fetch');
+        const users = await response.json();
+        
+        const list = document.getElementById('worldcupUsersList');
+        let html = '';
+        if (users.length === 0) {
+            html = `<tr><td colspan="4" style="text-align:center; padding: 20px;">No users found.</td></tr>`;
+        } else {
+            users.forEach(u => {
+                const wantsNotif = u.notifications_enabled 
+                    ? '<span style="color:#10B981;font-weight:bold;">Yes</span>' 
+                    : '<span style="color:#ef4444;">No</span>';
+                html += `
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 15px;">${u.name}</td>
+                        <td style="padding: 15px;">${u.email}</td>
+                        <td style="padding: 15px; text-align: center; color: #3b82f6; font-weight: bold;">${u.points}</td>
+                        <td style="padding: 15px; text-align: center;">${wantsNotif}</td>
+                    </tr>
+                `;
+            });
+        }
+        list.innerHTML = html;
+    } catch (err) {
+        showNotification('Error loading World Cup users', 'error');
+    }
 }
 
 // Founders logic
