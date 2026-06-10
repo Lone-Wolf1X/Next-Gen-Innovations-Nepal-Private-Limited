@@ -101,9 +101,11 @@ window.updateAuthUI = function() {
     
     // Disable all prediction buttons
     document.querySelectorAll('.btn-lock').forEach(btn => {
-      btn.disabled = true;
-      btn.innerText = 'Login to Predict';
-      btn.style.background = '';
+      if(!btn.classList.contains('locked')) {
+        btn.disabled = true;
+        btn.innerText = 'Login to Predict';
+        btn.style.background = '';
+      }
     });
   }
 }
@@ -136,7 +138,16 @@ function renderMatches() {
   const container = document.getElementById('matchesContainer');
   let html = '';
 
+  const now = Date.now();
+
   matchesToRender.forEach(m => {
+    // Check if match has started
+    const hasStarted = m.rawDate ? new Date(m.rawDate).getTime() <= now : false;
+    const disabledAttr = hasStarted ? 'disabled' : '';
+    const btnText = hasStarted ? 'Match Started (Locked)' : 'Login to Predict';
+    const btnClass = hasStarted ? 'btn-lock locked' : 'btn-lock';
+    const bgStyle = hasStarted ? 'background: #6b7280; cursor: not-allowed;' : '';
+
     html += `
       <div class="match-card" data-date="${m.rawDate}">
         <div class="match-status">
@@ -158,9 +169,9 @@ function renderMatches() {
           <button class="btn btn-outline" style="padding:4px 12px; font-size:0.75rem;" onclick="viewLineup('${m.rawId}', '${m.teamA.replace(/'/g, "\\'")}', '${m.teamB.replace(/'/g, "\\'")}')">View Lineup & Details</button>
         </div>
         <div class="prediction-inputs">
-          <input type="number" id="scoreA_${m.id}" class="score-input" min="0" max="15" value="0">
-          <button class="btn-lock" id="btn_${m.id}" onclick="lockPrediction('${m.id}', '${m.teamA.replace(/'/g, "\\'")}', '${m.teamB.replace(/'/g, "\\'")}')" disabled>Login to Predict</button>
-          <input type="number" id="scoreB_${m.id}" class="score-input" min="0" max="15" value="0">
+          <input type="number" id="scoreA_${m.id}" class="score-input" min="0" max="15" value="0" ${disabledAttr}>
+          <button class="${btnClass}" id="btn_${m.id}" style="${bgStyle}" onclick="lockPrediction('${m.id}', '${m.teamA.replace(/'/g, "\\'")}', '${m.teamB.replace(/'/g, "\\'")}')" disabled>${btnText}</button>
+          <input type="number" id="scoreB_${m.id}" class="score-input" min="0" max="15" value="0" ${disabledAttr}>
         </div>
       </div>
     `;
@@ -382,9 +393,10 @@ async function lockPrediction(matchId, teamA, teamB) {
 
     if (!res.ok) throw new Error("Failed to save prediction");
 
-    // Change button state to locked
-    btn.innerHTML = 'Locked! ✅';
+    // Change button state to Update
+    btn.innerHTML = 'Update Prediction ✅';
     btn.style.background = '#10B981';
+    btn.disabled = false;
 
     // Generate share card
     const preview = document.getElementById('shareCardPreview');
