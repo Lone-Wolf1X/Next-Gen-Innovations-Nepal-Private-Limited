@@ -199,6 +199,51 @@
     </div>
   </div>
 
+  <!-- AVATAR SELECTION MODAL -->
+  <div class="modal-overlay" id="avatarModal" style="display:none; z-index: 1500;">
+    <div class="modal-content wc-card" style="max-width: 500px; text-align: center;">
+      <h2 style="margin-bottom: 10px; color:#f59e0b;">Choose Your World Cup Avatar</h2>
+      <p style="color:#6b7280; font-size:0.9rem; margin-bottom: 20px;">Select an avatar to represent you on the leaderboard!</p>
+      
+      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 25px;">
+        <!-- Avatar Options -->
+        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=striker" class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=striker')" style="width: 70px; height: 70px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; transition: 0.2s;">
+        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=goalie" class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=goalie')" style="width: 70px; height: 70px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; transition: 0.2s;">
+        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=referee" class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=referee')" style="width: 70px; height: 70px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; transition: 0.2s;">
+        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=champion" class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=champion')" style="width: 70px; height: 70px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; transition: 0.2s;">
+        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=fan" class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=fan')" style="width: 70px; height: 70px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; transition: 0.2s;">
+        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=legend" class="avatar-option" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/bottts/svg?seed=legend')" style="width: 70px; height: 70px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; transition: 0.2s;">
+      </div>
+      
+      <button class="btn btn-teal" id="confirmAvatarBtn" onclick="confirmAvatar()" disabled style="width:100%;">Set Avatar</button>
+    </div>
+  </div>
+
+  <style>
+    .avatar-option:hover { transform: scale(1.1); }
+    .avatar-option.selected { border-color: #10b981 !important; transform: scale(1.1); box-shadow: 0 0 15px rgba(16,185,129,0.4); }
+  </style>
+
+  <script>
+    let tempSelectedAvatar = null;
+    function selectAvatar(imgElement, src) {
+      document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected'));
+      imgElement.classList.add('selected');
+      tempSelectedAvatar = src;
+      document.getElementById('confirmAvatarBtn').disabled = false;
+    }
+    
+    function confirmAvatar() {
+      if(!tempSelectedAvatar) return;
+      localStorage.setItem('wc_avatar', tempSelectedAvatar);
+      if(window.currentUser) {
+        window.currentUser.avatar = tempSelectedAvatar;
+        window.updateAuthUI();
+      }
+      document.getElementById('avatarModal').style.display = 'none';
+    }
+  </script>
+
   <footer class="footer" style="background:#050a15; border-top: 1px solid #1f2937;">
     <div class="container text-center">
       <p>© 2026 Next Gen Innovations. Predict & Win terms apply.</p>
@@ -216,7 +261,7 @@
   <!-- FIREBASE AUTHENTICATION SCRIPT -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD3kNGE9vXgnDvbg0J3QcPz5Ainff3_nRc",
@@ -233,36 +278,53 @@
     const googleProvider = new GoogleAuthProvider();
     const facebookProvider = new FacebookAuthProvider();
 
-    window.wcLogin = async (providerName) => {
-      try {
-        const provider = providerName === 'google' ? googleProvider : facebookProvider;
-        const result = await signInWithPopup(auth, provider);
-        const user = result.user;
+    // Listen to persistent auth state
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
         const idToken = await user.getIdToken();
         
-        // Authenticate with our PostgreSQL backend
-        const res = await fetch('/api/worldcup/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ idToken })
-        });
-        
+        // Authenticate with our PostgreSQL backend implicitly
         let points = 0;
-        if (res.ok) {
-          const data = await res.json();
-          points = data.points;
-        } else {
-          console.error("Backend login failed");
+        try {
+          const res = await fetch('/api/worldcup/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            points = data.points || 0;
+          }
+        } catch (err) {
+          console.error("Silent backend login failed", err);
         }
+
+        const savedAvatar = localStorage.getItem('wc_avatar');
         
         window.currentUser = {
           name: user.displayName || "Predictor",
-          avatar: user.photoURL || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + user.uid,
+          avatar: savedAvatar || user.photoURL || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + user.uid,
           points: points,
           idToken: idToken
         };
         
         window.updateAuthUI();
+
+        // Show avatar picker if not chosen yet
+        if (!savedAvatar) {
+          document.getElementById('avatarModal').style.display = 'flex';
+        }
+      } else {
+        window.currentUser = null;
+        window.updateAuthUI();
+      }
+    });
+
+    window.wcLogin = async (providerName) => {
+      try {
+        const provider = providerName === 'google' ? googleProvider : facebookProvider;
+        await signInWithPopup(auth, provider);
+        // onAuthStateChanged will handle the rest
       } catch (error) {
         console.error("Firebase Auth Error:", error);
         alert('Authentication failed: ' + error.message);
@@ -272,8 +334,7 @@
     window.wcLogout = async () => {
       try {
         await signOut(auth);
-        window.currentUser = null;
-        window.updateAuthUI();
+        localStorage.removeItem('wc_avatar');
       } catch (error) {
         console.error("Firebase Signout Error:", error);
       }
