@@ -72,6 +72,8 @@
         <li class="active" onclick="switchWCTab('arena')">Predictor Arena</li>
         <li onclick="switchWCTab('fixtures')">Fixtures & Results</li>
         <li onclick="switchWCTab('standings')">Group Standings</li>
+        <li onclick="switchWCTab('leaderboard')">Leaderboard</li>
+        <li onclick="switchWCTab('spinwheel')">Lucky Spin Wheel</li>
       </ul>
     </div>
   </div>
@@ -93,47 +95,48 @@
           </div>
         </div>
 
-        <!-- RIGHT: LEADERBOARD & SPIN WHEEL -->
-        <div class="wc-sidebar">
-
-          <!-- SPIN WHEEL (Daily Winner) -->
-          <div class="wc-card spin-wheel-card">
-            <h3>Yesterday's Lucky Winner</h3>
-            <p style="font-size: 0.85rem; color: #6b7280; margin-bottom: 15px;">Exact score predictors enter the spin
-              wheel for a daily 100 NPR recharge!</p>
-
-            <div class="wheel-container">
-              <div class="wheel" id="spinWheel">
-                <!-- Segments generated in JS -->
-              </div>
-              <div class="wheel-pointer"></div>
-            </div>
-
-            <div class="wheel-controls" style="text-align: center; margin-top: 20px;">
-              <button class="btn btn-teal btn-sm" id="spinBtn" onclick="spinTheWheel()" style="width:100%;"
-                disabled>Waiting for Admin...</button>
-              <div id="winnerDisplay" class="winner-display" style="display:none;">
-                🎉 Winner: <strong id="winnerText"></strong>!
-              </div>
-            </div>
-          </div>
-
-          <!-- LEADERBOARD -->
-          <div class="wc-card leaderboard-card" style="margin-top: 30px;">
-            <h3>Top 5 Predictors</h3>
-            <p style="font-size: 0.85rem; color: #6b7280; margin-bottom: 15px;">Grand Prize: Smartwatch + Next Gen
-              T-Shirt</p>
-
-            <ul class="leaderboard-list" id="leaderboardList">
-              <!-- Populated by JS -->
-            </ul>
-          </div>
-
         </div>
       </div>
-
     </div>
   </section>
+
+  <!-- LEADERBOARD (Tab 4) -->
+  <section class="section wc-section tab-content" id="tab_leaderboard" style="display:none;">
+    <div class="container" style="max-width: 800px; margin: 0 auto;">
+      <div class="wc-card leaderboard-card">
+        <h2 style="font-size:1.8rem; margin-bottom: 5px;">🏆 Top Predictors</h2>
+        <p style="font-size: 1rem; color: #6b7280; margin-bottom: 25px;">Grand Prize: Smartwatch + Next Gen T-Shirt</p>
+        <ul class="leaderboard-list" id="leaderboardList">
+          <!-- Populated by JS -->
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPIN WHEEL (Tab 5) -->
+  <section class="section wc-section tab-content" id="tab_spinwheel" style="display:none;">
+    <div class="container" style="max-width: 600px; margin: 0 auto;">
+      <div class="wc-card spin-wheel-card" style="text-align: center; padding: 40px 20px;">
+        <h2 style="font-size: 2rem; color: #f59e0b; margin-bottom: 5px;">🎡 Yesterday's Lucky Winner</h2>
+        <p style="font-size: 1rem; color: #6b7280; margin-bottom: 30px;">Exact score predictors enter the spin wheel for a daily 100 NPR recharge!</p>
+
+        <div class="wheel-container enhanced-wheel">
+          <div class="wheel" id="spinWheel">
+            <!-- Segments generated in JS -->
+          </div>
+          <div class="wheel-pointer"></div>
+        </div>
+
+        <div class="wheel-controls" style="text-align: center; margin-top: 30px;">
+          <button class="btn btn-teal btn-lg wheel-btn" id="spinBtn" onclick="spinTheWheel()" style="width:100%; max-width: 300px; font-size: 1.2rem; padding: 15px;" disabled>Waiting for Admin...</button>
+          <div id="winnerDisplay" class="winner-display" style="display:none; font-size: 1.5rem; margin-top: 20px; background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 12px; border: 2px solid #10b981;">
+            🎉 Winner: <strong id="winnerText" style="color: #059669;"></strong>!
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 
   <!-- FIXTURES & RESULTS (Tab 2) -->
   <section class="section wc-section tab-content" id="tab_fixtures" style="display:none;">

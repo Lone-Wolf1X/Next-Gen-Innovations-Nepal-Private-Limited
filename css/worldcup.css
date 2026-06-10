@@ -518,3 +518,55 @@ body.worldcup-theme {
 .share-card-preview h4 { font-size: 1.5rem; margin-bottom: 10px; text-transform: uppercase; }
 .share-match { font-size: 1.2rem; font-weight: 800; margin-bottom: 5px; }
 .share-pred { font-size: 2.5rem; font-weight: 900; background: rgba(0,0,0,0.3); display:inline-block; padding: 5px 20px; border-radius: 8px; }
+
+/* =========================================================
+   ENHANCED SPIN WHEEL UI
+   ========================================================= */
+.enhanced-wheel {
+  border: 10px solid #f59e0b;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.5), inset 0 0 15px rgba(0,0,0,0.3);
+  position: relative;
+  background: #1f2937;
+  overflow: visible !important;
+}
+
+.enhanced-wheel::before {
+  content: '';
+  position: absolute;
+  inset: -15px;
+  border: 2px dashed rgba(245, 158, 11, 0.4);
+  border-radius: 50%;
+  animation: rotate-slow 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rotate-slow {
+  100% { transform: rotate(360deg); }
+}
+
+.wheel-pointer {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 30px solid #ef4444;
+  z-index: 10;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+
+.wheel-pointer::after {
+  content: '';
+  position: absolute;
+  top: -30px;
+  left: -10px;
+  width: 20px;
+  height: 20px;
+  background: #b91c1c;
+  border-radius: 50%;
+  border: 2px solid white;
+}

@@ -237,7 +237,7 @@ async function fetchStandings() {
               <tr style="border-bottom: 1px solid #eee;">
                 <td style="padding: 8px 4px; display:flex; align-items:center; gap:8px;">
                   <img src="${flag}" style="width:24px; height:16px; border-radius:2px; border:1px solid #ddd; object-fit:cover;">
-                  <span style="font-weight:600; color:#111827;">${team.abbreviation}</span>
+                  <span style="font-weight:600; color:#111827;">${team.displayName || team.name}</span>
                 </td>
                 <td style="padding: 8px 4px; text-align:center;">${p}</td>
                 <td style="padding: 8px 4px; text-align:center;">${w}</td>
