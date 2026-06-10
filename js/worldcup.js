@@ -328,7 +328,7 @@ async function fetchFixtures() {
               </div>
             </div>
             
-            <button class="btn btn-outline" style="width:100%; border-color: rgba(255,255,255,0.2); color: #fff;" onclick="viewLineup('${e.id}', '${nameA.replace(/'/g, "\\'")}', '${nameB.replace(/'/g, "\\'")}')">View Match Details</button>
+            <button class="btn btn-outline" style="width:100%; border-color: #10b981; color: #10b981;" onclick="viewLineup('${e.id}', '${nameA.replace(/'/g, "\\'")}', '${nameB.replace(/'/g, "\\'")}')">View Match Details</button>
           </div>
         `;
       });
