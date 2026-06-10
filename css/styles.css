@@ -7,11 +7,11 @@
 
 /* ─── CSS TOKENS ─────────────────────────────────────────── */
 :root {
-  --navy:       #0F1C3F;
-  --indigo:     #1A348A;
-  --indigo-mid: #2a4bc4;
-  --teal:       #00C9B1;
-  --teal-light: #00e5cf;
+  --navy:       #0B1120;
+  --indigo:     #2563EB;
+  --indigo-mid: #3B82F6;
+  --teal:       #10B981;
+  --teal-light: #34D399;
   --white:      #FFFFFF;
   --off-white:  #F4F7FF;
   --surface:    #EEF2FF;
