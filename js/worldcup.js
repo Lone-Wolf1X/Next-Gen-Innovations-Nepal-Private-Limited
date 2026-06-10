@@ -388,54 +388,8 @@ async function lockPrediction(matchId, teamA, teamB) {
 }
 
 // --- LINEUPS & DETAILS ---
-window.viewLineup = async function(matchId, teamAName, teamBName) {
-  document.getElementById('lineupModal').style.display = 'flex';
-  const content = document.getElementById('lineupContent');
-  content.innerHTML = `<div style="text-align:center; padding:40px;"><p style="color:#6b7280;">Loading ESPN Match Data for ${teamAName} vs ${teamBName}... ⏳</p></div>`;
-  
-  try {
-    const response = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary?event=${matchId}`);
-    const data = await response.json();
-    
-    // Parse lineups or roster if available
-    let lineupHtml = '';
-    if (data.rosters && data.rosters.length > 0) {
-      data.rosters.forEach(roster => {
-        lineupHtml += `<h4 style="color:#111827; margin-top:20px; margin-bottom:10px; border-bottom:1px solid #e5e7eb; padding-bottom:5px;">${roster.team.displayName} Roster</h4>`;
-        lineupHtml += `<ul style="list-style:none; padding:0; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">`;
-        if (roster.roster && roster.roster.length > 0) {
-          roster.roster.forEach(player => {
-            lineupHtml += `<li style="font-size:0.9rem; color:#4b5563; background: #f3f4f6; padding: 5px 10px; border-radius:4px;">⚽ ${player.athlete.displayName} <span style="color:#9ca3af; font-size:0.8rem;">(${player.position.abbreviation})</span></li>`;
-          });
-        } else {
-          lineupHtml += `<li style="font-size:0.9rem; color:#9ca3af;">Roster not announced yet.</li>`;
-        }
-        lineupHtml += `</ul>`;
-      });
-    } else {
-      lineupHtml += `<div style="padding:20px; background:#fef3c7; color:#d97706; border-radius:8px; margin-top:10px;">Official Lineups have not been released by ESPN yet. Please check back closer to kickoff!</div>`;
-    }
-
-    // Add match info
-    const status = data.header.competitions[0].status.type.detail;
-    const venue = data.gameInfo?.venue?.fullName || "TBD";
-    
-    content.innerHTML = `
-      <div style="margin-bottom: 20px; text-align: center; background: rgba(16, 185, 129, 0.1); padding: 10px; border-radius: 8px;">
-        <h4 style="color:#059669; margin:0;">${status}</h4>
-        <p style="margin:5px 0 0; font-size:0.85rem; color:#4b5563;">🏟️ Venue: ${venue}</p>
-      </div>
-      ${lineupHtml}
-    `;
-    
-  } catch (err) {
-    console.error(err);
-    content.innerHTML = `<div style="text-align:center; padding:40px;"><p style="color:#ef4444;">Could not load match details right now. Please try again later.</p></div>`;
-  }
-}
-
-window.closeLineupModal = function() {
-  document.getElementById('lineupModal').style.display = 'none';
+window.viewLineup = function(matchId, teamAName, teamBName) {
+  window.location.href = `match-details.html?id=${matchId}`;
 }
 
 function closeShareModal() {
