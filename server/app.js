@@ -297,7 +297,11 @@ async function initDBs() {
         await pool.query(`
             ALTER TABLE admin_auth ADD COLUMN IF NOT EXISTS email VARCHAR(255);
         `);
-
+    } catch(err) {
+        console.warn("Skipping admin_auth alter (may lack permissions):", err.message);
+    }
+    
+    try {
         // World Cup Table
         await pool.query(`
             CREATE TABLE IF NOT EXISTS worldcup_users (

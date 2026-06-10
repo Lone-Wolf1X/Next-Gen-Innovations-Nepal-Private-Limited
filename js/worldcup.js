@@ -482,8 +482,8 @@ async function initSpinWheel() {
     } catch(e) {}
   }
 
-  // Pick top users or fallbacks
-  activeWheelNames = globalLeaderboard.slice(0, 8).map(u => u.name);
+  // Get top 8 players for the spin wheel segments
+  activeWheelNames = Array.isArray(globalLeaderboard) ? globalLeaderboard.slice(0, 8).map(u => u.name) : [];
   if (activeWheelNames.length === 0) {
     activeWheelNames = ['Predict to Win!', 'No Players Yet', 'Join Arena', 'Wait for Matches'];
     spinBtn.disabled = true;
