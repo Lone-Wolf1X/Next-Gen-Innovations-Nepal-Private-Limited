@@ -138,11 +138,11 @@ body.worldcup-theme .container {
   flex-direction: column;
 }
 .lb-user-name {
-  color: #f8fafc; /* White for dark theme */
+  color: var(--text-main); /* Default to dark text */
   font-weight: 700;
 }
 .lb-user-country {
-  color: #94a3b8; /* Light gray for dark theme */
+  color: var(--text-muted); /* Default to dark muted text */
   font-size: 0.8rem;
 }
 body.dashboard-active .lb-user-name {
@@ -1125,4 +1125,21 @@ body.dashboard-active .wc-tabs li.active {
 .wc-tabs::-webkit-scrollbar-thumb {
   background: rgba(15, 28, 63, 0.1);
   border-radius: 10px;
+}
+
+/* Standings Grid Alignments */
+.standings-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+@media (max-width: 992px) {
+  .standings-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .standings-grid {
+    grid-template-columns: 1fr;
+  }
 }

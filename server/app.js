@@ -383,25 +383,34 @@ const transporter = nodemailer.createTransport({
 async function runWorldCupDraw() {
     console.log("🕛 [DRAW] Starting Live 12 PM Draw & Match Resolution...");
     try {
-        const response = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard');
+        // Fetch teams first to map names
+        const teamsResponse = await fetch('https://worldcup26.ir/get/teams');
+        const teamsData = await teamsResponse.json();
+        const teamsMap = {};
+        if (teamsData && teamsData.teams) {
+            teamsData.teams.forEach(t => {
+                teamsMap[t.id] = t;
+            });
+        }
+
+        const response = await fetch('https://worldcup26.ir/get/games');
         const data = await response.json();
         
-        if (!data || !data.events || data.events.length === 0) {
-            console.log("⚠️ [DRAW] No matches found on ESPN today.");
+        if (!data || !data.games || data.games.length === 0) {
+            console.log("⚠️ [DRAW] No matches found on games API today.");
             return;
         }
 
-        for (const e of data.events) {
-            const isCompleted = e.status.type.completed;
+        for (const e of data.games) {
+            const isCompleted = (e.finished === "TRUE" || e.time_elapsed === "finished");
             if (isCompleted) {
-                const matchId = e.id;
-                const comp = e.competitions[0];
-                const teamA = comp.competitors[0];
-                const teamB = comp.competitors[1];
-                const nameA = teamA.team.displayName || teamA.team.name;
-                const nameB = teamB.team.displayName || teamB.team.name;
-                const scoreA = parseInt(teamA.score, 10);
-                const scoreB = parseInt(teamB.score, 10);
+                const matchId = String(e.id);
+                const teamA = teamsMap[e.home_team_id];
+                const teamB = teamsMap[e.away_team_id];
+                const nameA = teamA ? teamA.name_en : (e.home_team_name_en || e.home_team_label || 'TBD');
+                const nameB = teamB ? teamB.name_en : (e.away_team_name_en || e.away_team_label || 'TBD');
+                const scoreA = parseInt(e.home_score, 10);
+                const scoreB = parseInt(e.away_score, 10);
                 const matchName = `${nameA} vs ${nameB}`;
 
                 console.log(`⚽ [DRAW] Match Completed: ${matchName} (Official score: ${scoreA} - ${scoreB})`);
@@ -478,7 +487,7 @@ async function runWorldCupDraw() {
                         html: '<div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 10px; background-color: #f9fafb;">\n' +
                               '    <h2 style="color: #10b981; text-align: center;">🎉 You are the Daily Draw Winner!</h2>\n' +
                               '    <p>Hi <b>' + escapeHtml(winner.name) + '</b>,</p>\n' +
-                              '    <p>Your exact-score prediction for <b>' + escapeHtml(matchName) + '</b> (Score: ' + escapeHtml(scoreA) + '-' + escapeHtml(scoreB) + ') was correct, and you have been drawn as the **Lucky Daily Winner**!</p>\n' +
+                              '    <p>Your exact-score prediction for <b>' + escapeHtml(matchName) + '</b> (Score: ' + scoreA + '-' + scoreB + ') was correct, and you have been drawn as the **Lucky Daily Winner**!</p>\n' +
                               '    <p>🏆 <b>Your Prize:</b> ' + escapeHtml(finalPrize) + '</p>\n' +
                               '    <p>Please reply to this email with your contact / delivery details to claim your prize.</p>\n' +
                               '    <br>\n' +
@@ -736,6 +745,28 @@ app.post('/api/worldcup/predict', async (req, res) => {
         const userRes = await pool.query('SELECT id FROM worldcup_users WHERE firebase_uid = $1', [uid]);
         if (userRes.rows.length === 0) return res.status(404).json({ error: 'User not found' });
         const userId = userRes.rows[0].id;
+
+        // Check match time limits (5-minute lock before kickoff)
+        const gamesRes = await fetch('https://worldcup26.ir/get/games');
+        const gamesData = await gamesRes.json();
+        const game = gamesData.games.find(g => String(g.id) === String(matchId));
+        if (!game) {
+            return res.status(404).json({ error: 'Match not found' });
+        }
+
+        const matchTime = new Date(game.local_date).getTime();
+        const now = Date.now();
+        const isLocked = isNaN(matchTime) || (matchTime - now <= 300000) || game.finished === "TRUE" || game.time_elapsed !== "notstarted";
+        if (isLocked) {
+            return res.status(400).json({ error: 'Predictions for this match are locked (closes 5 minutes before kickoff).' });
+        }
+
+        // Check if user has already predicted this match
+        const checkPred = await pool.query(
+            'SELECT 1 FROM worldcup_predictions WHERE user_id = $1 AND match_id = $2',
+            [userId, matchId]
+        );
+        const isNewPrediction = checkPred.rows.length === 0;
         
         await pool.query(`
             INSERT INTO worldcup_predictions (user_id, match_id, score_a, score_b)
@@ -743,8 +774,14 @@ app.post('/api/worldcup/predict', async (req, res) => {
             ON CONFLICT (user_id, match_id)
             DO UPDATE SET score_a = EXCLUDED.score_a, score_b = EXCLUDED.score_b
         `, [userId, matchId, scoreA, scoreB]);
+
+        if (isNewPrediction) {
+            await pool.query('UPDATE worldcup_users SET points = points + 10 WHERE id = $1', [userId]);
+            console.log(`Awarded +10 points to user ${userId} for new prediction on match ${matchId}`);
+        }
         
-        res.json({ success: true });
+        const pointsRes = await pool.query('SELECT points FROM worldcup_users WHERE id = $1', [userId]);
+        res.json({ success: true, points: pointsRes.rows[0].points });
     } catch (err) {
         console.error("Prediction Error:", err.message);
         res.status(500).json({ error: err.message });
@@ -792,7 +829,15 @@ app.get('/api/worldcup/users', checkAuth, async (_req, res) => {
 
 app.get('/api/worldcup/leaderboard', async (_req, res) => {
     try {
-        const result = await pool.query('SELECT name, points, country FROM worldcup_users ORDER BY points DESC LIMIT 50');
+        const result = await pool.query(`
+            SELECT u.name, u.points, u.country 
+            FROM worldcup_users u
+            WHERE EXISTS (
+                SELECT 1 FROM worldcup_predictions p WHERE p.user_id = u.id
+            )
+            ORDER BY u.points DESC 
+            LIMIT 50
+        `);
         res.json(result.rows);
     } catch(err) { res.status(500).json({ error: err.message }); }
 });

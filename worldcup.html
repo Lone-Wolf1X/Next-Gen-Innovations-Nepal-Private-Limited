@@ -399,27 +399,26 @@
     .avatar-wrapper.selected .avatar-option { border-color: #fff !important; box-shadow: 0 0 0 4px #10b981; }
     .avatar-wrapper.selected { transform: scale(1.1); }
     
-    /* Google Match Card Styles */
+    /* Google Match Card Styles (Default Light Theme) */
     .google-match-card {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: #ffffff;
+      border: 1px solid rgba(15, 28, 63, 0.08);
       border-radius: 16px;
       padding: 20px;
       margin-bottom: 20px;
-      backdrop-filter: blur(10px);
       font-family: 'Outfit', sans-serif;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 15px rgba(15, 28, 63, 0.04);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
     .google-match-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 8px 25px rgba(15, 28, 63, 0.08);
     }
     
     .match-header {
       display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 15px; font-size: 0.85rem; color: #94a3b8;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 10px;
+      margin-bottom: 15px; font-size: 0.85rem; color: #64748b;
+      border-bottom: 1px solid rgba(15, 28, 63, 0.08); padding-bottom: 10px;
     }
     .match-status.live { color: #ef4444; font-weight: bold; animation: pulse 2s infinite; }
     .match-status.ft { color: #10b981; font-weight: bold; }
@@ -434,18 +433,18 @@
     }
     .team-logo {
       width: 55px; height: 55px; border-radius: 50%; object-fit: cover;
-      border: 2px solid rgba(255, 255, 255, 0.1); background: #f8fafc;
+      border: 2px solid rgba(15, 28, 63, 0.08); background: #f8fafc;
       padding: 2px;
     }
-    .team-name { font-weight: 700; font-size: 1rem; color: #f8fafc; text-align: center; }
+    .team-name { font-weight: 700; font-size: 1rem; color: #0F1C3F; text-align: center; }
     
     .score-block {
-      display: flex; align-items: center; gap: 15px; font-size: 2.5rem; font-weight: 800; color: #fff;
+      display: flex; align-items: center; gap: 15px; font-size: 2.5rem; font-weight: 800; color: #0F1C3F;
     }
     
     .timeline {
-      margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.1);
-      font-size: 0.8rem; color: #cbd5e1; display: flex; justify-content: space-between;
+      margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(15, 28, 63, 0.08);
+      font-size: 0.8rem; color: #475569; display: flex; justify-content: space-between;
     }
     .timeline-team { display: flex; flex-direction: column; gap: 4px; width: 45%; }
     .timeline-team.right { text-align: right; }
@@ -455,8 +454,8 @@
     .prediction-inputs { display: flex; align-items: center; gap: 10px; justify-content: center;}
     .prediction-inputs input {
       width: 50px; height: 50px; font-size: 1.5rem; font-weight:bold; text-align: center;
-      background: rgba(0,0,0,0.4); border: 2px solid rgba(255,255,255,0.2);
-      color: #fff; border-radius: 8px; outline: none; transition: 0.2s;
+      background: #f8fafc; border: 2px solid #cbd5e1;
+      color: #0F1C3F; border-radius: 8px; outline: none; transition: 0.2s;
     }
     .prediction-inputs input:focus { border-color: #10b981; }
     
@@ -473,46 +472,39 @@
       .match-header { font-size: 0.75rem; }
     }
     
-    /* Dashboard Active Override (White Background Fix) */
-    body.dashboard-active .google-match-card {
-      background: #ffffff;
-      border: 1px solid rgba(15, 28, 63, 0.08);
-      box-shadow: 0 4px 15px rgba(15, 28, 63, 0.04);
-    }
-    body.dashboard-active .google-match-card:hover {
-      box-shadow: 0 8px 25px rgba(15, 28, 63, 0.08);
-    }
-    body.dashboard-active .google-match-card .team-name,
-    body.dashboard-active .google-match-card .score-block {
-      color: #0F1C3F; /* var(--navy) */
-    }
-    body.dashboard-active .google-match-card .match-header {
-      color: #64748b;
-      border-bottom: 1px solid rgba(15, 28, 63, 0.08);
-    }
-    body.dashboard-active .google-match-card .timeline {
-      color: #475569;
-      border-top: 1px solid rgba(15, 28, 63, 0.08);
-    }
-    body.dashboard-active .google-match-card .prediction-inputs input {
-      background: #f8fafc;
-      border: 2px solid #cbd5e1;
-      color: #0F1C3F;
-    }
-    
-    /* Notification Panel CSS */
+    /* Notification Panel CSS (Premium White Glassmorphic) */
     .nav-notif-bell { font-size: 1.4rem; text-decoration: none; position: relative; display: flex; align-items: center; justify-content: center; }
     .notif-badge { position: absolute; top: -5px; right: -8px; background: #ef4444; color: white; font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 10px; border: 2px solid #0F1C3F; }
-    .notif-panel { position: absolute; top: 50px; right: 0; width: 320px; max-height: 400px; overflow-y: auto; z-index: 2000; padding: 0; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-    .notif-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); }
-    .close-notif { background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; }
-    .close-notif:hover { color: #fff; }
-    .notif-item { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; gap: 10px; align-items: flex-start; }
-    .notif-item:hover { background: rgba(255,255,255,0.05); }
+    .notif-panel {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      width: 320px;
+      max-height: 400px;
+      overflow-y: auto;
+      z-index: 2000;
+      padding: 0;
+      box-shadow: 0 10px 30px rgba(15, 28, 63, 0.1);
+      background: #ffffff !important;
+      border: 1px solid rgba(15, 28, 63, 0.08);
+      border-radius: 12px;
+    }
+    .notif-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid rgba(15, 28, 63, 0.08);
+      background: #f8fafc;
+    }
+    .close-notif { background: none; border: none; color: #64748b; font-size: 1.5rem; cursor: pointer; }
+    .close-notif:hover { color: #0f1c3f; }
+    .notif-item { padding: 12px 15px; border-bottom: 1px solid rgba(15, 28, 63, 0.05); display: flex; gap: 10px; align-items: flex-start; }
+    .notif-item:hover { background: #f8fafc; }
     .notif-item:last-child { border-bottom: none; }
     .notif-icon { font-size: 1.5rem; }
-    .notif-content h5 { margin: 0 0 5px 0; color: #fff; font-size: 0.95rem; }
-    .notif-content p { margin: 0; color: #cbd5e1; font-size: 0.85rem; line-height: 1.4; }
+    .notif-content h5 { margin: 0 0 5px 0; color: #0F1C3F; font-size: 0.95rem; }
+    .notif-content p { margin: 0; color: #475569; font-size: 0.85rem; line-height: 1.4; }
     .notif-time { display: block; color: #64748b; font-size: 0.75rem; margin-top: 4px; }
   </style>
 

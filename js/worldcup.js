@@ -77,6 +77,23 @@ function switchWCTab(tabId) {
   }
 }
 
+function parseApiDate(dateStr) {
+  if (!dateStr) return null;
+  const parts = dateStr.split(' ');
+  if (parts.length < 2) return null;
+  const dateParts = parts[0].split('/');
+  const timeParts = parts[1].split(':');
+  if (dateParts.length < 3 || timeParts.length < 2) return null;
+  
+  const month = parseInt(dateParts[0], 10) - 1;
+  const day = parseInt(dateParts[1], 10);
+  const year = parseInt(dateParts[2], 10);
+  const hour = parseInt(timeParts[0], 10);
+  const minute = parseInt(timeParts[1], 10);
+  
+  return new Date(year, month, day, hour, minute);
+}
+
 // --- WORLD CUP 2026 API DATA ---
 let apiTeams = {};
 
@@ -193,8 +210,8 @@ async function fetchRealMatches() {
         }
 
         // The API provides local_date as "MM/DD/YYYY HH:mm"
-        let parsedDate = new Date(e.local_date);
-        let rawDateStr = isNaN(parsedDate.getTime()) ? null : parsedDate.toISOString();
+        let parsedDate = parseApiDate(e.local_date);
+        let rawDateStr = parsedDate && !isNaN(parsedDate.getTime()) ? parsedDate.toISOString() : null;
         let timeStr = e.local_date ? e.local_date.split(' ')[1] : 'TBD';
 
         return {
@@ -277,13 +294,8 @@ window.updateAuthUI = function() {
     heroTitle.innerHTML = `My Prediction <span class="highlight-green">Dashboard</span>`;
     heroSubtitle.innerHTML = `Lock in your predictions below and climb the leaderboard to win the Grand Prize.`;
     
-    // Enable all prediction buttons
-    document.querySelectorAll('.btn-lock').forEach(btn => {
-      if(btn.innerText.includes('Login')) {
-        btn.disabled = false;
-        btn.innerText = 'Lock Prediction';
-      }
-    });
+    // Re-render matches to reflect logged in state and correct locked buttons
+    renderMatches();
 
     // Referral card display
     if (referralCard) {
@@ -303,14 +315,8 @@ window.updateAuthUI = function() {
     heroTitle.innerHTML = `World Cup Feat <span class="highlight-green">2026</span>`;
     heroSubtitle.innerHTML = `World Cup Feat, organized by Next Gen, ma swagat chha! Yaha match details sab herna sakinchha, saathai predict garera dynamic prize pool direct jitna sakinchha!`;
     
-    // Disable all prediction buttons
-    document.querySelectorAll('.btn-lock').forEach(btn => {
-      if(!btn.classList.contains('locked')) {
-        btn.disabled = true;
-        btn.innerText = 'Login to Predict';
-        btn.style.background = '';
-      }
-    });
+    // Re-render matches to reflect logged out state
+    renderMatches();
 
     if (referralCard) referralCard.style.display = 'none';
     updateMilestoneTexts(true);
@@ -445,19 +451,33 @@ async function submitConsent(wantsNotifications) {
   }
 }
 
+function isMatchPredictionLocked(m) {
+  if (m.status !== 'upcoming') return true;
+  if (!m.rawDate) return false;
+  const matchTime = new Date(m.rawDate).getTime();
+  const now = Date.now();
+  // Lock exactly 5 minutes (300,000 ms) before kickoff
+  return (matchTime - now <= 300000);
+}
+
 // --- RENDER MATCHES & COUNTDOWN ---
 function renderMatches() {
   const container = document.getElementById('matchesContainer');
   let html = '';
 
-  const now = Date.now();
-
   matchesToRender.forEach(m => {
-    const hasStarted = m.status !== 'upcoming';
-    const disabledAttr = hasStarted ? 'disabled' : '';
-    const btnText = hasStarted ? 'Match Started (Locked)' : 'Login to Predict';
-    const btnClass = hasStarted ? 'btn-lock locked' : 'btn-lock';
-    const bgStyle = hasStarted ? 'background: #94a3b8; cursor: not-allowed; box-shadow: none;' : '';
+    const isLocked = isMatchPredictionLocked(m);
+    const disabledAttr = (isLocked || !window.currentUser) ? 'disabled' : '';
+    
+    let btnText = 'Login to Predict';
+    if (isLocked) {
+      btnText = 'Match Started (Locked)';
+    } else if (window.currentUser) {
+      btnText = 'Lock Prediction';
+    }
+
+    const btnClass = isLocked ? 'btn-lock locked' : 'btn-lock';
+    const bgStyle = isLocked ? 'background: #94a3b8; cursor: not-allowed; box-shadow: none;' : '';
 
     html += `
       <div class="match-card" data-date="${m.rawDate}">
@@ -481,7 +501,7 @@ function renderMatches() {
         </div>
         <div class="prediction-inputs">
           <input type="number" id="scoreA_${m.id}" class="score-input" min="0" max="15" value="0" ${disabledAttr}>
-          <button class="${btnClass}" id="btn_${m.id}" style="${bgStyle}" onclick="lockPrediction('${m.id}', '${m.teamA.replace(/'/g, "\\'")}', '${m.teamB.replace(/'/g, "\\'")}')" disabled>${btnText}</button>
+          <button class="${btnClass}" id="btn_${m.id}" style="${bgStyle}" onclick="lockPrediction('${m.id}', '${m.teamA.replace(/'/g, "\\'")}', '${m.teamB.replace(/'/g, "\\'")}')" ${disabledAttr}>${btnText}</button>
           <input type="number" id="scoreB_${m.id}" class="score-input" min="0" max="15" value="0" ${disabledAttr}>
         </div>
       </div>
@@ -552,7 +572,7 @@ async function fetchStandings() {
     const data = await res.json();
     
     if (data && data.groups && data.groups.length > 0) {
-      let html = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">';
+      let html = '<div class="standings-grid">';
       
       data.groups.forEach(group => {
         html += '\n<div class="wc-card" style="margin-bottom: 20px;">\n' +
@@ -708,7 +728,18 @@ async function lockPrediction(matchId, teamA, teamB) {
       })
     });
 
-    if (!res.ok) throw new Error("Failed to save prediction");
+    if (!res.ok) {
+      const errData = await res.json();
+      throw new Error(errData.error || "Failed to save prediction");
+    }
+
+    const resData = await res.json();
+    if (resData.points !== undefined) {
+      window.currentUser.points = resData.points;
+      if (document.getElementById('dashPoints')) {
+        document.getElementById('dashPoints').innerText = resData.points;
+      }
+    }
 
     // Re-fetch draw status to update current predictor counts
     await fetchDrawStatus();
@@ -728,7 +759,7 @@ async function lockPrediction(matchId, teamA, teamB) {
     document.getElementById('shareModal').style.display = 'flex';
   } catch (error) {
     console.error(error);
-    alert("Error saving prediction. Please try again.");
+    alert(error.message || "Error saving prediction. Please try again.");
     btn.innerHTML = originalText;
     btn.disabled = false;
   }
