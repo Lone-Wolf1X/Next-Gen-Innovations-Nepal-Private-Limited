@@ -77,39 +77,104 @@ function switchWCTab(tabId) {
   }
 }
 
-// --- FETCH REAL DATA FROM ESPN API ---
-async function fetchRealMatches() {
-  try {
-    const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard');
-    const data = await res.json();
-    
-    if (data && data.events && data.events.length > 0) {
-      matchesToRender = data.events.map((e, index) => {
-        const teamA = e.competitions[0].competitors[0];
-        const teamB = e.competitions[0].competitors[1];
-        return {
-          id: 'real_' + index,
-          rawId: e.id,
-          teamA: teamA.team.displayName || teamA.team.name,
-          flagA: teamA.team.logo || 'https://flagcdn.com/w160/un.png',
-          teamB: teamB.team.displayName || teamB.team.name,
-          flagB: teamB.team.logo || 'https://flagcdn.com/w160/un.png',
-          rawDate: e.date,
-          time: new Date(e.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + ' NPT',
-          status: e.status.type.shortDetail
-        };
-      });
-      document.querySelector('.live-pulse').innerText = 'LIVE ESPN DATA';
-    } else {
-      matchesToRender = [];
-      document.querySelector('.live-pulse').innerText = 'NO MATCHES TODAY';
-      document.querySelector('.live-pulse').style.background = '#6b7280';
-    }
-  } catch (err) {
-    console.error("Failed to fetch real data", err);
-    matchesToRender = [];
-    document.querySelector('.live-pulse').innerText = 'API UNAVAILABLE';
+// --- FAST LOCAL MATCH DATA (MOCK FOR 2026 WORLD CUP) ---
+const WORLD_CUP_MATCHES = [
+  {
+    id: "m1", dateStr: "Tomorrow, 8:45 PM NPT", status: "upcoming", statusText: "Upcoming",
+    teamA: "Argentina", flagA: "https://flagcdn.com/w160/ar.png", scoreA: null,
+    teamB: "France", flagB: "https://flagcdn.com/w160/fr.png", scoreB: null,
+    events: []
+  },
+  {
+    id: "m2", dateStr: "Today", status: "live", statusText: "Live 72'",
+    teamA: "Brazil", flagA: "https://flagcdn.com/w160/br.png", scoreA: 2,
+    teamB: "Spain", flagB: "https://flagcdn.com/w160/es.png", scoreB: 1,
+    events: [
+      { team: 'A', text: "Vinicius Jr. 23'" },
+      { team: 'A', text: "Rodrygo 45+1'" },
+      { team: 'B', text: "Morata 56'" }
+    ]
+  },
+  {
+    id: "m3", dateStr: "Yesterday", status: "ft", statusText: "Full Time",
+    teamA: "Nepal", flagA: "https://flagcdn.com/w160/np.png", scoreA: 1,
+    teamB: "India", flagB: "https://flagcdn.com/w160/in.png", scoreB: 0,
+    events: [
+      { team: 'A', text: "Bista 89' ⚽" }
+    ]
+  },
+  {
+    id: "m4", dateStr: "Next Week", status: "upcoming", statusText: "Upcoming",
+    teamA: "Germany", flagA: "https://flagcdn.com/w160/de.png", scoreA: null,
+    teamB: "England", flagB: "https://flagcdn.com/w160/gb-eng.png", scoreB: null,
+    events: []
   }
+];
+
+function buildGoogleMatchCard(m, isPredictable = false) {
+  let statusClass = m.status;
+  let scoreHtml = '';
+  
+  if (isPredictable && m.status === 'upcoming') {
+    scoreHtml = `
+      <div class="prediction-inputs">
+        <input type="number" id="scoreA_${m.id}" min="0" placeholder="-">
+        <span style="color:#94a3b8; font-weight:bold;">:</span>
+        <input type="number" id="scoreB_${m.id}" min="0" placeholder="-">
+      </div>
+    `;
+  } else if (m.status === 'upcoming') {
+     scoreHtml = `<div class="score-block"><span style="color:#64748b;">-</span><span style="color:#64748b;">-</span></div>`;
+  } else {
+    scoreHtml = `<div class="score-block"><span>${m.scoreA}</span><span style="color:#4b5563;">-</span><span>${m.scoreB}</span></div>`;
+  }
+
+  let timelineHtml = '';
+  if (m.events && m.events.length > 0) {
+    let eventsA = m.events.filter(e => e.team === 'A').map(e => `<div class="scorer">⚽ ${e.text}</div>`).join('');
+    let eventsB = m.events.filter(e => e.team === 'B').map(e => `<div class="scorer">${e.text} ⚽</div>`).join('');
+    timelineHtml = `
+      <div class="timeline">
+        <div class="timeline-team left">${eventsA}</div>
+        <div class="timeline-team right">${eventsB}</div>
+      </div>
+    `;
+  }
+
+  let actionHtml = '';
+  if (isPredictable && m.status === 'upcoming') {
+     actionHtml = `<button class="btn btn-teal" style="width:100%; margin-top:15px; border-radius:12px; font-weight:700;" onclick="lockPrediction('${m.id}', '${m.teamA}', '${m.teamB}')">Lock Prediction</button>`;
+  } else if (!isPredictable) {
+     actionHtml = `<button class="btn btn-outline" style="width:100%; margin-top:15px; border-radius:12px; border-color:#10b981; color:#10b981;" onclick="viewLineup('${m.id}', '${m.teamA}', '${m.teamB}')">Match Center</button>`;
+  }
+
+  return `
+    <div class="google-match-card">
+      <div class="match-header">
+        <span>${m.dateStr}</span>
+        <span class="match-status ${statusClass}">${m.statusText}</span>
+      </div>
+      <div class="match-teams-scores">
+        <div class="team-block">
+          <img src="${m.flagA}" alt="${m.teamA}" class="team-logo">
+          <span class="team-name">${m.teamA}</span>
+        </div>
+        ${scoreHtml}
+        <div class="team-block">
+          <img src="${m.flagB}" alt="${m.teamB}" class="team-logo">
+          <span class="team-name">${m.teamB}</span>
+        </div>
+      </div>
+      ${timelineHtml}
+      ${actionHtml}
+    </div>
+  `;
+}
+
+async function fetchRealMatches() {
+  matchesToRender = WORLD_CUP_MATCHES;
+  document.querySelector('.live-pulse').innerText = 'LIVE MOCK DATA';
+  document.querySelector('.live-pulse').style.background = '#ef4444';
 }
 
 window.updateAuthUI = function() {
@@ -220,32 +285,12 @@ window.copyReferralLink = function() {
 }
 
 // Welcome modal setup helper
-let selectedWelcomeCountry = 'Nepal';
-window.setSelectCountry = function(country) {
-  selectedWelcomeCountry = country;
-  const npCard = document.getElementById('countryNP');
-  const intlCard = document.getElementById('countryIntl');
-  
-  if (country === 'Nepal') {
-    npCard.classList.add('selected');
-    npCard.style.borderColor = '#10b981';
-    npCard.style.boxShadow = '0 0 10px rgba(16,185,129,0.1)';
-    intlCard.classList.remove('selected');
-    intlCard.style.borderColor = '#e2e8f0';
-    intlCard.style.boxShadow = 'none';
-  } else {
-    intlCard.classList.add('selected');
-    intlCard.style.borderColor = '#10b981';
-    intlCard.style.boxShadow = '0 0 10px rgba(16,185,129,0.1)';
-    npCard.classList.remove('selected');
-    npCard.style.borderColor = '#e2e8f0';
-    npCard.style.boxShadow = 'none';
-  }
-}
-
 window.submitWelcomeSetup = async function() {
   if (!window.currentUser) return;
+  const selectEl = document.getElementById('countrySelect');
+  const selectedCountry = selectEl ? selectEl.value : 'Nepal';
   const wantsNotifications = document.getElementById('wantsNotifications').checked;
+  
   document.getElementById('welcomeModal').style.display = 'none';
   localStorage.setItem('wc_country_set', 'true');
 
@@ -256,7 +301,7 @@ window.submitWelcomeSetup = async function() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         idToken: window.currentUser.idToken,
-        country: selectedWelcomeCountry,
+        country: selectedCountry,
         notificationsEnabled: wantsNotifications
       })
     });
@@ -524,65 +569,31 @@ async function fetchStandings() {
 
 async function fetchFixtures() {
   const container = document.getElementById('fixturesContainer');
+  if (!container) return;
+  
+  container.innerHTML = '<div style="text-align:center; padding: 40px;"><div class="spinner"></div><p style="margin-top:10px;">Loading Match Center...</p></div>';
+
   try {
-    const today = new Date();
-    const future = new Date();
-    future.setDate(today.getDate() + 30);
-    
-    const formatDate = (d) => d.toISOString().slice(0,10).replace(/-/g, '');
-    const datesStr = `${formatDate(today)}-${formatDate(future)}`;
-    
-    const res = await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=${datesStr}`);
-    const data = await res.json();
-    
-    if (data && data.events && data.events.length > 0) {
-      let html = '<div class="fixtures-grid">';
-      
-      data.events.forEach(e => {
-        const teamA = e.competitions[0].competitors[0];
-        const teamB = e.competitions[0].competitors[1];
-        
-        const nameA = teamA.team.displayName || teamA.team.name;
-        const flagA = teamA.team.logo || 'https://flagcdn.com/w160/un.png';
-        const nameB = teamB.team.displayName || teamB.team.name;
-        const flagB = teamB.team.logo || 'https://flagcdn.com/w160/un.png';
-        
-        const d = new Date(e.date);
-        const dayStr = d.toLocaleString([], {weekday:'short', month:'short', day:'numeric'});
-        const timeStr = d.toLocaleString([], {hour: '2-digit', minute:'2-digit'}) + ' NPT';
-        const status = e.status.type.shortDetail;
-        
-        html += '\n<div class="fixture-card-modern">\n' +
-                '  <div class="date-badge">' + escapeHtml(dayStr) + '</div>\n' +
-                '  <div style="text-align:center; font-size:0.8rem; color:#9ca3af; margin-top:5px; margin-bottom:5px;">\n' +
-                '    ' + escapeHtml(timeStr) + ' | <span style="color:#10b981;">' + escapeHtml(status) + '</span>\n' +
-                '  </div>\n' +
-                '  <div class="fixture-teams-modern">\n' +
-                '    <div class="fixture-team-modern">\n' +
-                '      <img src="' + escapeHtml(flagA) + '" alt="' + escapeHtml(nameA) + '">\n' +
-                '      <span>' + escapeHtml(nameA) + '</span>\n' +
-                '    </div>\n' +
-                '    <div class="fixture-vs-modern">VS</div>\n' +
-                '    <div class="fixture-team-modern">\n' +
-                '      <img src="' + escapeHtml(flagB) + '" alt="' + escapeHtml(nameB) + '">\n' +
-                '      <span>' + escapeHtml(nameB) + '</span>\n' +
-                '    </div>\n' +
-                '  </div>\n' +
-                '  <button class="btn btn-outline" style="width:100%; border-color: #10b981; color: #10b981;" onclick="viewLineup(\'' + escapeHtml(e.id) + '\', \'' + escapeHtml(nameA).replace(/'/g, "\\'") + '\', \'' + escapeHtml(nameB).replace(/'/g, "\\'") + '\')">View Match Details</button>\n' +
-                '</div>\n';
-      });
-      html += '</div>';
-      container.innerHTML = html;
-    } else {
-      container.innerHTML = `
-        <div class="wc-empty-state">
-          <h3>Full Schedule TBD 📅</h3>
-          <p>The official fixture list for the 48 teams will be populated automatically prior to June 2026.</p>
-        </div>
-      `;
-    }
+    // Instant load with local mock data
+    setTimeout(() => {
+      if (WORLD_CUP_MATCHES && WORLD_CUP_MATCHES.length > 0) {
+        let html = '<div class="fixtures-grid">';
+        WORLD_CUP_MATCHES.forEach(m => {
+          html += buildGoogleMatchCard(m, false);
+        });
+        html += '</div>';
+        container.innerHTML = html;
+      } else {
+        container.innerHTML = `
+          <div class="wc-empty-state">
+            <h3>Full Schedule TBD 📅</h3>
+            <p>The official fixture list for the 48 teams will be populated automatically prior to June 2026.</p>
+          </div>
+        `;
+      }
+    }, 200); // Slight delay for smooth transition effect
   } catch (err) {
-    console.error("Failed to fetch fixtures", err);
+    console.error("Failed to load fixtures", err);
   }
 }
 
