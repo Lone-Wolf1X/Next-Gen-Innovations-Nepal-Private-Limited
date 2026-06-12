@@ -505,8 +505,8 @@ function isMatchPredictionLocked(m) {
   if (!m.rawDate) return false;
   const matchTime = new Date(m.rawDate).getTime();
   const now = Date.now();
-  // Lock exactly 5 minutes (300,000 ms) before kickoff
-  return (matchTime - now <= 300000);
+  // Lock exactly 30 minutes (1800000 ms) before kickoff
+  return (matchTime - now <= 1800000);
 }
 
 // --- RENDER MATCHES & COUNTDOWN ---
@@ -941,6 +941,9 @@ async function lockPrediction(matchId, teamA, teamB) {
     btn.innerHTML = 'Update Prediction ✅';
     btn.classList.add('locked');
     btn.disabled = false;
+
+    // Trigger proper alert which now plays sound and confetti
+    alert(`🎉 Prediction Locked Successfully!\n\n${teamA} ${scoreA} - ${scoreB} ${teamB}\n\nYou can edit this prediction up to 30 minutes before kickoff.`);
 
     const preview = document.getElementById('shareCardPreview');
     preview.innerHTML = '<h4>NextGen Predictor</h4>\n' +
@@ -1383,12 +1386,21 @@ window.alert = function(message) {
   if (msgLower.includes('success') || msgLower.includes('successful') || msgLower.includes('welcome') || msgLower.includes('claim') || msgLower.includes('awesome') || msgLower.includes('copied')) {
     icon = '🎉';
     title = 'Success!';
-  } else if (msgLower.includes('error') || msgLower.includes('fail') || msgLower.includes('failed') || msgLower.includes('invalid') || msgLower.includes('unauthorized')) {
+    try { new Audio('https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=success-1-6297.mp3').play(); } catch(e){}
+    if (msgLower.includes('predict') || msgLower.includes('success')) {
+      if (typeof triggerConfetti === 'function') triggerConfetti();
+    }
+  } else if (msgLower.includes('error') || msgLower.includes('fail') || msgLower.includes('failed') || msgLower.includes('invalid') || msgLower.includes('unauthorized') || msgLower.includes('lock closed')) {
     icon = '⚠️';
     title = 'Alert';
+    try { new Audio('https://cdn.pixabay.com/download/audio/2021/08/09/audio_d0bcfe4030.mp3?filename=error-126627.mp3').play(); } catch(e){}
   } else if (msgLower.includes('lock') || msgLower.includes('predict') || msgLower.includes('score')) {
     icon = '⚽';
     title = 'Prediction Arena';
+    try { new Audio('https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=success-1-6297.mp3').play(); } catch(e){}
+    if (typeof triggerConfetti === 'function') triggerConfetti();
+  } else {
+    try { new Audio('https://cdn.pixabay.com/download/audio/2021/08/09/audio_951f50da55.mp3?filename=message-13716.mp3').play(); } catch(e){}
   }
   
   iconEl.innerText = icon;

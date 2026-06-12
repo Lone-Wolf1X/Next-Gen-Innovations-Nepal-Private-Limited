@@ -765,9 +765,11 @@ app.post('/api/worldcup/predict', async (req, res) => {
 
         const matchTime = new Date(game.local_date).getTime();
         const now = Date.now();
-        const isLocked = isNaN(matchTime) || (matchTime - now <= 300000) || game.finished === "TRUE" || game.time_elapsed !== "notstarted";
+        // 30 minutes lock (1800000 ms)
+        const isLocked = isNaN(matchTime) || (matchTime - now <= 1800000) || game.finished === "TRUE" || game.time_elapsed !== "notstarted";
+
         if (isLocked) {
-            return res.status(400).json({ error: 'Predictions for this match are locked (closes 5 minutes before kickoff).' });
+          return res.status(400).json({ error: "Predictions are locked for this match (less than 30 mins to kickoff)." });
         }
 
         // Check if user has already predicted this match
