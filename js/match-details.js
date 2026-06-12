@@ -66,10 +66,17 @@ function renderLineups(data) {
       `;
       if (roster.roster && roster.roster.length > 0) {
         roster.roster.forEach(player => {
+          const headshotUrl = `https://a.espncdn.com/combiner/i?img=/i/headshots/soccer/players/full/${player.athlete.id}.png&w=96&h=96&scale=crop`;
+          const initials = encodeURIComponent(player.athlete.displayName);
+          const fallbackUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${initials}`;
+          
           html += `
-            <li style="display:flex; justify-content:space-between; padding: 10px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px;">
-              <span style="font-weight: 600; color:#374151;">${player.athlete.displayName}</span>
-              <span style="background:#e5e7eb; color:#4b5563; font-size:0.8rem; padding: 2px 8px; border-radius:12px;">${player.position.abbreviation}</span>
+            <li style="display:flex; justify-content:space-between; align-items:center; padding: 10px 14px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; transition: transform 0.2s;">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <img src="${headshotUrl}" onerror="this.onerror=null; this.src='${fallbackUrl}';" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:1px solid #e2e8f0; background:#f3f4f6;">
+                <span style="font-weight: 700; color:#1f2937;">${player.athlete.displayName}</span>
+              </div>
+              <span style="background:rgba(37,99,235,0.08); color:var(--indigo); font-weight:700; font-size:0.75rem; padding: 4px 10px; border-radius:12px;">${player.position.abbreviation}</span>
             </li>
           `;
         });
