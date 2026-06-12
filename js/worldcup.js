@@ -783,11 +783,14 @@ async function renderLeaderboard() {
       avatarHtml = `<div class="bootstrap-avatar" style="width:40px; height:40px; border-radius:50%; background:${escapeHtml(bg)}; display:flex; align-items:center; justify-content:center; font-size:20px; color:#fff;">${escapeHtml(emoji)}</div>`;
     }
 
-    html += '\n<li>\n' +
+    html += '\n<li class="lb-item">\n' +
             '  <span class="lb-rank ' + escapeHtml(rankClass) + '">' + escapeHtml(rankText) + '</span>\n' +
             '  <div class="lb-user">\n' +
             '    ' + avatarHtml + '\n' +
-            '    <span>' + escapeHtml(u.name) + '</span>\n' +
+            '    <div class="lb-user-details">\n' +
+            '      <strong class="lb-user-name">' + escapeHtml(u.name) + '</strong>\n' +
+            '      <span class="lb-user-country">' + escapeHtml(u.country || "Global") + '</span>\n' +
+            '    </div>\n' +
             '  </div>\n' +
             '  <span class="lb-score">' + escapeHtml(u.points) + ' pts</span>\n' +
             '</li>\n';
@@ -812,11 +815,14 @@ async function renderLeaderboard() {
         avatarHtml = `<div class="bootstrap-avatar" style="width:32px; height:32px; border-radius:50%; background:${escapeHtml(bg)}; display:flex; align-items:center; justify-content:center; font-size:16px; color:#fff;">${escapeHtml(emoji)}</div>`;
       }
 
-      previewHtml += '\n<li style="padding: 10px 15px; border-radius: 12px; margin-bottom: 8px;">\n' +
+      previewHtml += '\n<li class="lb-item" style="padding: 10px 15px; border-radius: 12px; margin-bottom: 8px;">\n' +
                      '  <span class="lb-rank ' + escapeHtml(rankClass) + '" style="width:30px; height:30px; font-size:0.95rem;">' + escapeHtml(rankText) + '</span>\n' +
                      '  <div class="lb-user">\n' +
                      '    ' + avatarHtml + '\n' +
-                     '    <span style="font-size:0.9rem; font-weight:700;">' + escapeHtml(u.name) + '</span>\n' +
+                     '    <div class="lb-user-details">\n' +
+                     '      <strong class="lb-user-name" style="font-size:0.9rem;">' + escapeHtml(u.name) + '</strong>\n' +
+                     '      <span class="lb-user-country" style="font-size:0.75rem;">' + escapeHtml(u.country || "Global") + '</span>\n' +
+                     '    </div>\n' +
                      '  </div>\n' +
                      '  <span class="lb-score" style="font-size:0.8rem; padding:4px 10px;">' + escapeHtml(u.points) + ' pts</span>\n' +
                      '</li>\n';

@@ -473,6 +473,33 @@
       .match-header { font-size: 0.75rem; }
     }
     
+    /* Dashboard Active Override (White Background Fix) */
+    body.dashboard-active .google-match-card {
+      background: #ffffff;
+      border: 1px solid rgba(15, 28, 63, 0.08);
+      box-shadow: 0 4px 15px rgba(15, 28, 63, 0.04);
+    }
+    body.dashboard-active .google-match-card:hover {
+      box-shadow: 0 8px 25px rgba(15, 28, 63, 0.08);
+    }
+    body.dashboard-active .google-match-card .team-name,
+    body.dashboard-active .google-match-card .score-block {
+      color: #0F1C3F; /* var(--navy) */
+    }
+    body.dashboard-active .google-match-card .match-header {
+      color: #64748b;
+      border-bottom: 1px solid rgba(15, 28, 63, 0.08);
+    }
+    body.dashboard-active .google-match-card .timeline {
+      color: #475569;
+      border-top: 1px solid rgba(15, 28, 63, 0.08);
+    }
+    body.dashboard-active .google-match-card .prediction-inputs input {
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      color: #0F1C3F;
+    }
+    
     /* Notification Panel CSS */
     .nav-notif-bell { font-size: 1.4rem; text-decoration: none; position: relative; display: flex; align-items: center; justify-content: center; }
     .notif-badge { position: absolute; top: -5px; right: -8px; background: #ef4444; color: white; font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 10px; border: 2px solid #0F1C3F; }
