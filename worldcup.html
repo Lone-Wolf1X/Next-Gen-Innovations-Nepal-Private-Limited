@@ -460,6 +460,19 @@
     }
     .prediction-inputs input:focus { border-color: #10b981; }
     
+    @media (max-width: 768px) {
+      .google-match-card { padding: 15px; margin-bottom: 15px; }
+      .team-logo { width: 45px; height: 45px; }
+      .team-name { font-size: 0.85rem; }
+      .score-block { font-size: 2rem; gap: 8px; }
+      .timeline { flex-direction: column; gap: 8px; font-size: 0.75rem; }
+      .timeline-team { width: 100%; }
+      .timeline-team.right { text-align: left; }
+      .timeline-team.right .scorer { justify-content: flex-start; }
+      .prediction-inputs input { width: 45px; height: 45px; font-size: 1.2rem; }
+      .match-header { font-size: 0.75rem; }
+    }
+    
     /* Notification Panel CSS */
     .nav-notif-bell { font-size: 1.4rem; text-decoration: none; position: relative; display: flex; align-items: center; justify-content: center; }
     .notif-badge { position: absolute; top: -5px; right: -8px; background: #ef4444; color: white; font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 10px; border: 2px solid #0F1C3F; }
