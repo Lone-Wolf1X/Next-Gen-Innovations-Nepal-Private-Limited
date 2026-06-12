@@ -833,7 +833,33 @@ app.post('/api/worldcup/predict', async (req, res) => {
             return res.status(404).json({ error: 'Match not found' });
         }
 
-        const matchTime = new Date(game.local_date).getTime();
+        // June offsets (during Daylight Saving Time in NA)
+        const stadiumTzOffsets = {
+            "1": -6, "2": -6, "3": -6, "4": -5, "5": -5, "6": -5, 
+            "7": -4, "8": -4, "9": -4, "10": -4, "11": -4, "12": -4, 
+            "13": -7, "14": -7, "15": -7, "16": -7
+        };
+
+        const tzOffset = game.stadium_id && stadiumTzOffsets[game.stadium_id] !== undefined ? stadiumTzOffsets[game.stadium_id] : -4;
+        
+        let matchTime = NaN;
+        if (game.local_date) {
+            const parts = game.local_date.split(' ');
+            if (parts.length >= 2) {
+                const dateParts = parts[0].split('/');
+                const timeParts = parts[1].split(':');
+                if (dateParts.length >= 3 && timeParts.length >= 2) {
+                    const month = parseInt(dateParts[0], 10) - 1;
+                    const day = parseInt(dateParts[1], 10);
+                    const year = parseInt(dateParts[2], 10);
+                    const hour = parseInt(timeParts[0], 10);
+                    const minute = parseInt(timeParts[1], 10);
+                    const parsedUtcTimestamp = Date.UTC(year, month, day, hour, minute);
+                    matchTime = parsedUtcTimestamp - (tzOffset * 60 * 60 * 1000);
+                }
+            }
+        }
+
         const now = Date.now();
         // 30 minutes lock (1800000 ms)
         const isLocked = isNaN(matchTime) || (matchTime - now <= 1800000) || game.finished === "TRUE" || game.time_elapsed !== "notstarted";
