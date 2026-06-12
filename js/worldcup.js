@@ -1098,13 +1098,38 @@ function updatePrizePoolUI() {
   const globalCount = document.getElementById('globalPredictorCount');
   const globalProgress = document.getElementById('globalPrizeProgressBar');
   const neededText = document.getElementById('predictorsNeededText');
+  const nextPrizeEl = document.getElementById('nextPrizeText');
+  const containerEl = document.getElementById('dynamicPrizeTextContainer');
+
   if (globalCount) globalCount.innerText = currentPredictorsCount;
   if (globalProgress) {
     globalProgress.style.width = `${pct}%`;
     globalProgress.setAttribute('aria-valuenow', currentPredictorsCount);
   }
-  if (neededText) {
-    neededText.innerText = Math.max(1000 - currentPredictorsCount, 0);
+  
+  if (neededText && nextPrizeEl && containerEl) {
+    let needed = 0;
+    let nextPrize = "";
+    if (currentPredictorsCount < 100) {
+      needed = 100 - currentPredictorsCount;
+      nextPrize = "Rs. 100 Recharge";
+    } else if (currentPredictorsCount < 500) {
+      needed = 500 - currentPredictorsCount;
+      nextPrize = "World Cup Jersey";
+    } else if (currentPredictorsCount < 1000) {
+      needed = 1000 - currentPredictorsCount;
+      nextPrize = "Grand Gift Hamper";
+    } else {
+      needed = 0;
+      nextPrize = "All Prizes Unlocked";
+    }
+
+    if (needed === 0 && currentPredictorsCount >= 1000) {
+      containerEl.innerHTML = '<span style="color:#10B981;">🎉 All Prizes Unlocked! Keep sharing to climb the Leaderboard!</span>';
+    } else {
+      neededText.innerText = needed;
+      nextPrizeEl.innerText = nextPrize;
+    }
   }
 
   const t1Card = document.getElementById('tier1Card');
