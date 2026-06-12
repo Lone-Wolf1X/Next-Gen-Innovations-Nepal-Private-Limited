@@ -327,6 +327,9 @@ async function initDBs() {
             ALTER TABLE worldcup_users ADD COLUMN IF NOT EXISTS country VARCHAR(100) DEFAULT 'Nepal';
         `);
         await pool.query(`
+            ALTER TABLE worldcup_users ADD COLUMN IF NOT EXISTS favorite_team_id VARCHAR(10);
+        `);
+        await pool.query(`
             ALTER TABLE worldcup_users ADD COLUMN IF NOT EXISTS multiplier_chips INT DEFAULT 3;
         `);
         
@@ -418,9 +421,14 @@ async function initDBs() {
                 question_id INT NOT NULL,
                 is_correct BOOLEAN,
                 answered_at DATE DEFAULT CURRENT_DATE,
-                UNIQUE(user_id, answered_at)
+                UNIQUE(user_id, question_id, answered_at)
             );
         `);
+        
+        // Safely drop old unique constraint if it exists (which was UNIQUE(user_id, answered_at))
+        try {
+            await pool.query(`ALTER TABLE worldcup_trivia_answers DROP CONSTRAINT IF EXISTS worldcup_trivia_answers_user_id_answered_at_key`);
+        } catch(e) {}
     } catch(err) {
         console.error("Failed to init DBs:", err.message);
     }
@@ -1082,14 +1090,57 @@ app.post('/api/worldcup/chat/:matchId', checkUserAuth, async (req, res) => {
     } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
-app.get('/api/worldcup/trivia/today', async (req, res) => {
-    // Mock daily trivia question
-    const q = {
-        id: new Date().getDate(), // rotate by day of month
-        question: "Which country has won the most FIFA World Cups?",
-        options: ["Germany", "Brazil", "Italy", "Argentina"]
-    };
-    res.json(q);
+const triviaBank = [
+    { q: "Which country has won the most FIFA World Cups?", opts: ["Germany", "Brazil", "Italy", "Argentina"], ans: 1 },
+    { q: "Who is the all-time top scorer in World Cup history?", opts: ["Pele", "Miroslav Klose", "Ronaldo", "Messi"], ans: 1 },
+    { q: "Which nation hosted the 2010 FIFA World Cup?", opts: ["Brazil", "South Africa", "Germany", "Russia"], ans: 1 },
+    { q: "How many teams will participate in the 2026 World Cup?", opts: ["32", "40", "48", "64"], ans: 2 },
+    { q: "Which player won the Golden Ball at the 2014 World Cup?", opts: ["James Rodriguez", "Thomas Muller", "Lionel Messi", "Arjen Robben"], ans: 2 },
+    { q: "What is the only host country to not advance past the first round?", opts: ["South Africa", "Qatar", "Japan", "USA"], ans: 0 },
+    { q: "Which country won the very first World Cup in 1930?", opts: ["Brazil", "Uruguay", "Argentina", "Italy"], ans: 1 },
+    { q: "Who holds the record for most goals scored in a single World Cup tournament?", opts: ["Just Fontaine", "Gerd Muller", "Sandor Kocsis", "Pele"], ans: 0 },
+    { q: "Which two countries have reached the most World Cup finals?", opts: ["Brazil & Italy", "Germany & Brazil", "Argentina & Germany", "Italy & France"], ans: 1 },
+    { q: "Who was the youngest player to score in a World Cup final?", opts: ["Kylian Mbappe", "Pele", "Michael Owen", "Lionel Messi"], ans: 1 }
+];
+
+app.get('/api/worldcup/trivia/today', checkUserAuth, async (req, res) => {
+    try {
+        const uid = req.user.uid;
+        const userRes = await pool.query('SELECT id FROM worldcup_users WHERE firebase_uid = $1', [uid]);
+        if (userRes.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+        const userId = userRes.rows[0].id;
+
+        // Fetch how many questions the user answered today
+        const answeredRes = await pool.query(
+            'SELECT question_id FROM worldcup_trivia_answers WHERE user_id = $1 AND answered_at = CURRENT_DATE',
+            [userId]
+        );
+        const answeredIds = answeredRes.rows.map(r => r.question_id);
+        
+        // Pick 5 daily questions based on the date seed
+        const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+        const startIndex = (dayOfYear * 5) % triviaBank.length;
+        
+        let dailyQuestions = [];
+        for (let i = 0; i < 5; i++) {
+            let idx = (startIndex + i) % triviaBank.length;
+            dailyQuestions.push({ id: idx, question: triviaBank[idx].q, options: triviaBank[idx].opts });
+        }
+
+        // Find the first unanswered question
+        const nextQ = dailyQuestions.find(q => !answeredIds.includes(q.id));
+        
+        if (!nextQ) {
+            return res.json({ completed: true, answeredCount: answeredIds.length });
+        }
+
+        res.json({
+            completed: false,
+            answeredCount: answeredIds.length,
+            totalForDay: 5,
+            question: nextQ
+        });
+    } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
 app.post('/api/worldcup/trivia/answer', checkUserAuth, async (req, res) => {
@@ -1100,8 +1151,10 @@ app.post('/api/worldcup/trivia/answer', checkUserAuth, async (req, res) => {
         if (userRes.rows.length === 0) return res.status(404).json({ error: 'User not found' });
         const userId = userRes.rows[0].id;
 
-        // Correct answer is always Brazil (index 1) for this mock
-        const isCorrect = parseInt(answerIndex) === 1;
+        const qDef = triviaBank[questionId];
+        if (!qDef) return res.status(400).json({ error: 'Invalid question' });
+
+        const isCorrect = parseInt(answerIndex) === qDef.ans;
         
         const ansRes = await pool.query(
             `INSERT INTO worldcup_trivia_answers (user_id, question_id, is_correct) 
@@ -1111,12 +1164,32 @@ app.post('/api/worldcup/trivia/answer', checkUserAuth, async (req, res) => {
         
         if (ansRes.rowCount > 0 && isCorrect) {
             await pool.query('UPDATE worldcup_users SET points = points + 5 WHERE id = $1', [userId]);
-            res.json({ success: true, message: "Correct! +5 points", correct: true });
-        } else if (ansRes.rowCount > 0 && !isCorrect) {
-            res.json({ success: true, message: "Wrong answer!", correct: false });
+            res.json({ success: true, correct: true, pointsAwarded: 5 });
+        } else if (ansRes.rowCount > 0) {
+            res.json({ success: true, correct: false, pointsAwarded: 0 });
         } else {
-            res.status(400).json({ error: "Already answered today." });
+            res.status(400).json({ error: 'Already answered today' });
         }
+    } catch(err) { res.status(500).json({ error: err.message }); }
+});
+
+// ─── FAVORITE TEAM API ────────────────────────────────────────────────────────
+
+app.get('/api/worldcup/favorite-team', checkUserAuth, async (req, res) => {
+    try {
+        const uid = req.user.uid;
+        const userRes = await pool.query('SELECT favorite_team_id FROM worldcup_users WHERE firebase_uid = $1', [uid]);
+        if (userRes.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+        res.json({ favoriteTeamId: userRes.rows[0].favorite_team_id });
+    } catch(err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/worldcup/favorite-team', checkUserAuth, async (req, res) => {
+    try {
+        const { teamId } = req.body;
+        const uid = req.user.uid;
+        await pool.query('UPDATE worldcup_users SET favorite_team_id = $1 WHERE firebase_uid = $2', [teamId, uid]);
+        res.json({ success: true });
     } catch(err) { res.status(500).json({ error: err.message }); }
 });
 

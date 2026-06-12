@@ -182,6 +182,51 @@
             <div id="referralCopyMsg" style="font-size:0.75rem; color:#10B981; margin-top:5px; font-weight:700; display:none;">Link copied! 📋</div>
           </div>
 
+          <!-- Favorite Team Widget -->
+          <div class="wc-card mb-4" id="favoriteTeamCard" style="display:none; background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(5, 150, 105, 0.05)); border: 1px solid rgba(16, 185, 129, 0.2);">
+            <h3 class="h5 mb-3" style="color: var(--teal); font-family: 'Outfit';">⭐ My Favorite Team</h3>
+            
+            <div id="favoriteTeamSelection" style="display:none;">
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Select your favorite team to track their stats!</p>
+              <select id="favoriteTeamSelect" class="form-select mb-3" style="font-size: 0.9rem;">
+                <option value="">Choose a team...</option>
+                <!-- Populated by JS -->
+              </select>
+              <button class="btn btn-teal w-100" onclick="saveFavoriteTeam()" style="font-size: 0.9rem; font-weight: 700;">Save Selection</button>
+            </div>
+
+            <div id="favoriteTeamStats" style="display:none;">
+              <div class="d-flex align-items-center mb-3">
+                <img id="favTeamFlag" src="" alt="Flag" style="width: 40px; height: 30px; border-radius: 4px; object-fit: cover; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-right: 12px;">
+                <h4 id="favTeamName" style="margin: 0; font-family: 'Outfit'; font-weight: 700; color: var(--navy); font-size: 1.2rem;"></h4>
+              </div>
+              <div class="row g-2 mb-3 text-center" style="font-size: 0.8rem;">
+                <div class="col-4">
+                  <div style="background: rgba(255,255,255,0.7); padding: 8px; border-radius: 8px;">
+                    <strong id="favTeamPoints" style="display:block; font-size: 1.1rem; color: var(--indigo);">0</strong>
+                    <span style="color: var(--text-muted);">Points</span>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div style="background: rgba(255,255,255,0.7); padding: 8px; border-radius: 8px;">
+                    <strong id="favTeamWins" style="display:block; font-size: 1.1rem; color: #10b981;">0</strong>
+                    <span style="color: var(--text-muted);">Wins</span>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div style="background: rgba(255,255,255,0.7); padding: 8px; border-radius: 8px;">
+                    <strong id="favTeamGd" style="display:block; font-size: 1.1rem; color: #f59e0b;">0</strong>
+                    <span style="color: var(--text-muted);">GD</span>
+                  </div>
+                </div>
+              </div>
+              <div style="background: white; padding: 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.05);">
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; font-weight: 700;">Next Fixture</p>
+                <div id="favTeamNextMatch" style="font-size: 0.9rem; font-weight: 600; color: var(--navy);">Loading...</div>
+              </div>
+            </div>
+          </div>
+
           <!-- How to Play card -->
           <div class="wc-card mb-4">
             <h3 class="h5 mb-3">🎮 How to Play</h3>

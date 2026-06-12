@@ -100,8 +100,10 @@ function parseApiDate(dateStr) {
   const hour = parseInt(timeParts[0], 10);
   const minute = parseInt(timeParts[1], 10);
   
-  // Parse the API date as UTC time. Most APIs return UTC time by default.
-  return new Date(Date.UTC(year, month, day, hour, minute));
+  // The API dates correspond to Iran Standard Time (UTC+03:30).
+  // 13:00 IRST = 09:30 UTC. So we subtract 3.5 hours from the parsed "local" time to get true UTC.
+  const parsedUtcTimestamp = Date.UTC(year, month, day, hour, minute);
+  return new Date(parsedUtcTimestamp - (3.5 * 60 * 60 * 1000));
 }
 
 // --- WORLD CUP 2026 API DATA ---
@@ -290,6 +292,9 @@ window.updateAuthUI = function() {
     if (panel) panel.style.display = 'none';
     if (dashHeader) dashHeader.style.display = 'block';
     document.body.classList.add('dashboard-active');
+    
+    // Load gamification dynamic data
+    if (typeof loadFavoriteTeam === 'function') loadFavoriteTeam();
     
     document.getElementById('dashName').innerText = window.currentUser.name;
     const flagEl = document.getElementById('dashFlag');
@@ -1562,8 +1567,21 @@ async function loadUserLeagues() {
 
 async function loadTrivia() {
   try {
-    const res = await fetch('/api/worldcup/trivia/today');
-    window.currentTrivia = await res.json();
+    if (!window.currentUser) {
+        document.getElementById('triviaContainer').innerHTML = '<p class="text-muted">Please login to play Daily Trivia.</p>';
+        return;
+    }
+    const res = await fetch('/api/worldcup/trivia/today', {
+        headers: { 'Authorization': `Bearer ${window.currentUser.idToken}` }
+    });
+    const data = await res.json();
+    
+    if (data.completed) {
+        document.getElementById('triviaContainer').innerHTML = `<p style="font-weight:700; color: #10B981; font-size:1.1rem; text-align:center; padding: 20px;">🎉 You've completed all 5 daily questions!<br><span style="font-size:0.9rem; color:#64748b;">Come back tomorrow for more.</span></p>`;
+        return;
+    }
+
+    window.currentTrivia = data.question;
     
     let optionsHtml = '';
     window.currentTrivia.options.forEach((opt, idx) => {
@@ -1575,6 +1593,9 @@ async function loadTrivia() {
     });
 
     document.getElementById('triviaContainer').innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+        <span class="badge bg-indigo">Question ${data.answeredCount + 1} of 5</span>
+      </div>
       <h5 style="margin-bottom: 20px; font-weight: 600;">${window.currentTrivia.question}</h5>
       ${optionsHtml}
     `;
@@ -1592,13 +1613,109 @@ async function submitTriviaAnswer(qId, idx) {
     const data = await res.json();
     if (data.error) throw new Error(data.error);
     
-    alert(data.message);
-    if (data.correct && data.points !== undefined) {
-      window.currentUser.points += 5;
+    if (data.correct) {
+      alert(`Correct! 🎉 +${data.pointsAwarded} points`);
+      window.currentUser.points += data.pointsAwarded;
       if(document.getElementById('dashPoints')) document.getElementById('dashPoints').innerText = window.currentUser.points;
+    } else {
+      alert("Wrong answer! 😢");
     }
-    document.getElementById('triviaContainer').innerHTML = `<p style="font-weight:700; color: #10B981;">✅ Answer Submitted. Check back tomorrow for the next question!</p>`;
+    
+    // Load next question
+    loadTrivia();
   } catch (err) { alert(err.message); }
+}
+
+// ─── FAVORITE TEAM LOGIC ──────────────────────────────────────────────────────
+
+async function loadFavoriteTeam() {
+  if (!window.currentUser) return;
+  try {
+    // Populate dropdown
+    const select = document.getElementById('favoriteTeamSelect');
+    if (select && select.options.length <= 1) {
+      Object.keys(apiTeams).forEach(tId => {
+        const team = apiTeams[tId];
+        const opt = document.createElement('option');
+        opt.value = team.id;
+        opt.textContent = team.name_en;
+        select.appendChild(opt);
+      });
+    }
+
+    const res = await fetch('/api/worldcup/favorite-team', {
+      headers: { 'Authorization': `Bearer ${window.currentUser.idToken}` }
+    });
+    
+    if (res.status === 404 || res.status === 500) {
+      // User hasn't selected a favorite team or not found
+      document.getElementById('favoriteTeamCard').style.display = 'block';
+      document.getElementById('favoriteTeamSelection').style.display = 'block';
+      document.getElementById('favoriteTeamStats').style.display = 'none';
+      return;
+    }
+
+    const data = await res.json();
+    if (data.favoriteTeamId) {
+      document.getElementById('favoriteTeamCard').style.display = 'block';
+      document.getElementById('favoriteTeamSelection').style.display = 'none';
+      document.getElementById('favoriteTeamStats').style.display = 'block';
+      
+      const team = apiTeams[data.favoriteTeamId];
+      if(team) {
+        document.getElementById('favTeamName').innerText = team.name_en;
+        document.getElementById('favTeamFlag').src = team.flag;
+        
+        // Find group stats
+        const standingsRes = await fetch('https://worldcup26.ir/get/standings');
+        const standingsData = await standingsRes.json();
+        let teamStats = null;
+        for (let group in standingsData.standings) {
+          const found = standingsData.standings[group].find(t => t.team_id === team.id);
+          if (found) { teamStats = found; break; }
+        }
+        
+        if (teamStats) {
+          document.getElementById('favTeamPoints').innerText = teamStats.pts;
+          document.getElementById('favTeamWins').innerText = teamStats.won;
+          document.getElementById('favTeamGd').innerText = teamStats.gd;
+        }
+
+        // Next Match
+        const matchesRes = await fetch('https://worldcup26.ir/get/games');
+        const matchesData = await matchesRes.json();
+        const nextMatch = matchesData.games.find(m => (m.home_team_id === team.id || m.away_team_id === team.id) && m.finished === "FALSE");
+        
+        if (nextMatch) {
+          const pd = parseApiDate(nextMatch.local_date);
+          const timeStr = (pd && !isNaN(pd.getTime())) ? pd.toLocaleDateString() + ' ' + pd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : nextMatch.local_date;
+          document.getElementById('favTeamNextMatch').innerHTML = `${nextMatch.home_team_name_en} vs ${nextMatch.away_team_name_en}<br><span style="font-size:0.8rem; font-weight:normal;">${timeStr}</span>`;
+        } else {
+          document.getElementById('favTeamNextMatch').innerText = "No upcoming matches";
+        }
+      }
+    } else {
+      document.getElementById('favoriteTeamCard').style.display = 'block';
+      document.getElementById('favoriteTeamSelection').style.display = 'block';
+      document.getElementById('favoriteTeamStats').style.display = 'none';
+    }
+  } catch(e) { console.error(e); }
+}
+
+async function saveFavoriteTeam() {
+  const teamId = document.getElementById('favoriteTeamSelect').value;
+  if(!teamId) return alert("Please select a team");
+  try {
+    const res = await fetch('/api/worldcup/favorite-team', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken: window.currentUser.idToken, teamId })
+    });
+    const data = await res.json();
+    if(data.success) {
+      loadFavoriteTeam(); // Reload stats
+    }
+  } catch(e) { console.error(e); }
 }
 
 async function saveTournamentPredictions() {
