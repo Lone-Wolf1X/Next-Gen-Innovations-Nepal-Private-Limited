@@ -453,7 +453,7 @@
   <!-- FIREBASE AUTHENTICATION SCRIPT -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, browserPopupRedirectResolver, GoogleAuthProvider, FacebookAuthProvider, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD3kNGE9vXgnDvbg0J3QcPz5Ainff3_nRc",
@@ -469,6 +469,14 @@
     const auth = getAuth(app);
     const googleProvider = new GoogleAuthProvider();
     const facebookProvider = new FacebookAuthProvider();
+
+    // Handle redirect result if signInWithRedirect was used (e.g. in Safari/Brave)
+    getRedirectResult(auth, browserPopupRedirectResolver).catch(error => {
+      console.error("Redirect Auth Error:", error);
+      if(error.code !== 'auth/redirect-cancelled-by-user') {
+         alert("Authentication error: " + error.message);
+      }
+    });
 
     // Listen to persistent auth state
     onAuthStateChanged(auth, async (user) => {
@@ -554,11 +562,20 @@
     window.wcLogin = async (providerName) => {
       try {
         const provider = providerName === 'google' ? googleProvider : facebookProvider;
-        await signInWithPopup(auth, provider);
+        // Pass browserPopupRedirectResolver explicitly to help mitigate missing initial state errors
+        await signInWithPopup(auth, provider, browserPopupRedirectResolver);
         // onAuthStateChanged will handle the rest
       } catch (error) {
         console.error("Firebase Auth Error:", error);
-        alert('Authentication failed: ' + error.message);
+        
+        // Fallback to signInWithRedirect for storage-partitioned browsers (Brave, Safari, Incognito)
+        if (error.message && (error.message.includes("missing initial state") || error.message.includes("storage-partitioned") || error.code === 'auth/internal-error')) {
+          console.warn("Cross-origin storage access blocked. Falling back to redirect flow...");
+          const provider = providerName === 'google' ? googleProvider : facebookProvider;
+          await signInWithRedirect(auth, provider, browserPopupRedirectResolver);
+        } else if (error.code !== 'auth/popup-closed-by-user') {
+          alert('Authentication failed: ' + error.message);
+        }
       }
     };
 
