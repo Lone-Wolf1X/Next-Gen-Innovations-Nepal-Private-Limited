@@ -100,7 +100,8 @@ function parseApiDate(dateStr) {
   const hour = parseInt(timeParts[0], 10);
   const minute = parseInt(timeParts[1], 10);
   
-  return new Date(year, month, day, hour, minute);
+  // Parse the API date as UTC time. Most APIs return UTC time by default.
+  return new Date(Date.UTC(year, month, day, hour, minute));
 }
 
 // --- WORLD CUP 2026 API DATA ---
@@ -247,14 +248,15 @@ async function fetchRealMatches() {
 
         let parsedDate = parseApiDate(e.local_date);
         let rawDateStr = parsedDate && !isNaN(parsedDate.getTime()) ? parsedDate.toISOString() : null;
-        let timeStr = e.local_date ? e.local_date.split(' ')[1] : 'TBD';
+        let timeStr = (parsedDate && !isNaN(parsedDate.getTime())) ? parsedDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'TBD';
+        let formattedDateStr = (parsedDate && !isNaN(parsedDate.getTime())) ? parsedDate.toLocaleDateString() + ' ' + parsedDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : e.local_date;
 
         return {
           id: e.id,
           rawId: e.id,
           rawDate: rawDateStr,
-          time: timeStr || 'TBD',
-          dateStr: e.local_date,
+          time: timeStr,
+          dateStr: formattedDateStr,
           status: status,
           statusText: statusText,
           teamA: teamA, flagA: flagA, scoreA: e.home_score,
@@ -806,9 +808,14 @@ async function fetchFixtures() {
             statusText = `Live ${e.time_elapsed}'`;
           }
 
+          let pd = parseApiDate(e.local_date);
+          let timeStr = (pd && !isNaN(pd.getTime())) ? pd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'TBD';
+          let formattedDateStr = (pd && !isNaN(pd.getTime())) ? pd.toLocaleDateString() + ' ' + pd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : e.local_date;
+
           const matchObj = {
             id: e.id,
-            dateStr: e.local_date,
+            time: timeStr,
+            dateStr: formattedDateStr,
             status: status,
             statusText: statusText,
             teamA: teamA, flagA: flagA, scoreA: e.home_score,
@@ -850,9 +857,14 @@ async function fetchFixtures() {
                e.away_scorers.split(',').forEach(sc => events.push({ team: 'B', text: sc.trim() }));
             }
 
+            let pd = parseApiDate(e.local_date);
+            let timeStr = (pd && !isNaN(pd.getTime())) ? pd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'TBD';
+            let formattedDateStr = (pd && !isNaN(pd.getTime())) ? pd.toLocaleDateString() + ' ' + pd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : e.local_date;
+
             const matchObj = {
               id: e.id,
-              dateStr: e.local_date,
+              time: timeStr,
+              dateStr: formattedDateStr,
               status: status,
               statusText: statusText,
               teamA: teamA, flagA: flagA, scoreA: e.home_score,
