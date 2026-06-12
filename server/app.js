@@ -589,8 +589,17 @@ app.post('/api/worldcup/login', async (req, res) => {
         const todayNepalStr = getNepalLocalDateStr(new Date());
         const lastCheckinNepalStr = lastCheckin ? getNepalLocalDateStr(new Date(lastCheckin)) : null;
         const checkedInToday = (lastCheckinNepalStr === todayNepalStr);
+
+        const predRes = await pool.query(
+            'SELECT match_id, score_a, score_b FROM worldcup_predictions WHERE user_id = $1',
+            [userId]
+        );
+        const predictions = {};
+        predRes.rows.forEach(p => {
+            predictions[p.match_id] = { scoreA: p.score_a, scoreB: p.score_b };
+        });
         
-        res.json({ success: true, points: userPoints, checkedInToday, country });
+        res.json({ success: true, points: userPoints, checkedInToday, country, predictions });
     } catch (err) {
         console.error("Firebase Auth Error:", err.message);
         res.status(401).json({ error: 'Unauthorized' });

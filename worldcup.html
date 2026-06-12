@@ -125,7 +125,8 @@
     <div class="container">
       <ul class="wc-tabs">
         <li class="active" onclick="switchWCTab('arena')">Predictor Arena</li>
-        <li onclick="switchWCTab('fixtures')">Fixtures & Results</li>
+        <li onclick="switchWCTab('fixtures')">Fixtures</li>
+        <li onclick="switchWCTab('results')">Results</li>
         <li onclick="switchWCTab('standings')">Group Standings</li>
         <li onclick="switchWCTab('leaderboard')">Leaderboard</li>
         <li onclick="switchWCTab('spinwheel')">Lucky Spin Wheel</li>
@@ -283,13 +284,25 @@
   </section>
 
 
-  <!-- FIXTURES & RESULTS (Tab 2) -->
+  <!-- FIXTURES (Tab 2) -->
   <section class="section wc-section tab-content" id="tab_fixtures" style="display:none;">
     <div class="container">
       <div class="wc-section-header">
         <h2>Tournament Fixtures</h2>
       </div>
       <div id="fixturesContainer">
+        <!-- Will be populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS (Tab 6) -->
+  <section class="section wc-section tab-content" id="tab_results" style="display:none;">
+    <div class="container">
+      <div class="wc-section-header">
+        <h2>Match Results</h2>
+      </div>
+      <div id="resultsContainer">
         <!-- Will be populated by JS -->
       </div>
     </div>
@@ -583,6 +596,7 @@
         let points = 0;
         let checkedInToday = false;
         let country = 'Nepal';
+        let predictions = {};
         try {
           const res = await fetch('/api/worldcup/login', {
             method: 'POST',
@@ -594,6 +608,7 @@
             points = data.points || 0;
             checkedInToday = data.checkedInToday || false;
             country = data.country || 'Nepal';
+            predictions = data.predictions || {};
           }
         } catch (err) {
           console.error("Silent backend login failed", err);
@@ -616,7 +631,8 @@
           points: points,
           checkedInToday: checkedInToday,
           idToken: idToken,
-          country: country
+          country: country,
+          predictions: predictions
         };
         
         window.updateAuthUI();

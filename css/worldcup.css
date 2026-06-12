@@ -1143,3 +1143,25 @@ body.dashboard-active .wc-tabs li.active {
     grid-template-columns: 1fr;
   }
 }
+
+/* Match Score Display styling */
+.match-score-display {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0b1120 !important;
+  font-family: 'Outfit', sans-serif;
+  margin: 0 12px;
+  min-width: 60px;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+/* Contrast overrides for fixtures and results */
+.google-match-card .team-name,
+.match-card .team-name {
+  color: #0b1120 !important;
+}
+
+.google-match-card .score-block span {
+  color: #0b1120 !important;
+}
