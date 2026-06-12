@@ -372,6 +372,20 @@ window.copyReferralLink = function() {
   });
 }
 
+window.copyGlobalReferralLink = function() {
+  if (!window.currentUser) {
+    alert("Please Login with Google or Facebook to get your unique referral link! ⚽");
+    return;
+  }
+  const inviteUrl = window.location.origin + window.location.pathname + '?ref=' + window.currentUser.uid;
+  navigator.clipboard.writeText(inviteUrl).then(() => {
+    alert("🔗 Your referral link has been copied! Share it with friends and family to earn +10 points when they join.");
+  }).catch(err => {
+    console.error("Failed to copy link: ", err);
+    alert("Failed to copy link. Please try again.");
+  });
+}
+
 // Welcome modal setup helper
 window.submitWelcomeSetup = async function() {
   if (!window.currentUser) return;
@@ -1070,11 +1084,24 @@ function updatePrizePoolUI() {
   const countSpan = document.getElementById('livePredictorCount');
   const progressBar = document.getElementById('prizeProgressBar');
   
+  const pct = Math.min((currentPredictorsCount / 1000) * 100, 100);
+
   if (countSpan) countSpan.innerText = currentPredictorsCount;
   if (progressBar) {
-    const pct = Math.min((currentPredictorsCount / 1000) * 100, 100);
     progressBar.style.width = `${pct}%`;
     progressBar.setAttribute('aria-valuenow', currentPredictorsCount);
+  }
+
+  const globalCount = document.getElementById('globalPredictorCount');
+  const globalProgress = document.getElementById('globalPrizeProgressBar');
+  const neededText = document.getElementById('predictorsNeededText');
+  if (globalCount) globalCount.innerText = currentPredictorsCount;
+  if (globalProgress) {
+    globalProgress.style.width = `${pct}%`;
+    globalProgress.setAttribute('aria-valuenow', currentPredictorsCount);
+  }
+  if (neededText) {
+    neededText.innerText = Math.max(1000 - currentPredictorsCount, 0);
   }
 
   const t1Card = document.getElementById('tier1Card');
