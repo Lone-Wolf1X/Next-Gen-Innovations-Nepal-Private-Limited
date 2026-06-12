@@ -1653,15 +1653,22 @@ async function submitTriviaAnswer(qId, idx) {
 async function loadFavoriteTeam() {
   if (!window.currentUser) return;
   try {
-    // Populate dropdown
-    const select = document.getElementById('favoriteTeamSelect');
-    if (select && select.options.length <= 1) {
+    // Populate modal grid instead of dropdown
+    const grid = document.getElementById('teamGridContainer');
+    if (grid && grid.children.length === 0) {
       Object.keys(apiTeams).forEach(tId => {
         const team = apiTeams[tId];
-        const opt = document.createElement('option');
-        opt.value = team.id;
-        opt.textContent = team.name_en;
-        select.appendChild(opt);
+        const card = document.createElement('div');
+        card.className = 'team-grid-card';
+        card.style.cssText = 'border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; cursor: pointer; text-align: center; transition: all 0.2s ease; background: white;';
+        card.innerHTML = `
+          <img src="${team.flag}" alt="${team.name_en}" style="width: 50px; height: 35px; border-radius: 4px; object-fit: cover; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 8px;">
+          <div style="font-size: 0.8rem; font-weight: 700; color: #1e293b;">${team.name_en}</div>
+        `;
+        card.onmouseover = () => card.style.backgroundColor = '#f1f5f9';
+        card.onmouseout = () => card.style.backgroundColor = 'white';
+        card.onclick = () => selectFavoriteTeamInModal(team.id);
+        grid.appendChild(card);
       });
     }
 
@@ -1701,7 +1708,28 @@ async function loadFavoriteTeam() {
           document.getElementById('favTeamPoints').innerText = teamStats.pts;
           document.getElementById('favTeamWins').innerText = teamStats.won;
           document.getElementById('favTeamGd').innerText = teamStats.gd;
+          
+          // Generate realistic mock form streak based on wins/draws/losses
+          let streak = [];
+          for(let i=0; i < teamStats.won; i++) streak.push('W');
+          for(let i=0; i < teamStats.drawn; i++) streak.push('D');
+          for(let i=0; i < teamStats.lost; i++) streak.push('L');
+          if (streak.length === 0) streak = ['-'];
+          document.getElementById('favTeamStreak').innerText = streak.slice(0, 3).join('-');
         }
+
+        // Generate Mock Squad
+        const mockPositions = ['Captain & Forward', 'Midfield Maestro', 'Solid Defender'];
+        const squadHtml = mockPositions.map(pos => `<div style="padding: 4px 0; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between;"><span>⭐ ${team.name_en} Star</span><span style="color:#64748b; font-weight:normal;">${pos}</span></div>`).join('');
+        document.getElementById('favTeamSquad').innerHTML = squadHtml;
+
+        // Generate Mock News
+        const mockHeadlines = [
+          `Coach confident ahead of next big clash for ${team.name_en}.`,
+          `Fans rally behind ${team.name_en} as tournament heats up.`,
+          `Injury scare for key ${team.name_en} midfielder dismissed.`
+        ];
+        document.getElementById('favTeamNews').innerText = `🗞️ ${mockHeadlines[Math.floor(Math.random() * mockHeadlines.length)]}`;
 
         // Next Match
         const matchesRes = await fetch('https://worldcup26.ir/get/games');
@@ -1724,9 +1752,16 @@ async function loadFavoriteTeam() {
   } catch(e) { console.error(e); }
 }
 
-async function saveFavoriteTeam() {
-  const teamId = document.getElementById('favoriteTeamSelect').value;
-  if(!teamId) return alert("Please select a team");
+function openFavoriteTeamModal() {
+  document.getElementById('favoriteTeamModal').style.display = 'flex';
+}
+
+function closeFavoriteTeamModal() {
+  document.getElementById('favoriteTeamModal').style.display = 'none';
+}
+
+async function selectFavoriteTeamInModal(teamId) {
+  if(!teamId) return;
   try {
     const res = await fetch('/api/worldcup/favorite-team', {
       method: 'POST',
@@ -1735,7 +1770,8 @@ async function saveFavoriteTeam() {
     });
     const data = await res.json();
     if(data.success) {
-      loadFavoriteTeam(); // Reload stats
+      closeFavoriteTeamModal();
+      loadFavoriteTeam(); // Reload stats and UI
     }
   } catch(e) { console.error(e); }
 }
