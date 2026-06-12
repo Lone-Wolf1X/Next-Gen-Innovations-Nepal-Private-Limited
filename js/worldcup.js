@@ -77,39 +77,22 @@ function switchWCTab(tabId) {
   }
 }
 
-// --- FAST LOCAL MATCH DATA (MOCK FOR 2026 WORLD CUP) ---
-const WORLD_CUP_MATCHES = [
-  {
-    id: "m1", dateStr: "Tomorrow, 8:45 PM NPT", status: "upcoming", statusText: "Upcoming",
-    teamA: "Argentina", flagA: "https://flagcdn.com/w160/ar.png", scoreA: null,
-    teamB: "France", flagB: "https://flagcdn.com/w160/fr.png", scoreB: null,
-    events: []
-  },
-  {
-    id: "m2", dateStr: "Today", status: "live", statusText: "Live 72'",
-    teamA: "Brazil", flagA: "https://flagcdn.com/w160/br.png", scoreA: 2,
-    teamB: "Spain", flagB: "https://flagcdn.com/w160/es.png", scoreB: 1,
-    events: [
-      { team: 'A', text: "Vinicius Jr. 23'" },
-      { team: 'A', text: "Rodrygo 45+1'" },
-      { team: 'B', text: "Morata 56'" }
-    ]
-  },
-  {
-    id: "m3", dateStr: "Yesterday", status: "ft", statusText: "Full Time",
-    teamA: "Nepal", flagA: "https://flagcdn.com/w160/np.png", scoreA: 1,
-    teamB: "India", flagB: "https://flagcdn.com/w160/in.png", scoreB: 0,
-    events: [
-      { team: 'A', text: "Bista 89' ⚽" }
-    ]
-  },
-  {
-    id: "m4", dateStr: "Next Week", status: "upcoming", statusText: "Upcoming",
-    teamA: "Germany", flagA: "https://flagcdn.com/w160/de.png", scoreA: null,
-    teamB: "England", flagB: "https://flagcdn.com/w160/gb-eng.png", scoreB: null,
-    events: []
+// --- WORLD CUP 2026 API DATA ---
+let apiTeams = {};
+
+async function fetchTeamsData() {
+  try {
+    const res = await fetch('https://worldcup26.ir/get/teams');
+    const data = await res.json();
+    if (data && data.teams) {
+      data.teams.forEach(t => {
+        apiTeams[t.id] = t;
+      });
+    }
+  } catch (err) {
+    console.error("Failed to fetch teams", err);
   }
-];
+}
 
 function buildGoogleMatchCard(m, isPredictable = false) {
   let statusClass = m.status;
@@ -172,9 +155,65 @@ function buildGoogleMatchCard(m, isPredictable = false) {
 }
 
 async function fetchRealMatches() {
-  matchesToRender = WORLD_CUP_MATCHES;
-  document.querySelector('.live-pulse').innerText = 'LIVE MOCK DATA';
-  document.querySelector('.live-pulse').style.background = '#ef4444';
+  try {
+    if (Object.keys(apiTeams).length === 0) {
+      await fetchTeamsData();
+    }
+    
+    const res = await fetch('https://worldcup26.ir/get/games');
+    const data = await res.json();
+    
+    if (data && data.games && data.games.length > 0) {
+      // Filter out matches that are not group matches for the predictable section? 
+      // Let's just grab the first 4 upcoming/live matches for the top prediction section
+      const validMatches = data.games.filter(g => g.type === 'group' || parseInt(g.home_team_id) > 0);
+      matchesToRender = validMatches.slice(0, 4).map(e => {
+        let teamA = e.home_team_id === "0" ? e.home_team_label : (apiTeams[e.home_team_id] ? apiTeams[e.home_team_id].name_en : 'TBD');
+        let flagA = e.home_team_id === "0" ? 'https://flagcdn.com/w160/un.png' : (apiTeams[e.home_team_id] ? apiTeams[e.home_team_id].flag : 'https://flagcdn.com/w160/un.png');
+        let teamB = e.away_team_id === "0" ? e.away_team_label : (apiTeams[e.away_team_id] ? apiTeams[e.away_team_id].name_en : 'TBD');
+        let flagB = e.away_team_id === "0" ? 'https://flagcdn.com/w160/un.png' : (apiTeams[e.away_team_id] ? apiTeams[e.away_team_id].flag : 'https://flagcdn.com/w160/un.png');
+        
+        let status = 'upcoming';
+        let statusText = 'Upcoming';
+        if (e.finished === "TRUE") {
+          status = 'ft';
+          statusText = 'Full Time';
+        } else if (e.time_elapsed !== "notstarted") {
+          status = 'live';
+          statusText = `Live ${e.time_elapsed}'`;
+        }
+
+        // The API provides home_scorers and away_scorers as a string separated by commas.
+        let events = [];
+        if (e.home_scorers && e.home_scorers !== "null") {
+           e.home_scorers.split(',').forEach(sc => events.push({ team: 'A', text: sc.trim() }));
+        }
+        if (e.away_scorers && e.away_scorers !== "null") {
+           e.away_scorers.split(',').forEach(sc => events.push({ team: 'B', text: sc.trim() }));
+        }
+
+        return {
+          id: e.id,
+          dateStr: e.local_date, // e.g. "06/11/2026 13:00"
+          status: status,
+          statusText: statusText,
+          teamA: teamA, flagA: flagA, scoreA: e.home_score,
+          teamB: teamB, flagB: flagB, scoreB: e.away_score,
+          events: events
+        };
+      });
+      document.querySelector('.live-pulse').innerText = 'LIVE API DATA';
+      document.querySelector('.live-pulse').style.background = '#10b981';
+    } else {
+      matchesToRender = [];
+      document.querySelector('.live-pulse').innerText = 'NO MATCHES';
+      document.querySelector('.live-pulse').style.background = '#6b7280';
+    }
+  } catch (err) {
+    console.error("Failed to fetch matches", err);
+    matchesToRender = [];
+    document.querySelector('.live-pulse').innerText = 'API UNAVAILABLE';
+  }
 }
 
 window.updateAuthUI = function() {
@@ -497,15 +536,19 @@ function updateCountdowns() {
 async function fetchStandings() {
   const container = document.getElementById('standingsContainer');
   try {
-    const res = await fetch('https://site.api.espn.com/apis/v2/sports/soccer/fifa.world/standings');
+    if (Object.keys(apiTeams).length === 0) {
+      await fetchTeamsData();
+    }
+    
+    const res = await fetch('https://worldcup26.ir/get/groups');
     const data = await res.json();
     
-    if (data && data.children && data.children.length > 0) {
+    if (data && data.length > 0) {
       let html = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">';
       
-      data.children.forEach(group => {
+      data.forEach(group => {
         html += '\n<div class="wc-card" style="margin-bottom: 20px;">\n' +
-                '  <h3 style="background: rgba(37, 99, 235, 0.08); color: var(--indigo); padding: 6px 14px; border-radius: 20px; display:inline-block; margin-bottom:15px; font-size:0.95rem; font-weight:700;">' + escapeHtml(group.name) + '</h3>\n' +
+                '  <h3 style="background: rgba(37, 99, 235, 0.08); color: var(--indigo); padding: 6px 14px; border-radius: 20px; display:inline-block; margin-bottom:15px; font-size:0.95rem; font-weight:700;">Group ' + escapeHtml(group.group) + '</h3>\n' +
                 '  <table class="standings-table">\n' +
                 '    <thead>\n' +
                 '      <tr>\n' +
@@ -520,32 +563,22 @@ async function fetchStandings() {
                 '    </thead>\n' +
                 '    <tbody>\n';
         
-        group.standings.entries.forEach(entry => {
-            const team = entry.team;
-            const stats = entry.stats;
-            const getStat = (name) => {
-              const s = stats.find(x => x.name === name);
-              return s ? s.value : 0;
-            };
-            const p = getStat('gamesPlayed');
-            const w = getStat('wins');
-            const d = getStat('ties');
-            const l = getStat('losses');
-            const gd = getStat('pointDifferential');
-            const pts = getStat('points');
-            const flag = team.logos && team.logos.length > 0 ? team.logos[0].href : 'https://flagcdn.com/w40/un.png';
+        group.teams.forEach(t => {
+            const teamInfo = apiTeams[t.team_id];
+            const teamName = teamInfo ? teamInfo.name_en : 'TBD';
+            const flag = teamInfo ? teamInfo.flag : 'https://flagcdn.com/w40/un.png';
             
             html += '\n<tr>\n' +
                     '  <td style="display:flex; align-items:center; gap:10px;">\n' +
                     '    <img src="' + escapeHtml(flag) + '" style="width:26px; height:18px; border-radius:4px; border:1px solid rgba(0,0,0,0.08); object-fit:cover;">\n' +
-                    '    <span style="font-weight:700; color: var(--text-main); font-family: \'Outfit\', sans-serif;">' + escapeHtml(team.displayName || team.name) + '</span>\n' +
+                    '    <span style="font-weight:700; color: var(--text-main); font-family: \'Outfit\', sans-serif;">' + escapeHtml(teamName) + '</span>\n' +
                     '  </td>\n' +
-                    '  <td style="text-align:center; font-weight: 500;">' + escapeHtml(p) + '</td>\n' +
-                    '  <td style="text-align:center; font-weight: 500;">' + escapeHtml(w) + '</td>\n' +
-                    '  <td style="text-align:center; font-weight: 500;">' + escapeHtml(d) + '</td>\n' +
-                    '  <td style="text-align:center; font-weight: 500;">' + escapeHtml(l) + '</td>\n' +
-                    '  <td style="text-align:center; font-weight: 500;">' + escapeHtml(gd) + '</td>\n' +
-                    '  <td style="text-align:center; font-weight:800; color: var(--indigo);">' + escapeHtml(pts) + '</td>\n' +
+                    '  <td style="text-align:center; font-weight: 500;">' + escapeHtml(t.mp) + '</td>\n' +
+                    '  <td style="text-align:center; font-weight: 500;">' + escapeHtml(t.w) + '</td>\n' +
+                    '  <td style="text-align:center; font-weight: 500;">' + escapeHtml(t.d) + '</td>\n' +
+                    '  <td style="text-align:center; font-weight: 500;">' + escapeHtml(t.l) + '</td>\n' +
+                    '  <td style="text-align:center; font-weight: 500;">' + escapeHtml(t.gd) + '</td>\n' +
+                    '  <td style="text-align:center; font-weight:800; color: var(--indigo);">' + escapeHtml(t.pts) + '</td>\n' +
                     '</tr>\n';
         });
         
@@ -563,6 +596,7 @@ async function fetchStandings() {
       `;
     }
   } catch (err) {
+    console.error("Failed to load standings", err);
     container.innerHTML = `<p>Standings API unavailable.</p>`;
   }
 }
@@ -574,26 +608,64 @@ async function fetchFixtures() {
   container.innerHTML = '<div style="text-align:center; padding: 40px;"><div class="spinner"></div><p style="margin-top:10px;">Loading Match Center...</p></div>';
 
   try {
-    // Instant load with local mock data
-    setTimeout(() => {
-      if (WORLD_CUP_MATCHES && WORLD_CUP_MATCHES.length > 0) {
-        let html = '<div class="fixtures-grid">';
-        WORLD_CUP_MATCHES.forEach(m => {
-          html += buildGoogleMatchCard(m, false);
-        });
-        html += '</div>';
-        container.innerHTML = html;
-      } else {
-        container.innerHTML = `
-          <div class="wc-empty-state">
-            <h3>Full Schedule TBD 📅</h3>
-            <p>The official fixture list for the 48 teams will be populated automatically prior to June 2026.</p>
-          </div>
-        `;
-      }
-    }, 200); // Slight delay for smooth transition effect
+    if (Object.keys(apiTeams).length === 0) {
+      await fetchTeamsData();
+    }
+    
+    const res = await fetch('https://worldcup26.ir/get/games');
+    const data = await res.json();
+    
+    if (data && data.games && data.games.length > 0) {
+      let html = '<div class="fixtures-grid">';
+      data.games.forEach(e => {
+        let teamA = e.home_team_id === "0" ? e.home_team_label : (apiTeams[e.home_team_id] ? apiTeams[e.home_team_id].name_en : 'TBD');
+        let flagA = e.home_team_id === "0" ? 'https://flagcdn.com/w160/un.png' : (apiTeams[e.home_team_id] ? apiTeams[e.home_team_id].flag : 'https://flagcdn.com/w160/un.png');
+        let teamB = e.away_team_id === "0" ? e.away_team_label : (apiTeams[e.away_team_id] ? apiTeams[e.away_team_id].name_en : 'TBD');
+        let flagB = e.away_team_id === "0" ? 'https://flagcdn.com/w160/un.png' : (apiTeams[e.away_team_id] ? apiTeams[e.away_team_id].flag : 'https://flagcdn.com/w160/un.png');
+        
+        let status = 'upcoming';
+        let statusText = 'Upcoming';
+        if (e.finished === "TRUE") {
+          status = 'ft';
+          statusText = 'Full Time';
+        } else if (e.time_elapsed !== "notstarted") {
+          status = 'live';
+          statusText = `Live ${e.time_elapsed}'`;
+        }
+
+        let events = [];
+        if (e.home_scorers && e.home_scorers !== "null") {
+           e.home_scorers.split(',').forEach(sc => events.push({ team: 'A', text: sc.trim() }));
+        }
+        if (e.away_scorers && e.away_scorers !== "null") {
+           e.away_scorers.split(',').forEach(sc => events.push({ team: 'B', text: sc.trim() }));
+        }
+
+        const matchObj = {
+          id: e.id,
+          dateStr: e.local_date,
+          status: status,
+          statusText: statusText,
+          teamA: teamA, flagA: flagA, scoreA: e.home_score,
+          teamB: teamB, flagB: flagB, scoreB: e.away_score,
+          events: events
+        };
+        
+        html += buildGoogleMatchCard(matchObj, false);
+      });
+      html += '</div>';
+      container.innerHTML = html;
+    } else {
+      container.innerHTML = `
+        <div class="wc-empty-state">
+          <h3>Full Schedule TBD 📅</h3>
+          <p>The official fixture list for the 48 teams will be populated automatically prior to June 2026.</p>
+        </div>
+      `;
+    }
   } catch (err) {
     console.error("Failed to load fixtures", err);
+    container.innerHTML = `<p style="text-align:center; padding: 20px;">Fixtures API unavailable.</p>`;
   }
 }
 
