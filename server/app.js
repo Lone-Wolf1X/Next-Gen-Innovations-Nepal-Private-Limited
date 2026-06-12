@@ -590,24 +590,53 @@ app.post('/api/worldcup/login', async (req, res) => {
 
 app.post('/api/worldcup/user/update', async (req, res) => {
     try {
-        const { idToken, country } = req.body;
+        const { idToken, country, notificationsEnabled } = req.body;
         if (!idToken || !country) return res.status(400).json({ error: 'Missing parameter' });
 
         const decodedToken = await getAuth().verifyIdToken(idToken);
         const uid = decodedToken.uid;
 
-        const updateRes = await pool.query(`
+        let query = `
             UPDATE worldcup_users
             SET country = $1
-            WHERE firebase_uid = $2
-            RETURNING points, country
-        `, [country, uid]);
+        `;
+        let params = [country, uid];
+
+        if (notificationsEnabled !== undefined) {
+            query += `, notifications_enabled = $3`;
+            params.push(notificationsEnabled);
+        }
+
+        query += ` WHERE firebase_uid = $2 RETURNING points, country`;
+
+        const updateRes = await pool.query(query, params);
 
         if (updateRes.rows.length === 0) return res.status(404).json({ error: 'User not found' });
 
         res.json({ success: true, points: updateRes.rows[0].points, country: updateRes.rows[0].country });
     } catch (err) {
         console.error("Update User Error:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/api/worldcup/user/update_notifications', async (req, res) => {
+    try {
+        const { idToken, notificationsEnabled } = req.body;
+        if (!idToken) return res.status(400).json({ error: 'Missing parameter' });
+
+        const decodedToken = await getAuth().verifyIdToken(idToken);
+        const uid = decodedToken.uid;
+
+        await pool.query(`
+            UPDATE worldcup_users
+            SET notifications_enabled = $1
+            WHERE firebase_uid = $2
+        `, [notificationsEnabled, uid]);
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error("Update Notifications Error:", err.message);
         res.status(500).json({ error: err.message });
     }
 });

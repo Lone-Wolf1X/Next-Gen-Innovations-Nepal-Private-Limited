@@ -239,24 +239,14 @@ window.submitWelcomeSetup = async function() {
   localStorage.setItem('wc_country_set', 'true');
 
   try {
-    // Save notifications consent
-    await fetch('/api/worldcup/users', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: window.currentUser.name,
-        email: window.currentUser.email || null,
-        notificationsEnabled: wantsNotifications
-      })
-    });
-
-    // Save country preference
+    // Save country preference & notifications
     const res = await fetch('/api/worldcup/user/update', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         idToken: window.currentUser.idToken,
-        country: selectedWelcomeCountry
+        country: selectedWelcomeCountry,
+        notificationsEnabled: wantsNotifications
       })
     });
 
@@ -336,12 +326,11 @@ async function submitConsent(wantsNotifications) {
   document.getElementById('welcomeModal').style.display = 'none';
 
   try {
-    await fetch('/api/worldcup/users', {
+    await fetch('/api/worldcup/user/update_notifications', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name: currentUser.name,
-        email: currentUser.email || null,
+        idToken: currentUser.idToken,
         notificationsEnabled: wantsNotifications
       })
     });
