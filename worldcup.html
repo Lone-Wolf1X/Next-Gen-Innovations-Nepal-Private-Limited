@@ -139,6 +139,9 @@
     <div class="container">
       <ul class="wc-tabs">
         <li class="active" onclick="switchWCTab('arena')">Predictor Arena</li>
+        <li onclick="switchWCTab('leagues')">Mini-Leagues</li>
+        <li onclick="switchWCTab('trivia')">Daily Trivia</li>
+        <li onclick="switchWCTab('tournament')">Tournament Predict</li>
         <li onclick="switchWCTab('fixtures')">Fixtures</li>
         <li onclick="switchWCTab('results')">Results</li>
         <li onclick="switchWCTab('standings')">Group Standings</li>
@@ -297,6 +300,79 @@
     </div>
   </section>
 
+
+  <!-- MINI-LEAGUES (Tab: leagues) -->
+  <section class="section wc-section tab-content" id="tab_leagues" style="display:none;">
+    <div class="container">
+      <div class="wc-card">
+        <h2 class="h4" style="font-weight: 800; font-family: 'Outfit'; color: var(--navy);">🏆 Private Mini-Leagues</h2>
+        <p>Compete directly with your friends, family, or coworkers! Create a private league or join an existing one using an invite code.</p>
+        
+        <div class="row mt-4">
+          <div class="col-md-6 mb-3">
+            <div style="background: rgba(37, 99, 235, 0.05); padding: 20px; border-radius: 12px; border: 1px dashed rgba(37, 99, 235, 0.2);">
+              <h5 style="font-weight: 700; color: var(--navy);">Create a League</h5>
+              <input type="text" id="newLeagueName" class="form-control mb-2" placeholder="e.g. Office Coders FC">
+              <button class="btn btn-primary w-100" onclick="createLeague()" style="background: var(--primary); border: none;">Create</button>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div style="background: rgba(16, 185, 129, 0.05); padding: 20px; border-radius: 12px; border: 1px dashed rgba(16, 185, 129, 0.2);">
+              <h5 style="font-weight: 700; color: var(--navy);">Join a League</h5>
+              <input type="text" id="joinLeagueCode" class="form-control mb-2" placeholder="Enter Invite Code">
+              <button class="btn btn-success w-100" onclick="joinLeague()" style="background: var(--secondary); border: none;">Join</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="myLeaguesContainer" class="mt-4">
+          <!-- Leagues will be injected here via JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DAILY TRIVIA (Tab: trivia) -->
+  <section class="section wc-section tab-content" id="tab_trivia" style="display:none;">
+    <div class="container">
+      <div class="wc-card text-center">
+        <h2 class="h4" style="font-weight: 800; font-family: 'Outfit'; color: var(--navy);">🎯 Daily Football Trivia</h2>
+        <p>Answer the question of the day to earn +5 points instantly!</p>
+        <div id="triviaContainer" style="margin-top: 20px; background: rgba(0,0,0,0.02); padding: 20px; border-radius: 12px;">
+          <!-- Trivia content injected via JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOURNAMENT PREDICT (Tab: tournament) -->
+  <section class="section wc-section tab-content" id="tab_tournament" style="display:none;">
+    <div class="container">
+      <div class="wc-card">
+        <h2 class="h4" style="font-weight: 800; font-family: 'Outfit'; color: var(--navy);">🏅 Tournament Predictions</h2>
+        <p>Predict the ultimate World Cup Champion and the Golden Boot winner. Lock these in before the Group Stages end for massive bonus points!</p>
+        <div class="row mt-4">
+          <div class="col-md-6 mb-3">
+             <label style="font-weight: 600;">World Cup Winner</label>
+             <select id="tourneyWinner" class="form-select mt-1">
+               <option value="">Select a team...</option>
+               <option value="Argentina">Argentina</option>
+               <option value="France">France</option>
+               <option value="Brazil">Brazil</option>
+               <option value="England">England</option>
+               <option value="Spain">Spain</option>
+               <option value="Germany">Germany</option>
+             </select>
+          </div>
+          <div class="col-md-6 mb-3">
+             <label style="font-weight: 600;">Golden Boot Winner</label>
+             <input type="text" id="tourneyGoldenBoot" class="form-control mt-1" placeholder="e.g. Kylian Mbappe">
+          </div>
+        </div>
+        <button class="btn btn-primary mt-2" onclick="saveTournamentPredictions()">Lock Predictions</button>
+      </div>
+    </div>
+  </section>
 
   <!-- FIXTURES (Tab 2) -->
   <section class="section wc-section tab-content" id="tab_fixtures" style="display:none;">

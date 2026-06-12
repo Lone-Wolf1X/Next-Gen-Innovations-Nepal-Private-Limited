@@ -574,15 +574,31 @@ function renderMatches() {
       const myPred = (window.currentUser && window.currentUser.predictions) ? window.currentUser.predictions[String(m.id)] : null;
       const valA = myPred ? myPred.scoreA : '';
       const valB = myPred ? myPred.scoreB : '';
+      const usedMult = myPred && myPred.usedMultiplier;
       if (myPred) {
         btnText = 'Update Prediction ✅';
       }
+      
+      const chips = window.currentUser ? (window.currentUser.multiplierChips || 0) : 0;
+      let boostHtml = '';
+      if (window.currentUser) {
+        if (usedMult) {
+          boostHtml = `<div style="width:100%; text-align:center; font-size:0.8rem; color:#f59e0b; font-weight:700; margin-bottom:5px;">🚀 2x Boost Applied!</div>`;
+        } else if (chips > 0) {
+          boostHtml = `<div style="width:100%; text-align:center; font-size:0.8rem; color:var(--text-body); margin-bottom:5px;"><label><input type="checkbox" id="boost_${m.id}"> Use 2x Boost (x${chips} left)</label></div>`;
+        } else {
+          boostHtml = `<div style="width:100%; text-align:center; font-size:0.8rem; color:var(--text-muted); margin-bottom:5px;">No 2x Boosts left</div>`;
+        }
+      }
 
       predictionAreaHtml = `
-        <div class="prediction-inputs" style="width: 100%; justify-content: center; gap: 12px;">
-          <input type="number" id="scoreA_${m.id}" class="score-input" min="0" max="15" value="${valA}" placeholder="-" ${disabledAttr}>
-          <button class="btn-lock ${myPred ? 'locked' : ''}" id="btn_${m.id}" style="${bgStyle}" onclick="lockPrediction('${m.id}', '${m.teamA.replace(/'/g, "\\'")}', '${m.teamB.replace(/'/g, "\\'")}')" ${disabledAttr}>${btnText}</button>
-          <input type="number" id="scoreB_${m.id}" class="score-input" min="0" max="15" value="${valB}" placeholder="-" ${disabledAttr}>
+        <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+          ${boostHtml}
+          <div class="prediction-inputs" style="width: 100%; justify-content: center; gap: 12px; display: flex;">
+            <input type="number" id="scoreA_${m.id}" class="score-input" min="0" max="15" value="${valA}" placeholder="-" ${disabledAttr}>
+            <button class="btn-lock ${myPred ? 'locked' : ''}" id="btn_${m.id}" style="${bgStyle}" onclick="lockPrediction('${m.id}', '${m.teamA.replace(/'/g, "\\'")}', '${m.teamB.replace(/'/g, "\\'")}')" ${disabledAttr}>${btnText}</button>
+            <input type="number" id="scoreB_${m.id}" class="score-input" min="0" max="15" value="${valB}" placeholder="-" ${disabledAttr}>
+          </div>
         </div>
       `;
     }
@@ -604,8 +620,10 @@ function renderMatches() {
             <div class="team-name" style="font-weight: 700; font-size: 0.95rem; color: #0b1120 !important; text-align: center; font-family: 'Outfit';">${m.teamB}</div>
           </div>
         </div>
-        <div style="text-align:center; margin-top:12px; margin-bottom: 12px;">
-          <button class="btn btn-outline" style="padding: 6px 16px; font-size: 0.8rem; border-color: rgba(15, 28, 63, 0.12); color: var(--text-body); font-weight:600;" onclick="viewLineup('${m.rawId}', '${m.teamA.replace(/'/g, "\\'")}', '${m.teamB.replace(/'/g, "\\'")}')">View Lineup & Details</button>
+        <div style="display:flex; justify-content:center; gap: 10px; flex-wrap:wrap; margin-top:12px; margin-bottom: 12px;">
+          <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; border-color: rgba(15, 28, 63, 0.12); color: var(--text-body); font-weight:600;" onclick="viewLineup('${m.rawId}', '${m.teamA.replace(/'/g, "\\'")}', '${m.teamB.replace(/'/g, "\\'")}')">Lineup</button>
+          <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; border-color: rgba(15, 28, 63, 0.12); color: var(--text-body); font-weight:600;" onclick="openChat('${m.id}', '${m.teamA.replace(/'/g, "\\'")}', '${m.teamB.replace(/'/g, "\\'")}')">💬 Banter Box</button>
+          <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; border-color: rgba(15, 28, 63, 0.12); color: var(--text-body); font-weight:600;" onclick="openStats('${m.teamA.replace(/'/g, "\\'")}', '${m.teamB.replace(/'/g, "\\'")}')">📊 Stats</button>
         </div>
         <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed rgba(15, 28, 63, 0.1); display: flex; width: 100%;">
           ${predictionAreaHtml}
@@ -888,6 +906,8 @@ async function lockPrediction(matchId, teamA, teamB) {
   
   const scoreA = document.getElementById(`scoreA_${matchId}`).value;
   const scoreB = document.getElementById(`scoreB_${matchId}`).value;
+  const boostEl = document.getElementById(`boost_${matchId}`);
+  const useMultiplier = boostEl ? boostEl.checked : false;
   
   if (scoreA === '' || scoreB === '') {
     alert("Please enter both scores before locking.");
@@ -907,7 +927,8 @@ async function lockPrediction(matchId, teamA, teamB) {
         idToken: window.currentUser.idToken,
         matchId: String(matchId),
         scoreA: parseInt(scoreA, 10),
-        scoreB: parseInt(scoreB, 10)
+        scoreB: parseInt(scoreB, 10),
+        useMultiplier: useMultiplier
       })
     });
 
@@ -927,9 +948,16 @@ async function lockPrediction(matchId, teamA, teamB) {
     if (!window.currentUser.predictions) {
       window.currentUser.predictions = {};
     }
+    
+    const wasUsed = (window.currentUser.predictions[String(matchId)] && window.currentUser.predictions[String(matchId)].usedMultiplier) || useMultiplier;
+    if (useMultiplier && !window.currentUser.predictions[String(matchId)]?.usedMultiplier) {
+      window.currentUser.multiplierChips -= 1;
+    }
+
     window.currentUser.predictions[String(matchId)] = {
       scoreA: parseInt(scoreA, 10),
-      scoreB: parseInt(scoreB, 10)
+      scoreB: parseInt(scoreB, 10),
+      usedMultiplier: wasUsed
     };
 
     // Re-render matches to reflect prediction state dynamically
@@ -1434,3 +1462,287 @@ window.alert = function(message) {
   
   modal.style.display = 'flex';
 };
+
+// ============================================================================
+// GAMIFICATION MODULE (Leagues, Trivia, Tournament)
+// ============================================================================
+
+async function createLeague() {
+  if (!window.currentUser) return alert("Please login first.");
+  const name = document.getElementById('newLeagueName').value.trim();
+  if (!name) return alert("Please enter a league name.");
+  
+  try {
+    const res = await fetch('/api/worldcup/league/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken: window.currentUser.idToken, leagueName: name })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    alert(`🎉 League created! Your invite code is: ${data.code}\nShare this code with friends to join.`);
+    document.getElementById('newLeagueName').value = '';
+    loadUserLeagues();
+  } catch (err) { alert(err.message); }
+}
+
+async function joinLeague() {
+  if (!window.currentUser) return alert("Please login first.");
+  const code = document.getElementById('joinLeagueCode').value.trim();
+  if (!code) return alert("Please enter an invite code.");
+  
+  try {
+    const res = await fetch('/api/worldcup/league/join', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken: window.currentUser.idToken, code: code })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    alert(`🎉 ${data.message}`);
+    document.getElementById('joinLeagueCode').value = '';
+    loadUserLeagues();
+  } catch (err) { alert(err.message); }
+}
+
+async function loadUserLeagues() {
+  if (!window.currentUser) return;
+  try {
+    const res = await fetch('/api/worldcup/user-leagues', {
+      headers: { 'Authorization': `Bearer ${window.currentUser.idToken}` }
+    });
+    const leagues = await res.json();
+    
+    let html = '';
+    for (let lg of leagues) {
+      // Fetch leaderboard
+      const lbRes = await fetch(`/api/worldcup/league/${lg.id}/leaderboard`);
+      const lb = await lbRes.json();
+      
+      let rows = '';
+      lb.forEach((user, idx) => {
+        let medal = '';
+        if (idx === 0) medal = '🥇';
+        else if (idx === 1) medal = '🥈';
+        else if (idx === 2) medal = '🥉';
+        
+        rows += `
+          <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #e2e8f0;">
+            <span>${medal} ${idx+1}. ${user.name}</span>
+            <span style="font-weight:700; color:var(--primary);">${user.points} pts</span>
+          </div>
+        `;
+      });
+
+      html += `
+        <div style="background: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h5 style="margin:0; font-weight:700;">${lg.name} <span style="font-size:0.8rem; color:#64748b; font-weight:normal;">(${lg.member_count} members)</span></h5>
+            <span style="background: #e2e8f0; padding: 4px 8px; border-radius: 6px; font-family: monospace; font-size: 0.85rem; font-weight:bold;">Code: ${lg.code}</span>
+          </div>
+          ${rows}
+        </div>
+      `;
+    }
+    document.getElementById('myLeaguesContainer').innerHTML = html || '<p class="text-muted">You have not joined any leagues yet.</p>';
+  } catch (err) { console.error(err); }
+}
+
+async function loadTrivia() {
+  try {
+    const res = await fetch('/api/worldcup/trivia/today');
+    window.currentTrivia = await res.json();
+    
+    let optionsHtml = '';
+    window.currentTrivia.options.forEach((opt, idx) => {
+      optionsHtml += `
+        <button class="btn btn-outline w-100 mb-2" onclick="submitTriviaAnswer(${window.currentTrivia.id}, ${idx})" style="text-align:left; border-color: #cbd5e1;">
+          ${String.fromCharCode(65+idx)}. ${opt}
+        </button>
+      `;
+    });
+
+    document.getElementById('triviaContainer').innerHTML = `
+      <h5 style="margin-bottom: 20px; font-weight: 600;">${window.currentTrivia.question}</h5>
+      ${optionsHtml}
+    `;
+  } catch (err) { console.error(err); }
+}
+
+async function submitTriviaAnswer(qId, idx) {
+  if (!window.currentUser) return alert("Please login first.");
+  try {
+    const res = await fetch('/api/worldcup/trivia/answer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken: window.currentUser.idToken, questionId: qId, answerIndex: idx })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    
+    alert(data.message);
+    if (data.correct && data.points !== undefined) {
+      window.currentUser.points += 5;
+      if(document.getElementById('dashPoints')) document.getElementById('dashPoints').innerText = window.currentUser.points;
+    }
+    document.getElementById('triviaContainer').innerHTML = `<p style="font-weight:700; color: #10B981;">✅ Answer Submitted. Check back tomorrow for the next question!</p>`;
+  } catch (err) { alert(err.message); }
+}
+
+async function saveTournamentPredictions() {
+  if (!window.currentUser) return alert("Please login first.");
+  const winner = document.getElementById('tourneyWinner').value;
+  const goldenBoot = document.getElementById('tourneyGoldenBoot').value.trim();
+  
+  if (!winner || !goldenBoot) return alert("Please fill both predictions.");
+  
+  try {
+    const res = await fetch('/api/worldcup/tournament-predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken: window.currentUser.idToken, winner, goldenBoot })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    alert("🎉 Tournament Predictions Locked! Good luck!");
+  } catch (err) { alert(err.message); }
+}
+
+// Ensure Gamification tabs load their data
+const originalSwitchWCTab = switchWCTab;
+switchWCTab = function(tabName) {
+  originalSwitchWCTab(tabName);
+  if (tabName === 'leagues') loadUserLeagues();
+  if (tabName === 'trivia') loadTrivia();
+}
+
+// ============================================================================
+// MATCH INSIGHTS & CHAT (Banter Box)
+// ============================================================================
+
+function openStats(teamA, teamB) {
+  // Simple mock stats to make it look premium
+  const winProbA = Math.floor(Math.random() * 40) + 20; // 20-60%
+  const winProbB = Math.floor(Math.random() * 40) + 20;
+  const drawProb = 100 - winProbA - winProbB;
+  
+  const forms = ['W', 'D', 'L'];
+  const getForm = () => Array(5).fill(0).map(() => forms[Math.floor(Math.random() * 3)]).join('-');
+
+  const html = `
+    <div style="text-align:left; font-family:'Outfit';">
+      <h5 style="font-weight:800; color:var(--navy); margin-bottom:15px; border-bottom:1px solid #e2e8f0; padding-bottom:5px;">Head-to-Head Stats</h5>
+      
+      <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+        <div style="text-align:center; width:30%;">
+          <div style="font-weight:700; color:var(--primary); font-size:1.2rem;">${winProbA}%</div>
+          <div style="font-size:0.8rem; color:#64748b;">${teamA} Win</div>
+        </div>
+        <div style="text-align:center; width:30%;">
+          <div style="font-weight:700; color:#94a3b8; font-size:1.2rem;">${drawProb}%</div>
+          <div style="font-size:0.8rem; color:#64748b;">Draw</div>
+        </div>
+        <div style="text-align:center; width:30%;">
+          <div style="font-weight:700; color:var(--indigo); font-size:1.2rem;">${winProbB}%</div>
+          <div style="font-size:0.8rem; color:#64748b;">${teamB} Win</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:15px;">
+        <strong style="color:var(--navy);">Recent Form (Last 5)</strong>
+        <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:0.9rem;">
+          <span>${teamA}</span>
+          <span style="font-family:monospace; letter-spacing:2px; font-weight:bold; color:#10B981;">${getForm()}</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:0.9rem;">
+          <span>${teamB}</span>
+          <span style="font-family:monospace; letter-spacing:2px; font-weight:bold; color:#f59e0b;">${getForm()}</span>
+        </div>
+      </div>
+    </div>
+  `;
+  customAlert(html, `📊 ${teamA} vs ${teamB}`);
+}
+
+let chatInterval = null;
+let currentChatMatch = null;
+
+function openChat(matchId, teamA, teamB) {
+  currentChatMatch = matchId;
+  const html = `
+    <div style="display:flex; flex-direction:column; height:350px;">
+      <div id="chatMessages" style="flex:1; overflow-y:auto; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px; margin-bottom:10px; text-align:left;">
+        <div style="text-align:center; color:#94a3b8; font-size:0.8rem; margin-top:20px;">Loading messages...</div>
+      </div>
+      <div style="display:flex; gap:5px;">
+        <input type="text" id="chatInput" class="form-control" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendChatMessage()">
+        <button class="btn btn-primary" onclick="sendChatMessage()">Send</button>
+      </div>
+    </div>
+  `;
+  customAlert(html, `💬 Banter Box: ${teamA} vs ${teamB}`);
+  fetchChat();
+  if (chatInterval) clearInterval(chatInterval);
+  chatInterval = setInterval(fetchChat, 5000);
+  
+  // Clear interval when modal closes (hacky but works for customAlert since it rebuilds)
+  const modal = document.getElementById('customAlertModal');
+  if(modal) {
+    const observer = new MutationObserver((mutations) => {
+      if(modal.style.display === 'none') {
+        clearInterval(chatInterval);
+        observer.disconnect();
+      }
+    });
+    observer.observe(modal, { attributes: true, attributeFilter: ['style'] });
+  }
+}
+
+async function fetchChat() {
+  if (!currentChatMatch) return;
+  try {
+    const res = await fetch(`/api/worldcup/chat/${currentChatMatch}`);
+    const msgs = await res.json();
+    const container = document.getElementById('chatMessages');
+    if (!container) return;
+    
+    if (msgs.length === 0) {
+      container.innerHTML = '<div style="text-align:center; color:#94a3b8; font-size:0.8rem; margin-top:20px;">No messages yet. Be the first to banter!</div>';
+      return;
+    }
+    
+    let html = '';
+    msgs.forEach(m => {
+      const time = new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      html += `
+        <div style="margin-bottom:8px; font-size:0.9rem;">
+          <strong style="color:var(--primary);">${m.name}</strong> <span style="color:#94a3b8; font-size:0.7rem;">${time}</span><br>
+          <span style="color:var(--text-body);">${escapeHtml(m.message)}</span>
+        </div>
+      `;
+    });
+    
+    const isScrolledToBottom = container.scrollHeight - container.clientHeight <= container.scrollTop + 20;
+    container.innerHTML = html;
+    if (isScrolledToBottom) {
+      container.scrollTop = container.scrollHeight;
+    }
+  } catch (err) { console.error("Chat fetch error", err); }
+}
+
+async function sendChatMessage() {
+  if (!window.currentUser) return alert("Please login to send messages.");
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  
+  input.value = '';
+  try {
+    await fetch(`/api/worldcup/chat/${currentChatMatch}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken: window.currentUser.idToken, message: msg })
+    });
+    fetchChat();
+  } catch (err) { alert("Failed to send message"); }
+}

@@ -326,6 +326,9 @@ async function initDBs() {
         await pool.query(`
             ALTER TABLE worldcup_users ADD COLUMN IF NOT EXISTS country VARCHAR(100) DEFAULT 'Nepal';
         `);
+        await pool.query(`
+            ALTER TABLE worldcup_users ADD COLUMN IF NOT EXISTS multiplier_chips INT DEFAULT 3;
+        `);
         
         await pool.query(`
             CREATE TABLE IF NOT EXISTS worldcup_predictions (
@@ -334,9 +337,14 @@ async function initDBs() {
                 match_id VARCHAR(50) NOT NULL,
                 score_a INT NOT NULL,
                 score_b INT NOT NULL,
+                used_multiplier BOOLEAN DEFAULT false,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(user_id, match_id)
             );
+        `);
+        
+        await pool.query(`
+            ALTER TABLE worldcup_predictions ADD COLUMN IF NOT EXISTS used_multiplier BOOLEAN DEFAULT false;
         `);
 
         await pool.query(`
@@ -360,6 +368,57 @@ async function initDBs() {
                 winner_name VARCHAR(255),
                 winner_email VARCHAR(255),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        // Gamification tables
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS worldcup_leagues (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(255) NOT NULL,
+                code VARCHAR(50) UNIQUE NOT NULL,
+                owner_id INT REFERENCES worldcup_users(id),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS worldcup_league_members (
+                league_id INT REFERENCES worldcup_leagues(id),
+                user_id INT REFERENCES worldcup_users(id),
+                joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (league_id, user_id)
+            );
+        `);
+
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS worldcup_chat (
+                id SERIAL PRIMARY KEY,
+                match_id VARCHAR(50) NOT NULL,
+                user_id INT REFERENCES worldcup_users(id),
+                message TEXT NOT NULL,
+                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS worldcup_tournament_preds (
+                id SERIAL PRIMARY KEY,
+                user_id INT REFERENCES worldcup_users(id) UNIQUE,
+                winner_team VARCHAR(100),
+                golden_boot VARCHAR(100),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS worldcup_trivia_answers (
+                id SERIAL PRIMARY KEY,
+                user_id INT REFERENCES worldcup_users(id),
+                question_id INT NOT NULL,
+                is_correct BOOLEAN,
+                answered_at DATE DEFAULT CURRENT_DATE,
+                UNIQUE(user_id, answered_at)
             );
         `);
     } catch(err) {
@@ -540,13 +599,14 @@ app.post('/api/worldcup/login', async (req, res) => {
             const insertRes = await pool.query(`
                 INSERT INTO worldcup_users (firebase_uid, email, name, points, country)
                 VALUES ($1, $2, $3, $4, $5)
-                RETURNING id, points, last_checkin, country
+                RETURNING id, points, last_checkin, country, multiplier_chips
             `, [uid, email, name || 'Predictor', initialPoints, country]);
             
             userId = insertRes.rows[0].id;
             userPoints = insertRes.rows[0].points;
             lastCheckin = insertRes.rows[0].last_checkin;
             country = insertRes.rows[0].country;
+            let multiplierChips = insertRes.rows[0].multiplier_chips;
 
             // Log referral and award +10 points to referrer
             if (referrerId) {
@@ -571,13 +631,14 @@ app.post('/api/worldcup/login', async (req, res) => {
                 UPDATE worldcup_users
                 SET name = $1, email = $2
                 WHERE firebase_uid = $3
-                RETURNING id, points, last_checkin, country
+                RETURNING id, points, last_checkin, country, multiplier_chips
             `, [name || 'Predictor', email, uid]);
 
             userId = updateRes.rows[0].id;
             userPoints = updateRes.rows[0].points;
             lastCheckin = updateRes.rows[0].last_checkin;
             country = updateRes.rows[0].country;
+            multiplierChips = updateRes.rows[0].multiplier_chips;
         }
 
         // Check Nepal Time check-in status
@@ -591,15 +652,15 @@ app.post('/api/worldcup/login', async (req, res) => {
         const checkedInToday = (lastCheckinNepalStr === todayNepalStr);
 
         const predRes = await pool.query(
-            'SELECT match_id, score_a, score_b FROM worldcup_predictions WHERE user_id = $1',
+            'SELECT match_id, score_a, score_b, used_multiplier FROM worldcup_predictions WHERE user_id = $1',
             [userId]
         );
         const predictions = {};
         predRes.rows.forEach(p => {
-            predictions[p.match_id] = { scoreA: p.score_a, scoreB: p.score_b };
+            predictions[p.match_id] = { scoreA: p.score_a, scoreB: p.score_b, usedMultiplier: p.used_multiplier };
         });
         
-        res.json({ success: true, points: userPoints, checkedInToday, country, predictions });
+        res.json({ success: true, points: userPoints, checkedInToday, country, multiplierChips, predictions });
     } catch (err) {
         console.error("Firebase Auth Error:", err.message);
         res.status(401).json({ error: 'Unauthorized' });
@@ -745,15 +806,16 @@ app.post('/api/worldcup/test-draw', checkAuth, async (req, res) => {
 
 app.post('/api/worldcup/predict', async (req, res) => {
     try {
-        const { idToken, matchId, scoreA, scoreB } = req.body;
+        const { idToken, matchId, scoreA, scoreB, useMultiplier } = req.body;
         if (!idToken || !matchId) return res.status(400).json({ error: 'Missing data' });
         
         const decodedToken = await getAuth().verifyIdToken(idToken);
         const uid = decodedToken.uid;
         
-        const userRes = await pool.query('SELECT id FROM worldcup_users WHERE firebase_uid = $1', [uid]);
+        const userRes = await pool.query('SELECT id, multiplier_chips FROM worldcup_users WHERE firebase_uid = $1', [uid]);
         if (userRes.rows.length === 0) return res.status(404).json({ error: 'User not found' });
         const userId = userRes.rows[0].id;
+        const availableChips = userRes.rows[0].multiplier_chips;
 
         // Check match time limits (5-minute lock before kickoff)
         const gamesRes = await fetch('https://worldcup26.ir/get/games');
@@ -774,17 +836,32 @@ app.post('/api/worldcup/predict', async (req, res) => {
 
         // Check if user has already predicted this match
         const checkPred = await pool.query(
-            'SELECT 1 FROM worldcup_predictions WHERE user_id = $1 AND match_id = $2',
+            'SELECT used_multiplier FROM worldcup_predictions WHERE user_id = $1 AND match_id = $2',
             [userId, matchId]
         );
         const isNewPrediction = checkPred.rows.length === 0;
+        const alreadyUsedMultiplier = !isNewPrediction && checkPred.rows[0].used_multiplier;
+
+        let willUseMultiplier = false;
+        if (useMultiplier && !alreadyUsedMultiplier) {
+            if (availableChips <= 0) {
+                return res.status(400).json({ error: 'No 2x boosts remaining.' });
+            }
+            willUseMultiplier = true;
+        } else if (alreadyUsedMultiplier) {
+            willUseMultiplier = true; // keep it true if they already applied it before
+        }
         
         await pool.query(`
-            INSERT INTO worldcup_predictions (user_id, match_id, score_a, score_b)
-                        VALUES ($1, $2, $3, $4)
+            INSERT INTO worldcup_predictions (user_id, match_id, score_a, score_b, used_multiplier)
+                        VALUES ($1, $2, $3, $4, $5)
             ON CONFLICT (user_id, match_id)
-            DO UPDATE SET score_a = EXCLUDED.score_a, score_b = EXCLUDED.score_b
-        `, [userId, matchId, scoreA, scoreB]);
+            DO UPDATE SET score_a = EXCLUDED.score_a, score_b = EXCLUDED.score_b, used_multiplier = EXCLUDED.used_multiplier
+        `, [userId, matchId, scoreA, scoreB, willUseMultiplier]);
+
+        if (willUseMultiplier && !alreadyUsedMultiplier) {
+            await pool.query('UPDATE worldcup_users SET multiplier_chips = multiplier_chips - 1 WHERE id = $1', [userId]);
+        }
 
         if (isNewPrediction) {
             await pool.query('UPDATE worldcup_users SET points = points + 10 WHERE id = $1', [userId]);
@@ -883,6 +960,165 @@ app.delete('/api/worldcup/admin/notifications/:id', checkAuth, async (req, res) 
 // ─── AUTOMATED 12 PM Winner draw CRON ────────────────────────────────────────
 cron.schedule('0 12 * * *', async () => {
     await runWorldCupDraw();
+});
+
+// ─── GAMIFICATION API ROUTES ───────────────────────────────────────────────────
+
+app.post('/api/worldcup/league/create', checkAuth, async (req, res) => {
+    try {
+        const { leagueName } = req.body;
+        const uid = req.user.uid;
+        const userRes = await pool.query('SELECT id FROM worldcup_users WHERE firebase_uid = $1', [uid]);
+        if (userRes.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+        const userId = userRes.rows[0].id;
+        
+        const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+        
+        const lgRes = await pool.query(
+            'INSERT INTO worldcup_leagues (name, code, owner_id) VALUES ($1, $2, $3) RETURNING id, code',
+            [leagueName, code, userId]
+        );
+        const leagueId = lgRes.rows[0].id;
+        
+        await pool.query(
+            'INSERT INTO worldcup_league_members (league_id, user_id) VALUES ($1, $2)',
+            [leagueId, userId]
+        );
+        
+        res.json({ success: true, code: lgRes.rows[0].code });
+    } catch(err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/worldcup/league/join', checkAuth, async (req, res) => {
+    try {
+        const { code } = req.body;
+        const uid = req.user.uid;
+        const userRes = await pool.query('SELECT id FROM worldcup_users WHERE firebase_uid = $1', [uid]);
+        if (userRes.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+        const userId = userRes.rows[0].id;
+        
+        const lgRes = await pool.query('SELECT id FROM worldcup_leagues WHERE code = $1', [code.toUpperCase()]);
+        if (lgRes.rows.length === 0) return res.status(404).json({ error: 'Invalid invite code' });
+        const leagueId = lgRes.rows[0].id;
+        
+        await pool.query(
+            'INSERT INTO worldcup_league_members (league_id, user_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',
+            [leagueId, userId]
+        );
+        res.json({ success: true, message: "Joined successfully!" });
+    } catch(err) { res.status(500).json({ error: err.message }); }
+});
+
+app.get('/api/worldcup/user-leagues', checkAuth, async (req, res) => {
+    try {
+        const uid = req.user.uid;
+        const result = await pool.query(`
+            SELECT l.id, l.name, l.code,
+            (SELECT COUNT(*) FROM worldcup_league_members WHERE league_id = l.id) as member_count
+            FROM worldcup_leagues l
+            JOIN worldcup_league_members m ON l.id = m.league_id
+            JOIN worldcup_users u ON m.user_id = u.id
+            WHERE u.firebase_uid = $1
+        `, [uid]);
+        res.json(result.rows);
+    } catch(err) { res.status(500).json({ error: err.message }); }
+});
+
+app.get('/api/worldcup/league/:id/leaderboard', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT u.name, u.points 
+            FROM worldcup_users u
+            JOIN worldcup_league_members m ON u.id = m.user_id
+            WHERE m.league_id = $1
+            ORDER BY u.points DESC
+        `, [req.params.id]);
+        res.json(result.rows);
+    } catch(err) { res.status(500).json({ error: err.message }); }
+});
+
+app.get('/api/worldcup/chat/:matchId', async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT c.message, c.timestamp, u.name 
+            FROM worldcup_chat c
+            JOIN worldcup_users u ON c.user_id = u.id
+            WHERE c.match_id = $1
+            ORDER BY c.timestamp ASC LIMIT 50
+        `, [req.params.matchId]);
+        res.json(result.rows);
+    } catch(err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/worldcup/chat/:matchId', checkAuth, async (req, res) => {
+    try {
+        const { message } = req.body;
+        const uid = req.user.uid;
+        const userRes = await pool.query('SELECT id FROM worldcup_users WHERE firebase_uid = $1', [uid]);
+        if (userRes.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+        
+        await pool.query(
+            'INSERT INTO worldcup_chat (match_id, user_id, message) VALUES ($1, $2, $3)',
+            [req.params.matchId, userRes.rows[0].id, message]
+        );
+        res.json({ success: true });
+    } catch(err) { res.status(500).json({ error: err.message }); }
+});
+
+app.get('/api/worldcup/trivia/today', async (req, res) => {
+    // Mock daily trivia question
+    const q = {
+        id: new Date().getDate(), // rotate by day of month
+        question: "Which country has won the most FIFA World Cups?",
+        options: ["Germany", "Brazil", "Italy", "Argentina"]
+    };
+    res.json(q);
+});
+
+app.post('/api/worldcup/trivia/answer', checkAuth, async (req, res) => {
+    try {
+        const { questionId, answerIndex } = req.body;
+        const uid = req.user.uid;
+        const userRes = await pool.query('SELECT id FROM worldcup_users WHERE firebase_uid = $1', [uid]);
+        if (userRes.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+        const userId = userRes.rows[0].id;
+
+        // Correct answer is always Brazil (index 1) for this mock
+        const isCorrect = parseInt(answerIndex) === 1;
+        
+        const ansRes = await pool.query(
+            `INSERT INTO worldcup_trivia_answers (user_id, question_id, is_correct) 
+             VALUES ($1, $2, $3) ON CONFLICT DO NOTHING RETURNING id`,
+            [userId, questionId, isCorrect]
+        );
+        
+        if (ansRes.rowCount > 0 && isCorrect) {
+            await pool.query('UPDATE worldcup_users SET points = points + 5 WHERE id = $1', [userId]);
+            res.json({ success: true, message: "Correct! +5 points", correct: true });
+        } else if (ansRes.rowCount > 0 && !isCorrect) {
+            res.json({ success: true, message: "Wrong answer!", correct: false });
+        } else {
+            res.status(400).json({ error: "Already answered today." });
+        }
+    } catch(err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/worldcup/tournament-predict', checkAuth, async (req, res) => {
+    try {
+        const { winner, goldenBoot } = req.body;
+        const uid = req.user.uid;
+        const userRes = await pool.query('SELECT id FROM worldcup_users WHERE firebase_uid = $1', [uid]);
+        if (userRes.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+        const userId = userRes.rows[0].id;
+
+        await pool.query(
+            `INSERT INTO worldcup_tournament_preds (user_id, winner_team, golden_boot)
+             VALUES ($1, $2, $3)
+             ON CONFLICT (user_id) DO UPDATE SET winner_team = EXCLUDED.winner_team, golden_boot = EXCLUDED.golden_boot`,
+            [userId, winner, goldenBoot]
+        );
+        res.json({ success: true });
+    } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
 // ─── START ────────────────────────────────────────────────────────────────────
