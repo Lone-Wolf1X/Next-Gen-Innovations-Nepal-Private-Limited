@@ -217,14 +217,27 @@ async function fetchRealMatches() {
     if (data && data.games && data.games.length > 0) {
       const validMatches = data.games.filter(g => g.type === 'group' || parseInt(g.home_team_id) > 0);
       
-      const now = new Date();
-      const todayStr = now.toDateString();
-      const upcomingAndLive = validMatches.filter(g => {
-        if (g.finished === "TRUE") return false;
-        const matchDate = parseApiDate(g.local_date, g.stadium_id);
-        if (!matchDate) return true;
-        return matchDate.toDateString() === todayStr;
+      // Get all unfinished matches, sort them chronologically
+      const allUpcoming = validMatches.filter(g => g.finished === "FALSE");
+      allUpcoming.sort((a, b) => {
+        const da = parseApiDate(a.local_date, a.stadium_id);
+        const db = parseApiDate(b.local_date, b.stadium_id);
+        return (da && db) ? da.getTime() - db.getTime() : 0;
       });
+      
+      let upcomingAndLive = [];
+      if (allUpcoming.length > 0) {
+        const nextMatchDate = parseApiDate(allUpcoming[0].local_date, allUpcoming[0].stadium_id);
+        if (nextMatchDate) {
+          const nextMatchDateStr = nextMatchDate.toDateString();
+          upcomingAndLive = allUpcoming.filter(g => {
+            const md = parseApiDate(g.local_date, g.stadium_id);
+            return md && md.toDateString() === nextMatchDateStr;
+          });
+        } else {
+          upcomingAndLive = [allUpcoming[0]];
+        }
+      }
       const completed = validMatches.filter(g => g.finished === "TRUE");
       
       // Sort completed matches by date descending (most recent first)
