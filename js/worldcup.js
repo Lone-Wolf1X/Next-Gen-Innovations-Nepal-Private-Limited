@@ -192,8 +192,16 @@ async function fetchRealMatches() {
            e.away_scorers.split(',').forEach(sc => events.push({ team: 'B', text: sc.trim() }));
         }
 
+        // The API provides local_date as "MM/DD/YYYY HH:mm"
+        let parsedDate = new Date(e.local_date);
+        let rawDateStr = isNaN(parsedDate.getTime()) ? null : parsedDate.toISOString();
+        let timeStr = e.local_date ? e.local_date.split(' ')[1] : 'TBD';
+
         return {
           id: e.id,
+          rawId: e.id,
+          rawDate: rawDateStr,
+          time: timeStr || 'TBD',
           dateStr: e.local_date, // e.g. "06/11/2026 13:00"
           status: status,
           statusText: statusText,
@@ -445,7 +453,7 @@ function renderMatches() {
   const now = Date.now();
 
   matchesToRender.forEach(m => {
-    const hasStarted = m.rawDate ? new Date(m.rawDate).getTime() <= now : false;
+    const hasStarted = m.status !== 'upcoming';
     const disabledAttr = hasStarted ? 'disabled' : '';
     const btnText = hasStarted ? 'Match Started (Locked)' : 'Login to Predict';
     const btnClass = hasStarted ? 'btn-lock locked' : 'btn-lock';
@@ -543,12 +551,12 @@ async function fetchStandings() {
     const res = await fetch('https://worldcup26.ir/get/groups');
     const data = await res.json();
     
-    if (data && data.length > 0) {
+    if (data && data.groups && data.groups.length > 0) {
       let html = '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">';
       
-      data.forEach(group => {
+      data.groups.forEach(group => {
         html += '\n<div class="wc-card" style="margin-bottom: 20px;">\n' +
-                '  <h3 style="background: rgba(37, 99, 235, 0.08); color: var(--indigo); padding: 6px 14px; border-radius: 20px; display:inline-block; margin-bottom:15px; font-size:0.95rem; font-weight:700;">Group ' + escapeHtml(group.group) + '</h3>\n' +
+                '  <h3 style="background: rgba(37, 99, 235, 0.08); color: var(--indigo); padding: 6px 14px; border-radius: 20px; display:inline-block; margin-bottom:15px; font-size:0.95rem; font-weight:700;">Group ' + escapeHtml(group.name) + '</h3>\n' +
                 '  <table class="standings-table">\n' +
                 '    <thead>\n' +
                 '      <tr>\n' +
