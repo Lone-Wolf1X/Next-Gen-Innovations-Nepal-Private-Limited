@@ -248,8 +248,8 @@ async function fetchRealMatches() {
 
         let parsedDate = parseApiDate(e.local_date);
         let rawDateStr = parsedDate && !isNaN(parsedDate.getTime()) ? parsedDate.toISOString() : null;
-        let timeStr = (parsedDate && !isNaN(parsedDate.getTime())) ? parsedDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', timeZoneName: 'short'}) : 'TBD';
-        let formattedDateStr = (parsedDate && !isNaN(parsedDate.getTime())) ? parsedDate.toLocaleDateString() + ' ' + parsedDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', timeZoneName: 'short'}) : e.local_date;
+        let timeStr = (parsedDate && !isNaN(parsedDate.getTime())) ? parsedDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'TBD';
+        let formattedDateStr = (parsedDate && !isNaN(parsedDate.getTime())) ? parsedDate.toLocaleDateString() + ' ' + parsedDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : e.local_date;
 
         return {
           id: e.id,
@@ -809,8 +809,8 @@ async function fetchFixtures() {
           }
 
           let pd = parseApiDate(e.local_date);
-          let timeStr = (pd && !isNaN(pd.getTime())) ? pd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', timeZoneName: 'short'}) : 'TBD';
-          let formattedDateStr = (pd && !isNaN(pd.getTime())) ? pd.toLocaleDateString() + ' ' + pd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', timeZoneName: 'short'}) : e.local_date;
+          let timeStr = (pd && !isNaN(pd.getTime())) ? pd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'TBD';
+          let formattedDateStr = (pd && !isNaN(pd.getTime())) ? pd.toLocaleDateString() + ' ' + pd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : e.local_date;
 
           const matchObj = {
             id: e.id,
@@ -858,8 +858,8 @@ async function fetchFixtures() {
             }
 
             let pd = parseApiDate(e.local_date);
-            let timeStr = (pd && !isNaN(pd.getTime())) ? pd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', timeZoneName: 'short'}) : 'TBD';
-            let formattedDateStr = (pd && !isNaN(pd.getTime())) ? pd.toLocaleDateString() + ' ' + pd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', timeZoneName: 'short'}) : e.local_date;
+            let timeStr = (pd && !isNaN(pd.getTime())) ? pd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'TBD';
+            let formattedDateStr = (pd && !isNaN(pd.getTime())) ? pd.toLocaleDateString() + ' ' + pd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : e.local_date;
 
             const matchObj = {
               id: e.id,
