@@ -964,7 +964,24 @@ cron.schedule('0 12 * * *', async () => {
 
 // ─── GAMIFICATION API ROUTES ───────────────────────────────────────────────────
 
-app.post('/api/worldcup/league/create', checkAuth, async (req, res) => {
+const checkUserAuth = async (req, res, next) => {
+    try {
+        let token;
+        if (req.body && req.body.idToken) token = req.body.idToken;
+        else if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+            token = req.headers.authorization.split(' ')[1];
+        }
+        if (!token) return res.status(401).json({ error: 'No token provided' });
+        
+        const decodedToken = await getAuth().verifyIdToken(token);
+        req.user = decodedToken;
+        next();
+    } catch(err) {
+        res.status(401).json({ error: 'Unauthorized: Invalid token' });
+    }
+};
+
+app.post('/api/worldcup/league/create', checkUserAuth, async (req, res) => {
     try {
         const { leagueName } = req.body;
         const uid = req.user.uid;
@@ -989,7 +1006,7 @@ app.post('/api/worldcup/league/create', checkAuth, async (req, res) => {
     } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
-app.post('/api/worldcup/league/join', checkAuth, async (req, res) => {
+app.post('/api/worldcup/league/join', checkUserAuth, async (req, res) => {
     try {
         const { code } = req.body;
         const uid = req.user.uid;
@@ -1009,7 +1026,7 @@ app.post('/api/worldcup/league/join', checkAuth, async (req, res) => {
     } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
-app.get('/api/worldcup/user-leagues', checkAuth, async (req, res) => {
+app.get('/api/worldcup/user-leagues', checkUserAuth, async (req, res) => {
     try {
         const uid = req.user.uid;
         const result = await pool.query(`
@@ -1050,7 +1067,7 @@ app.get('/api/worldcup/chat/:matchId', async (req, res) => {
     } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
-app.post('/api/worldcup/chat/:matchId', checkAuth, async (req, res) => {
+app.post('/api/worldcup/chat/:matchId', checkUserAuth, async (req, res) => {
     try {
         const { message } = req.body;
         const uid = req.user.uid;
@@ -1075,7 +1092,7 @@ app.get('/api/worldcup/trivia/today', async (req, res) => {
     res.json(q);
 });
 
-app.post('/api/worldcup/trivia/answer', checkAuth, async (req, res) => {
+app.post('/api/worldcup/trivia/answer', checkUserAuth, async (req, res) => {
     try {
         const { questionId, answerIndex } = req.body;
         const uid = req.user.uid;
@@ -1103,7 +1120,7 @@ app.post('/api/worldcup/trivia/answer', checkAuth, async (req, res) => {
     } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
-app.post('/api/worldcup/tournament-predict', checkAuth, async (req, res) => {
+app.post('/api/worldcup/tournament-predict', checkUserAuth, async (req, res) => {
     try {
         const { winner, goldenBoot } = req.body;
         const uid = req.user.uid;
