@@ -192,7 +192,14 @@ async function fetchRealMatches() {
     if (data && data.games && data.games.length > 0) {
       const validMatches = data.games.filter(g => g.type === 'group' || parseInt(g.home_team_id) > 0);
       
-      const upcomingAndLive = validMatches.filter(g => g.finished !== "TRUE");
+      const now = new Date();
+      const todayStr = now.toDateString();
+      const upcomingAndLive = validMatches.filter(g => {
+        if (g.finished === "TRUE") return false;
+        const matchDate = parseApiDate(g.local_date);
+        if (!matchDate) return true;
+        return matchDate.toDateString() === todayStr;
+      });
       const completed = validMatches.filter(g => g.finished === "TRUE");
       
       // Sort completed matches by date descending (most recent first)
