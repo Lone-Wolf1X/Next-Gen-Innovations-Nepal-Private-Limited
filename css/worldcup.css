@@ -1165,3 +1165,76 @@ body.dashboard-active .wc-tabs li.active {
 .google-match-card .score-block span {
   color: #0b1120 !important;
 }
+
+/* =========================================================
+   MOBILE RESPONSIVE ENHANCEMENTS
+   ========================================================= */
+@media (max-width: 768px) {
+  .wc-title {
+    font-size: 2.2rem !important;
+  }
+  .wc-subtitle {
+    font-size: 0.95rem !important;
+    padding: 0 10px;
+  }
+  .wc-hero {
+    padding: 30px 0 !important;
+  }
+  .wc-hero-banner {
+    padding: 20px 15px !important;
+  }
+  
+  /* Global progress / auth panel */
+  .wc-global-progress {
+    padding: 15px !important;
+    text-align: center !important;
+  }
+  .wc-global-progress .d-flex {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center !important;
+  }
+  .wc-global-progress button {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  /* Match cards adjustments */
+  .match-card {
+    padding: 15px !important;
+  }
+  .match-teams {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .score-block {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .team {
+    width: 100%;
+    justify-content: center !important;
+  }
+  .team-name {
+    font-size: 1rem !important;
+    text-align: center;
+  }
+  .match-score-display {
+    margin: 10px 0;
+  }
+
+  /* Buttons */
+  .pred-actions {
+    flex-direction: column;
+  }
+  .pred-actions button {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+
+  /* Modals */
+  #customAlertModal > div {
+    width: 95% !important;
+    padding: 20px !important;
+  }
+}
