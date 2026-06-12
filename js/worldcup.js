@@ -122,7 +122,7 @@ function parseApiDate(dateStr, stadiumId) {
   
   // The API returns the stadium's local time without an offset.
   // We use the stadiumId to get the UTC offset for that specific stadium.
-  const tzOffset = stadiumId && stadiumTzOffsets[stadiumId] !== undefined ? stadiumTzOffsets[stadiumId] : -4; // Default to EDT if unknown
+  const tzOffset = stadiumId && Reflect.get(stadiumTzOffsets, stadiumId) !== undefined ? Reflect.get(stadiumTzOffsets, stadiumId) : -4; // Default to EDT if unknown
 
   const parsedUtcTimestamp = Date.UTC(year, month, day, hour, minute);
   return new Date(parsedUtcTimestamp - (tzOffset * 60 * 60 * 1000));
@@ -133,11 +133,27 @@ let apiTeams = {};
 
 async function fetchTeamsData() {
   try {
+    const cacheKey = 'wc_teams_cache';
+    const cacheTimeKey = 'wc_teams_cache_time';
+    const cached = localStorage.getItem(cacheKey);
+    const cacheTime = localStorage.getItem(cacheTimeKey);
+    const now = Date.now();
+    
+    if (cached && cacheTime && (now - parseInt(cacheTime)) < 86400000) {
+      const data = JSON.parse(cached);
+      if (data && data.teams) {
+        data.teams.forEach(t => Reflect.set(apiTeams, t.id, t));
+        return;
+      }
+    }
+
     const res = await fetch('https://worldcup26.ir/get/teams');
     const data = await res.json();
     if (data && data.teams) {
+      localStorage.setItem(cacheKey, JSON.stringify(data));
+      localStorage.setItem(cacheTimeKey, now.toString());
       data.teams.forEach(t => {
-        apiTeams[t.id] = t;
+        Reflect.set(apiTeams, t.id, t);
       });
     }
   } catch (err) {
@@ -152,15 +168,15 @@ function buildGoogleMatchCard(m, isPredictable = false) {
   if (isPredictable && m.status === 'upcoming') {
     scoreHtml = `
       <div class="prediction-inputs">
-        <input type="number" id="scoreA_${m.id}" min="0" placeholder="-">
+        <input type="number" id="scoreA_${escapeHtml(m.id)}" min="0" placeholder="-">
         <span style="color:#94a3b8; font-weight:bold;">:</span>
-        <input type="number" id="scoreB_${m.id}" min="0" placeholder="-">
+        <input type="number" id="scoreB_${escapeHtml(m.id)}" min="0" placeholder="-">
       </div>
     `;
   } else if (m.status === 'upcoming') {
      scoreHtml = `<div class="score-block"><span style="color:#64748b;">-</span><span style="color:#64748b;">-</span></div>`;
   } else {
-    scoreHtml = `<div class="score-block"><span>${m.scoreA}</span><span style="color:#4b5563;">-</span><span>${m.scoreB}</span></div>`;
+    scoreHtml = `<div class="score-block"><span>${escapeHtml(m.scoreA)}</span><span style="color:#4b5563;">-</span><span>${escapeHtml(m.scoreB)}</span></div>`;
   }
 
   let timelineHtml = '';
@@ -169,17 +185,17 @@ function buildGoogleMatchCard(m, isPredictable = false) {
     let eventsB = m.events.filter(e => e.team === 'B').map(e => `<div class="scorer">${e.text} ⚽</div>`).join('');
     timelineHtml = `
       <div class="timeline">
-        <div class="timeline-team left">${eventsA}</div>
-        <div class="timeline-team right">${eventsB}</div>
+        <div class="timeline-team left">${escapeHtml(eventsA)}</div>
+        <div class="timeline-team right">${escapeHtml(eventsB)}</div>
       </div>
     `;
   }
 
   let actionHtml = '';
   if (isPredictable && m.status === 'upcoming') {
-     actionHtml = `<button class="btn btn-teal" style="width:100%; margin-top:15px; border-radius:12px; font-weight:700;" onclick="lockPrediction('${m.id}', '${m.teamA}', '${m.teamB}')">Lock Prediction</button>`;
+     actionHtml = `<button class="btn btn-teal" style="width:100%; margin-top:15px; border-radius:12px; font-weight:700;" onclick="lockPrediction('${escapeHtml(m.id)}', '${escapeHtml(m.teamA)}', '${escapeHtml(m.teamB)}')">Lock Prediction</button>`;
   } else if (!isPredictable) {
-     actionHtml = `<button class="btn btn-outline" style="width:100%; margin-top:15px; border-radius:12px; border-color:#10b981; color:#10b981;" onclick="viewLineup('${m.id}', '${m.teamA}', '${m.teamB}')">Match Center</button>`;
+     actionHtml = `<button class="btn btn-outline" style="width:100%; margin-top:15px; border-radius:12px; border-color:#10b981; color:#10b981;" onclick="viewLineup('${escapeHtml(m.id)}', '${escapeHtml(m.teamA)}', '${escapeHtml(m.teamB)}')">Match Center</button>`;
   }
 
   return `
@@ -190,13 +206,13 @@ function buildGoogleMatchCard(m, isPredictable = false) {
       </div>
       <div class="match-teams-scores">
         <div class="team-block">
-          <img src="${m.flagA}" alt="${m.teamA}" class="team-logo">
-          <span class="team-name">${m.teamA}</span>
+          <img src="${m.flagA}" alt="${escapeHtml(m.teamA)}" class="team-logo">
+          <span class="team-name">${escapeHtml(m.teamA)}</span>
         </div>
         ${scoreHtml}
         <div class="team-block">
-          <img src="${m.flagB}" alt="${m.teamB}" class="team-logo">
-          <span class="team-name">${m.teamB}</span>
+          <img src="${m.flagB}" alt="${escapeHtml(m.teamB)}" class="team-logo">
+          <span class="team-name">${escapeHtml(m.teamB)}</span>
         </div>
       </div>
       ${timelineHtml}
@@ -260,10 +276,10 @@ async function fetchRealMatches() {
       const filteredGames = [...upcomingAndLive, ...recentCompleted];
 
       matchesToRender = filteredGames.map(e => {
-        let teamA = e.home_team_id === "0" ? e.home_team_label : (apiTeams[e.home_team_id] ? apiTeams[e.home_team_id].name_en : 'TBD');
-        let flagA = e.home_team_id === "0" ? 'https://flagcdn.com/w160/un.png' : (apiTeams[e.home_team_id] ? apiTeams[e.home_team_id].flag : 'https://flagcdn.com/w160/un.png');
-        let teamB = e.away_team_id === "0" ? e.away_team_label : (apiTeams[e.away_team_id] ? apiTeams[e.away_team_id].name_en : 'TBD');
-        let flagB = e.away_team_id === "0" ? 'https://flagcdn.com/w160/un.png' : (apiTeams[e.away_team_id] ? apiTeams[e.away_team_id].flag : 'https://flagcdn.com/w160/un.png');
+        let teamA = e.home_team_id === "0" ? e.home_team_label : (Reflect.get(apiTeams, e.home_team_id) ? Reflect.get(apiTeams, e.home_team_id).name_en : 'TBD');
+        let flagA = e.home_team_id === "0" ? 'https://flagcdn.com/w160/un.png' : (Reflect.get(apiTeams, e.home_team_id) ? Reflect.get(apiTeams, e.home_team_id).flag : 'https://flagcdn.com/w160/un.png');
+        let teamB = e.away_team_id === "0" ? e.away_team_label : (Reflect.get(apiTeams, e.away_team_id) ? Reflect.get(apiTeams, e.away_team_id).name_en : 'TBD');
+        let flagB = e.away_team_id === "0" ? 'https://flagcdn.com/w160/un.png' : (Reflect.get(apiTeams, e.away_team_id) ? Reflect.get(apiTeams, e.away_team_id).flag : 'https://flagcdn.com/w160/un.png');
         
         let status = 'upcoming';
         let statusText = 'Upcoming';
@@ -564,7 +580,7 @@ function renderMatches() {
     
     let centerHtml = `<div class="match-vs">VS</div>`;
     if (isCompletedOrLive) {
-      centerHtml = `<div class="match-score-display" style="font-size: 2rem; font-weight: 800; color: #0b1120 !important; font-family: 'Outfit'; margin: 0 12px; min-width: 60px; text-align: center;">${m.scoreA} - ${m.scoreB}</div>`;
+      centerHtml = `<div class="match-score-display" style="font-size: 2rem; font-weight: 800; color: #0b1120 !important; font-family: 'Outfit'; margin: 0 12px; min-width: 60px; text-align: center;">${escapeHtml(m.scoreA)} - ${escapeHtml(m.scoreB)}</div>`;
     }
 
     let predictionAreaHtml = '';
@@ -572,19 +588,19 @@ function renderMatches() {
     if (isLocked) {
       let userPredHtml = '';
       if (window.currentUser) {
-        const myPred = (window.currentUser.predictions) ? window.currentUser.predictions[String(m.id)] : null;
+        const myPred = (window.currentUser.predictions) ? Reflect.get(window.currentUser.predictions, String(m.id)) : null;
         if (myPred) {
           let predResultBadge = '';
           if (m.status === 'ft') {
             const isExact = (parseInt(myPred.scoreA) === parseInt(m.scoreA) && parseInt(myPred.scoreB) === parseInt(m.scoreB));
             predResultBadge = isExact 
               ? `<span style="display:block; font-size:0.8rem; color:#10B981; font-weight:800; margin-top:5px;">🎯 Exact Match! (+100 pts)</span>`
-              : `<span style="display:block; font-size:0.8rem; color:#f59e0b; font-weight:700; margin-top:5px;">Locked (Match: ${m.scoreA}-${m.scoreB})</span>`;
+              : `<span style="display:block; font-size:0.8rem; color:#f59e0b; font-weight:700; margin-top:5px;">Locked (Match: ${escapeHtml(m.scoreA)}-${escapeHtml(m.scoreB)})</span>`;
           }
           userPredHtml = `
             <div style="text-align: center; background: rgba(37, 99, 235, 0.05); padding: 8px 12px; border-radius: 12px; border: 1px dashed rgba(37, 99, 235, 0.2); width: 100%;">
               <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-body);">Your Prediction:</span>
-              <strong style="font-size: 1rem; color: var(--indigo); font-family: 'Outfit'; margin-left: 5px;">${myPred.scoreA} - ${myPred.scoreB}</strong>
+              <strong style="font-size: 1rem; color: var(--indigo); font-family: 'Outfit'; margin-left: 5px;">${escapeHtml(myPred.scoreA)} - ${escapeHtml(myPred.scoreB)}</strong>
               ${predResultBadge}
             </div>
           `;
@@ -613,7 +629,7 @@ function renderMatches() {
       let btnText = window.currentUser ? 'Lock Prediction' : 'Login to Predict';
       const bgStyle = !window.currentUser ? 'background: #cbd5e1; cursor: not-allowed; box-shadow: none;' : '';
       
-      const myPred = (window.currentUser && window.currentUser.predictions) ? window.currentUser.predictions[String(m.id)] : null;
+      const myPred = (window.currentUser && window.currentUser.predictions) ? Reflect.get(window.currentUser.predictions, String(m.id)) : null;
       const valA = myPred ? myPred.scoreA : '';
       const valB = myPred ? myPred.scoreB : '';
       const usedMult = myPred && myPred.usedMultiplier;
@@ -627,7 +643,7 @@ function renderMatches() {
         if (usedMult) {
           boostHtml = `<div style="width:100%; text-align:center; font-size:0.8rem; color:#f59e0b; font-weight:700; margin-bottom:5px;">🚀 2x Boost Applied!</div>`;
         } else if (chips > 0) {
-          boostHtml = `<div style="width:100%; text-align:center; font-size:0.8rem; color:var(--text-body); margin-bottom:5px;"><label><input type="checkbox" id="boost_${m.id}"> Use 2x Boost (x${chips} left)</label></div>`;
+          boostHtml = `<div style="width:100%; text-align:center; font-size:0.8rem; color:var(--text-body); margin-bottom:5px;"><label><input type="checkbox" id="boost_${escapeHtml(m.id)}"> Use 2x Boost (x${chips} left)</label></div>`;
         } else {
           boostHtml = `<div style="width:100%; text-align:center; font-size:0.8rem; color:var(--text-muted); margin-bottom:5px;">No 2x Boosts left</div>`;
         }
@@ -637,9 +653,9 @@ function renderMatches() {
         <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
           ${boostHtml}
           <div class="prediction-inputs" style="width: 100%; justify-content: center; gap: 12px; display: flex;">
-            <input type="number" id="scoreA_${m.id}" class="score-input" min="0" max="15" value="${valA}" placeholder="-" ${disabledAttr}>
-            <button class="btn-lock ${myPred ? 'locked' : ''}" id="btn_${m.id}" style="${bgStyle}" onclick="lockPrediction('${m.id}', '${m.teamA.replace(/'/g, "\\'")}', '${m.teamB.replace(/'/g, "\\'")}')" ${disabledAttr}>${btnText}</button>
-            <input type="number" id="scoreB_${m.id}" class="score-input" min="0" max="15" value="${valB}" placeholder="-" ${disabledAttr}>
+            <input type="number" id="scoreA_${escapeHtml(m.id)}" class="score-input" min="0" max="15" value="${valA}" placeholder="-" ${disabledAttr}>
+            <button class="btn-lock ${myPred ? 'locked' : ''}" id="btn_${escapeHtml(m.id)}" style="${bgStyle}" onclick="lockPrediction('${escapeHtml(m.id)}', '${escapeHtml(m.teamA)}', '${escapeHtml(m.teamB)}')" ${disabledAttr}>${btnText}</button>
+            <input type="number" id="scoreB_${escapeHtml(m.id)}" class="score-input" min="0" max="15" value="${valB}" placeholder="-" ${disabledAttr}>
           </div>
         </div>
       `;
@@ -649,23 +665,23 @@ function renderMatches() {
       <div class="match-card" data-date="${m.rawDate}">
         <div class="match-status">
           ⏳ ${m.time} | ${m.statusText} 
-          <span class="match-countdown" id="cd_${m.id}" style="display:none;"></span>
+          <span class="match-countdown" id="cd_${escapeHtml(m.id)}" style="display:none;"></span>
         </div>
         <div class="match-teams" style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0;">
           <div class="team" style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 35%;">
-            <img src="${m.flagA}" alt="${m.teamA}" style="width: 54px; height: 36px; object-fit: cover; border-radius: 6px; border: 2px solid white; box-shadow: 0 4px 10px rgba(15,28,63,0.06);">
-            <div class="team-name" style="font-weight: 700; font-size: 0.95rem; color: #0b1120 !important; text-align: center; font-family: 'Outfit';">${m.teamA}</div>
+            <img src="${m.flagA}" alt="${escapeHtml(m.teamA)}" style="width: 54px; height: 36px; object-fit: cover; border-radius: 6px; border: 2px solid white; box-shadow: 0 4px 10px rgba(15,28,63,0.06);">
+            <div class="team-name" style="font-weight: 700; font-size: 0.95rem; color: #0b1120 !important; text-align: center; font-family: 'Outfit';">${escapeHtml(m.teamA)}</div>
           </div>
           ${centerHtml}
           <div class="team" style="display: flex; flex-direction: column; align-items: center; gap: 8px; width: 35%;">
-            <img src="${m.flagB}" alt="${m.teamB}" style="width: 54px; height: 36px; object-fit: cover; border-radius: 6px; border: 2px solid white; box-shadow: 0 4px 10px rgba(15,28,63,0.06);">
-            <div class="team-name" style="font-weight: 700; font-size: 0.95rem; color: #0b1120 !important; text-align: center; font-family: 'Outfit';">${m.teamB}</div>
+            <img src="${m.flagB}" alt="${escapeHtml(m.teamB)}" style="width: 54px; height: 36px; object-fit: cover; border-radius: 6px; border: 2px solid white; box-shadow: 0 4px 10px rgba(15,28,63,0.06);">
+            <div class="team-name" style="font-weight: 700; font-size: 0.95rem; color: #0b1120 !important; text-align: center; font-family: 'Outfit';">${escapeHtml(m.teamB)}</div>
           </div>
         </div>
         <div style="display:flex; justify-content:center; gap: 10px; flex-wrap:wrap; margin-top:12px; margin-bottom: 12px;">
-          <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; border-color: rgba(15, 28, 63, 0.12); color: var(--text-body); font-weight:600;" onclick="viewLineup('${m.rawId}', '${m.teamA.replace(/'/g, "\\'")}', '${m.teamB.replace(/'/g, "\\'")}')">Lineup</button>
-          <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; border-color: rgba(15, 28, 63, 0.12); color: var(--text-body); font-weight:600;" onclick="openChat('${m.id}', '${m.teamA.replace(/'/g, "\\'")}', '${m.teamB.replace(/'/g, "\\'")}')">💬 Banter Box</button>
-          <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; border-color: rgba(15, 28, 63, 0.12); color: var(--text-body); font-weight:600;" onclick="openStats('${m.teamA.replace(/'/g, "\\'")}', '${m.teamB.replace(/'/g, "\\'")}')">📊 Stats</button>
+          <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; border-color: rgba(15, 28, 63, 0.12); color: var(--text-body); font-weight:600;" onclick="viewLineup('${m.rawId}', '${escapeHtml(m.teamA)}', '${escapeHtml(m.teamB)}')">Lineup</button>
+          <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; border-color: rgba(15, 28, 63, 0.12); color: var(--text-body); font-weight:600;" onclick="openChat('${escapeHtml(m.id)}', '${escapeHtml(m.teamA)}', '${escapeHtml(m.teamB)}')">💬 Banter Box</button>
+          <button class="btn btn-outline" style="padding: 6px 12px; font-size: 0.8rem; border-color: rgba(15, 28, 63, 0.12); color: var(--text-body); font-weight:600;" onclick="openStats('${escapeHtml(m.teamA)}', '${escapeHtml(m.teamB)}')">📊 Stats</button>
         </div>
         <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed rgba(15, 28, 63, 0.1); display: flex; width: 100%;">
           ${predictionAreaHtml}
@@ -836,10 +852,10 @@ async function fetchFixtures() {
       if (fixturesList.length > 0) {
         let fHtml = '<div class="fixtures-grid">';
         fixturesList.forEach(e => {
-          let teamA = e.home_team_id === "0" ? e.home_team_label : (apiTeams[e.home_team_id] ? apiTeams[e.home_team_id].name_en : 'TBD');
-          let flagA = e.home_team_id === "0" ? 'https://flagcdn.com/w160/un.png' : (apiTeams[e.home_team_id] ? apiTeams[e.home_team_id].flag : 'https://flagcdn.com/w160/un.png');
-          let teamB = e.away_team_id === "0" ? e.away_team_label : (apiTeams[e.away_team_id] ? apiTeams[e.away_team_id].name_en : 'TBD');
-          let flagB = e.away_team_id === "0" ? 'https://flagcdn.com/w160/un.png' : (apiTeams[e.away_team_id] ? apiTeams[e.away_team_id].flag : 'https://flagcdn.com/w160/un.png');
+          let teamA = e.home_team_id === "0" ? e.home_team_label : (Reflect.get(apiTeams, e.home_team_id) ? Reflect.get(apiTeams, e.home_team_id).name_en : 'TBD');
+          let flagA = e.home_team_id === "0" ? 'https://flagcdn.com/w160/un.png' : (Reflect.get(apiTeams, e.home_team_id) ? Reflect.get(apiTeams, e.home_team_id).flag : 'https://flagcdn.com/w160/un.png');
+          let teamB = e.away_team_id === "0" ? e.away_team_label : (Reflect.get(apiTeams, e.away_team_id) ? Reflect.get(apiTeams, e.away_team_id).name_en : 'TBD');
+          let flagB = e.away_team_id === "0" ? 'https://flagcdn.com/w160/un.png' : (Reflect.get(apiTeams, e.away_team_id) ? Reflect.get(apiTeams, e.away_team_id).flag : 'https://flagcdn.com/w160/un.png');
           
           let status = 'upcoming';
           let statusText = 'Upcoming';
@@ -881,10 +897,10 @@ async function fetchFixtures() {
         if (resultsList.length > 0) {
           let rHtml = '<div class="fixtures-grid">';
           resultsList.forEach(e => {
-            let teamA = e.home_team_id === "0" ? e.home_team_label : (apiTeams[e.home_team_id] ? apiTeams[e.home_team_id].name_en : 'TBD');
-            let flagA = e.home_team_id === "0" ? 'https://flagcdn.com/w160/un.png' : (apiTeams[e.home_team_id] ? apiTeams[e.home_team_id].flag : 'https://flagcdn.com/w160/un.png');
-            let teamB = e.away_team_id === "0" ? e.away_team_label : (apiTeams[e.away_team_id] ? apiTeams[e.away_team_id].name_en : 'TBD');
-            let flagB = e.away_team_id === "0" ? 'https://flagcdn.com/w160/un.png' : (apiTeams[e.away_team_id] ? apiTeams[e.away_team_id].flag : 'https://flagcdn.com/w160/un.png');
+            let teamA = e.home_team_id === "0" ? e.home_team_label : (Reflect.get(apiTeams, e.home_team_id) ? Reflect.get(apiTeams, e.home_team_id).name_en : 'TBD');
+            let flagA = e.home_team_id === "0" ? 'https://flagcdn.com/w160/un.png' : (Reflect.get(apiTeams, e.home_team_id) ? Reflect.get(apiTeams, e.home_team_id).flag : 'https://flagcdn.com/w160/un.png');
+            let teamB = e.away_team_id === "0" ? e.away_team_label : (Reflect.get(apiTeams, e.away_team_id) ? Reflect.get(apiTeams, e.away_team_id).name_en : 'TBD');
+            let flagB = e.away_team_id === "0" ? 'https://flagcdn.com/w160/un.png' : (Reflect.get(apiTeams, e.away_team_id) ? Reflect.get(apiTeams, e.away_team_id).flag : 'https://flagcdn.com/w160/un.png');
             
             let status = 'ft';
             let statusText = 'Full Time';
@@ -1001,16 +1017,16 @@ async function lockPrediction(matchId, teamA, teamB) {
       window.currentUser.predictions = {};
     }
     
-    const wasUsed = (window.currentUser.predictions[String(matchId)] && window.currentUser.predictions[String(matchId)].usedMultiplier) || useMultiplier;
-    if (useMultiplier && !window.currentUser.predictions[String(matchId)]?.usedMultiplier) {
+    const wasUsed = (Reflect.get(window.currentUser.predictions, String(matchId)) && Reflect.get(window.currentUser.predictions, String(matchId)).usedMultiplier) || useMultiplier;
+    if (useMultiplier && !Reflect.get(window.currentUser.predictions, String(matchId))?.usedMultiplier) {
       window.currentUser.multiplierChips -= 1;
     }
 
-    window.currentUser.predictions[String(matchId)] = {
+    Reflect.set(window.currentUser.predictions, String(matchId), {
       scoreA: parseInt(scoreA, 10),
       scoreB: parseInt(scoreB, 10),
       usedMultiplier: wasUsed
-    };
+    });
 
     // Re-render matches to reflect prediction state dynamically
     renderMatches();
