@@ -223,6 +223,38 @@
                         <p class="text-muted">Manage World Cup Predictor users, their points, and notification preferences.</p>
                         <button onclick="loadCurrentTabData()" class="btn btn-outline">↻ Refresh List</button>
                     </div>
+
+                    <!-- PUSH NOTIFICATIONS -->
+                    <div class="glass-card" style="margin-bottom: 24px;">
+                        <h3 style="margin-top: 0; color: #fff;">Push Notification to Users</h3>
+                        <p class="text-muted" style="font-size: 0.9rem; margin-bottom: 15px;">Send a global notification that will appear in the users' frontend notification bell.</p>
+                        <div class="form-row">
+                            <div class="form-group half" style="flex: 0 0 100px;">
+                                <label>Icon</label>
+                                <select id="wcNotifIcon" class="form-control" style="font-size: 1.2rem;">
+                                    <option value="🔔">🔔</option>
+                                    <option value="🏆">🏆</option>
+                                    <option value="⚽">⚽</option>
+                                    <option value="🎁">🎁</option>
+                                    <option value="⚠️">⚠️</option>
+                                    <option value="🎉">🎉</option>
+                                </select>
+                            </div>
+                            <div class="form-group half">
+                                <label>Title</label>
+                                <input type="text" id="wcNotifTitle" class="form-control" placeholder="e.g., Match Starting Soon!">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Message</label>
+                            <textarea id="wcNotifMessage" class="form-control" rows="2" placeholder="Write your message here..."></textarea>
+                        </div>
+                        <button onclick="sendWorldCupNotification()" class="btn btn-teal">🚀 Send Push Notification</button>
+
+                        <div id="wcNotificationsList" style="margin-top: 20px;">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
                     <div class="glass-card" style="padding: 0; overflow: hidden;">
                         <table class="wc-admin-table" style="width: 100%; border-collapse: collapse; color: #fff;">
                             <thead style="background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.1);">

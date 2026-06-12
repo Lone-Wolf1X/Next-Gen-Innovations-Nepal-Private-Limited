@@ -111,6 +111,7 @@ function loadCurrentTabData() {
     }
     if (currentTab === 'worldcup') {
         loadWorldCupUsers();
+        loadWorldCupNotifications();
         return;
     }
     fetchData(currentTab).then(data => {
@@ -152,6 +153,79 @@ async function loadWorldCupUsers() {
         list.innerHTML = html;
     } catch (err) {
         showNotification('Error loading World Cup users', 'error');
+    }
+}
+
+async function loadWorldCupNotifications() {
+    try {
+        const response = await fetch(`${API_BASE}/worldcup/notifications`);
+        if (!response.ok) throw new Error('Failed to fetch notifications');
+        const notifications = await response.json();
+        
+        const list = document.getElementById('wcNotificationsList');
+        let html = '';
+        if (notifications.length === 0) {
+            html = `<p class="text-muted">No recent notifications.</p>`;
+        } else {
+            notifications.forEach(n => {
+                const date = new Date(n.created_at).toLocaleString();
+                html += `
+                    <div style="background: rgba(255,255,255,0.05); padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-size: 1.1rem; color: #fff;">${n.icon} <strong>${n.title}</strong></div>
+                            <div style="color: #cbd5e1; font-size: 0.9rem; margin-top: 4px;">${n.message}</div>
+                            <div style="color: #64748b; font-size: 0.8rem; margin-top: 4px;">${date}</div>
+                        </div>
+                        <button onclick="deleteWorldCupNotification(${n.id})" class="btn btn-outline" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">🗑 Delete</button>
+                    </div>
+                `;
+            });
+        }
+        list.innerHTML = html;
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+async function sendWorldCupNotification() {
+    const icon = document.getElementById('wcNotifIcon').value;
+    const title = document.getElementById('wcNotifTitle').value.trim();
+    const message = document.getElementById('wcNotifMessage').value.trim();
+
+    if (!title || !message) return showNotification('Title and Message are required', 'error');
+
+    try {
+        const response = await fetch(`${API_BASE}/worldcup/admin/notifications`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': getAuthHeader() 
+            },
+            body: JSON.stringify({ icon, title, message })
+        });
+        if (!response.ok) throw new Error('Failed to send');
+        
+        showNotification('Notification sent globally!');
+        document.getElementById('wcNotifTitle').value = '';
+        document.getElementById('wcNotifMessage').value = '';
+        loadWorldCupNotifications();
+    } catch (err) {
+        showNotification('Error sending notification', 'error');
+    }
+}
+
+async function deleteWorldCupNotification(id) {
+    if(!confirm("Delete this notification?")) return;
+    try {
+        const response = await fetch(`${API_BASE}/worldcup/admin/notifications/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': getAuthHeader() }
+        });
+        if (!response.ok) throw new Error('Failed to delete');
+        showNotification('Notification deleted');
+        loadWorldCupNotifications();
+    } catch (err) {
+        showNotification('Error deleting notification', 'error');
     }
 }
 

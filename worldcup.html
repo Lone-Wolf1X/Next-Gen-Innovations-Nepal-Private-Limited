@@ -45,6 +45,22 @@
         <li><a href="services.html">Services</a></li>
         <li><a href="portfolio.html">Portfolio</a></li>
         <li><a href="worldcup.html" style="color: #FACC15; font-weight: bold;">WorldCup 2026 Fest</a></li>
+        <li style="position: relative;">
+          <a href="#" class="nav-notif-bell" id="notifBellBtn" onclick="toggleNotifPanel(event)">
+            🔔
+            <span id="notifBadge" class="notif-badge" style="display:none;">0</span>
+          </a>
+          <!-- Notifications Panel -->
+          <div id="notifPanel" class="notif-panel glass-card" style="display:none;">
+            <div class="notif-header">
+              <h4 style="margin:0; color:#fff;">Notifications</h4>
+              <button class="close-notif" onclick="toggleNotifPanel(event)">×</button>
+            </div>
+            <div id="notifList" class="notif-list">
+              <p style="text-align:center; color:#94a3b8; padding: 20px 0;">No new notifications</p>
+            </div>
+          </div>
+        </li>
         <li><a href="worldcup.html" class="nav-cta wc-cta">🏆 Predict & Win</a></li>
       </ul>
       <button class="hamburger" id="hamburger" aria-label="Toggle menu">
@@ -57,7 +73,7 @@
   <div id="dashboardHeader" class="dashboard-header">
     <div class="dashboard-header-inner">
       <div class="dashboard-user-info">
-        <img src="" alt="Avatar" id="dashAvatar">
+        <div id="dashAvatar" class="bootstrap-avatar" style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold;">👤</div>
         <div>
           <h3 id="welcomeBackText">Welcome back, <span id="dashName">Player</span>! <span id="dashFlag"></span></h3>
           <p id="welcomeBackSubtext">Let's make some accurate predictions today.</p>
@@ -349,30 +365,24 @@
       <p style="color:#6b7280; font-size:0.9rem; margin-bottom: 20px;">Select an avatar to represent you on the leaderboard!</p>
       
       <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 25px;">
-        <!-- Avatar Options -->
-        <div class="avatar-wrapper" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/avataaars/svg?seed=Striker&backgroundColor=b6e3f4')">
-          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Striker&backgroundColor=b6e3f4" class="avatar-option">
-          <div class="avatar-emoji">⚽</div>
+        <!-- Bootstrap Emoji Avatars -->
+        <div class="avatar-wrapper" onclick="selectAvatar(this, 'emoji:⚽|bg:#3b82f6')">
+          <div class="avatar-option" style="background-color: #3b82f6;">⚽</div>
         </div>
-        <div class="avatar-wrapper" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/avataaars/svg?seed=Goalie&backgroundColor=c0aede')">
-          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Goalie&backgroundColor=c0aede" class="avatar-option">
-          <div class="avatar-emoji">🧤</div>
+        <div class="avatar-wrapper" onclick="selectAvatar(this, 'emoji:🧤|bg:#10b981')">
+          <div class="avatar-option" style="background-color: #10b981;">🧤</div>
         </div>
-        <div class="avatar-wrapper" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/avataaars/svg?seed=Referee&backgroundColor=ffdfbf')">
-          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Referee&backgroundColor=ffdfbf" class="avatar-option">
-          <div class="avatar-emoji">⏱️</div>
+        <div class="avatar-wrapper" onclick="selectAvatar(this, 'emoji:⏱️|bg:#f59e0b')">
+          <div class="avatar-option" style="background-color: #f59e0b;">⏱️</div>
         </div>
-        <div class="avatar-wrapper" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/avataaars/svg?seed=Champion&backgroundColor=d1d4f9')">
-          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Champion&backgroundColor=d1d4f9" class="avatar-option">
-          <div class="avatar-emoji">🏆</div>
+        <div class="avatar-wrapper" onclick="selectAvatar(this, 'emoji:🏆|bg:#6366f1')">
+          <div class="avatar-option" style="background-color: #6366f1;">🏆</div>
         </div>
-        <div class="avatar-wrapper" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/avataaars/svg?seed=Fan&backgroundColor=ffd5dc')">
-          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Fan&backgroundColor=ffd5dc" class="avatar-option">
-          <div class="avatar-emoji">🎉</div>
+        <div class="avatar-wrapper" onclick="selectAvatar(this, 'emoji:🎉|bg:#ec4899')">
+          <div class="avatar-option" style="background-color: #ec4899;">🎉</div>
         </div>
-        <div class="avatar-wrapper" onclick="selectAvatar(this, 'https://api.dicebear.com/7.x/avataaars/svg?seed=Legend&backgroundColor=b6e3f4')">
-          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Legend&backgroundColor=b6e3f4" class="avatar-option">
-          <div class="avatar-emoji">🥇</div>
+        <div class="avatar-wrapper" onclick="selectAvatar(this, 'emoji:🥇|bg:#14b8a6')">
+          <div class="avatar-option" style="background-color: #14b8a6;">🥇</div>
         </div>
       </div>
       
@@ -383,10 +393,24 @@
   <style>
     .avatar-wrapper { position: relative; cursor: pointer; transition: 0.2s; }
     .avatar-wrapper:hover { transform: scale(1.1); }
-    .avatar-option { width: 75px; height: 75px; border-radius: 50%; border: 3px solid transparent; background: #f8fafc; }
-    .avatar-wrapper.selected .avatar-option { border-color: #10b981 !important; box-shadow: 0 0 15px rgba(16,185,129,0.4); }
+    .avatar-option { width: 75px; height: 75px; border-radius: 50%; border: 3px solid transparent; display: flex; align-items: center; justify-content: center; font-size: 35px; color: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .avatar-wrapper.selected .avatar-option { border-color: #fff !important; box-shadow: 0 0 0 4px #10b981; }
     .avatar-wrapper.selected { transform: scale(1.1); }
-    .avatar-emoji { position: absolute; bottom: -2px; right: -2px; font-size: 1.4rem; background: white; border-radius: 50%; padding: 2px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); line-height: 1; }
+    
+    /* Notification Panel CSS */
+    .nav-notif-bell { font-size: 1.4rem; text-decoration: none; position: relative; display: flex; align-items: center; justify-content: center; }
+    .notif-badge { position: absolute; top: -5px; right: -8px; background: #ef4444; color: white; font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 10px; border: 2px solid #0F1C3F; }
+    .notif-panel { position: absolute; top: 50px; right: 0; width: 320px; max-height: 400px; overflow-y: auto; z-index: 2000; padding: 0; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    .notif-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); }
+    .close-notif { background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; }
+    .close-notif:hover { color: #fff; }
+    .notif-item { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; gap: 10px; align-items: flex-start; }
+    .notif-item:hover { background: rgba(255,255,255,0.05); }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-icon { font-size: 1.5rem; }
+    .notif-content h5 { margin: 0 0 5px 0; color: #fff; font-size: 0.95rem; }
+    .notif-content p { margin: 0; color: #cbd5e1; font-size: 0.85rem; line-height: 1.4; }
+    .notif-time { display: block; color: #64748b; font-size: 0.75rem; margin-top: 4px; }
   </style>
 
   <script>

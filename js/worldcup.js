@@ -137,7 +137,18 @@ window.updateAuthUI = function() {
       }
     }
     
-    document.getElementById('dashAvatar').src = window.currentUser.avatar;
+    if (window.currentUser.avatar && window.currentUser.avatar.startsWith('emoji:')) {
+      const parts = window.currentUser.avatar.split('|');
+      const emoji = parts[0].replace('emoji:', '');
+      const bg = parts[1] ? parts[1].replace('bg:', '') : '#3b82f6';
+      const da = document.getElementById('dashAvatar');
+      da.innerHTML = emoji;
+      da.style.backgroundColor = bg;
+    } else {
+      // Legacy or null
+      document.getElementById('dashAvatar').innerHTML = '👤';
+      document.getElementById('dashAvatar').style.backgroundColor = '#3b82f6';
+    }
     document.getElementById('dashPoints').innerText = window.currentUser.points;
 
     // Check-in status
@@ -675,17 +686,24 @@ async function renderLeaderboard() {
 
   // Build Leaderboard HTML
   globalLeaderboard.forEach((u, i) => {
-    const avatarId = (u.name.length % 70) + 1;
     let rankClass = 'other';
     let rankText = `#${i+1}`;
     if (i === 0) { rankClass = 'gold'; rankText = '🥇'; }
     else if (i === 1) { rankClass = 'silver'; rankText = '🥈'; }
     else if (i === 2) { rankClass = 'bronze'; rankText = '🥉'; }
+    
+    let avatarHtml = '<div class="bootstrap-avatar" style="width:40px; height:40px; border-radius:50%; background:#3b82f6; display:flex; align-items:center; justify-content:center; font-size:20px; color:#fff;">👤</div>';
+    if (u.avatar && u.avatar.startsWith('emoji:')) {
+      const parts = u.avatar.split('|');
+      const emoji = parts[0].replace('emoji:', '');
+      const bg = parts[1] ? parts[1].replace('bg:', '') : '#3b82f6';
+      avatarHtml = `<div class="bootstrap-avatar" style="width:40px; height:40px; border-radius:50%; background:${escapeHtml(bg)}; display:flex; align-items:center; justify-content:center; font-size:20px; color:#fff;">${escapeHtml(emoji)}</div>`;
+    }
 
     html += '\n<li>\n' +
             '  <span class="lb-rank ' + escapeHtml(rankClass) + '">' + escapeHtml(rankText) + '</span>\n' +
             '  <div class="lb-user">\n' +
-            '    <img src="https://i.pravatar.cc/150?img=' + escapeHtml(avatarId) + '" alt="' + escapeHtml(u.name) + '">\n' +
+            '    ' + avatarHtml + '\n' +
             '    <span>' + escapeHtml(u.name) + '</span>\n' +
             '  </div>\n' +
             '  <span class="lb-score">' + escapeHtml(u.points) + ' pts</span>\n' +
@@ -697,17 +715,24 @@ async function renderLeaderboard() {
   if (listPreview) {
     let previewHtml = '';
     globalLeaderboard.slice(0, 5).forEach((u, i) => {
-      const avatarId = (u.name.length % 70) + 1;
       let rankClass = 'other';
       let rankText = `#${i+1}`;
       if (i === 0) { rankClass = 'gold'; rankText = '🥇'; }
       else if (i === 1) { rankClass = 'silver'; rankText = '🥈'; }
       else if (i === 2) { rankClass = 'bronze'; rankText = '🥉'; }
 
+      let avatarHtml = '<div class="bootstrap-avatar" style="width:32px; height:32px; border-radius:50%; background:#3b82f6; display:flex; align-items:center; justify-content:center; font-size:16px; color:#fff;">👤</div>';
+      if (u.avatar && u.avatar.startsWith('emoji:')) {
+        const parts = u.avatar.split('|');
+        const emoji = parts[0].replace('emoji:', '');
+        const bg = parts[1] ? parts[1].replace('bg:', '') : '#3b82f6';
+        avatarHtml = `<div class="bootstrap-avatar" style="width:32px; height:32px; border-radius:50%; background:${escapeHtml(bg)}; display:flex; align-items:center; justify-content:center; font-size:16px; color:#fff;">${escapeHtml(emoji)}</div>`;
+      }
+
       previewHtml += '\n<li style="padding: 10px 15px; border-radius: 12px; margin-bottom: 8px;">\n' +
                      '  <span class="lb-rank ' + escapeHtml(rankClass) + '" style="width:30px; height:30px; font-size:0.95rem;">' + escapeHtml(rankText) + '</span>\n' +
                      '  <div class="lb-user">\n' +
-                     '    <img src="https://i.pravatar.cc/150?img=' + escapeHtml(avatarId) + '" alt="' + escapeHtml(u.name) + '" style="width:32px; height:32px;">\n' +
+                     '    ' + avatarHtml + '\n' +
                      '    <span style="font-size:0.9rem; font-weight:700;">' + escapeHtml(u.name) + '</span>\n' +
                      '  </div>\n' +
                      '  <span class="lb-score" style="font-size:0.8rem; padding:4px 10px;">' + escapeHtml(u.points) + ' pts</span>\n' +

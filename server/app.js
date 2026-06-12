@@ -739,7 +739,7 @@ app.post('/api/worldcup/predict', async (req, res) => {
         
         await pool.query(`
             INSERT INTO worldcup_predictions (user_id, match_id, score_a, score_b)
-            VALUES ($1, $2, $3, $4)
+                        VALUES ($1, $2, $3, $4)
             ON CONFLICT (user_id, match_id)
             DO UPDATE SET score_a = EXCLUDED.score_a, score_b = EXCLUDED.score_b
         `, [userId, matchId, scoreA, scoreB]);
@@ -750,6 +750,25 @@ app.post('/api/worldcup/predict', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+// Create tables if they don't exist
+const initializeDatabase = async () => {
+    try {
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS worldcup_notifications (
+                id SERIAL PRIMARY KEY,
+                title VARCHAR(255) NOT NULL,
+                message TEXT NOT NULL,
+                icon VARCHAR(50) DEFAULT '🔔',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        console.log("Database tables initialized.");
+    } catch (err) {
+        console.error("Error initializing tables:", err);
+    }
+};
+initializeDatabase();
 
 app.post('/api/worldcup/users', async (req, res) => {
     try {
@@ -775,6 +794,33 @@ app.get('/api/worldcup/leaderboard', async (_req, res) => {
     try {
         const result = await pool.query('SELECT name, points, country FROM worldcup_users ORDER BY points DESC LIMIT 50');
         res.json(result.rows);
+    } catch(err) { res.status(500).json({ error: err.message }); }
+});
+
+// ─── WORLDCUP NOTIFICATIONS API ──────────────────────────────────────────────
+app.get('/api/worldcup/notifications', async (_req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM worldcup_notifications ORDER BY created_at DESC LIMIT 20');
+        res.json(result.rows);
+    } catch(err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/worldcup/admin/notifications', checkAuth, async (req, res) => {
+    try {
+        const { title, message, icon } = req.body;
+        if (!title || !message) return res.status(400).json({ error: 'Title and message are required' });
+        await pool.query(
+            'INSERT INTO worldcup_notifications (title, message, icon) VALUES ($1, $2, $3)',
+            [title, message, icon || '🔔']
+        );
+        res.json({ success: true });
+    } catch(err) { res.status(500).json({ error: err.message }); }
+});
+
+app.delete('/api/worldcup/admin/notifications/:id', checkAuth, async (req, res) => {
+    try {
+        await pool.query('DELETE FROM worldcup_notifications WHERE id = $1', [req.params.id]);
+        res.json({ success: true });
     } catch(err) { res.status(500).json({ error: err.message }); }
 });
 
