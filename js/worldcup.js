@@ -86,7 +86,27 @@ function switchWCTab(tabId) {
   }
 }
 
-function parseApiDate(dateStr) {
+// June offsets (during Daylight Saving Time in NA)
+const stadiumTzOffsets = {
+  "1": -6,  // Estadio Azteca (Mexico City) - Central, No DST
+  "2": -6,  // Estadio Akron (Guadalajara) - Central, No DST
+  "3": -6,  // Estadio BBVA (Monterrey) - Central, No DST
+  "4": -5,  // AT&T Stadium (Dallas) - Central, DST
+  "5": -5,  // NRG Stadium (Houston) - Central, DST
+  "6": -5,  // Arrowhead Stadium (KC) - Central, DST
+  "7": -4,  // Mercedes-Benz Stadium (Atlanta) - Eastern, DST
+  "8": -4,  // Hard Rock Stadium (Miami) - Eastern, DST
+  "9": -4,  // Gillette Stadium (Boston) - Eastern, DST
+  "10": -4, // Lincoln Financial Field (Philly) - Eastern, DST
+  "11": -4, // MetLife Stadium (NY/NJ) - Eastern, DST
+  "12": -4, // BMO Field (Toronto) - Eastern, DST
+  "13": -7, // BC Place (Vancouver) - Western, DST
+  "14": -7, // Lumen Field (Seattle) - Western, DST
+  "15": -7, // Levi's Stadium (SF) - Western, DST
+  "16": -7  // SoFi Stadium (LA) - Western, DST
+};
+
+function parseApiDate(dateStr, stadiumId) {
   if (!dateStr) return null;
   const parts = dateStr.split(' ');
   if (parts.length < 2) return null;
@@ -100,10 +120,12 @@ function parseApiDate(dateStr) {
   const hour = parseInt(timeParts[0], 10);
   const minute = parseInt(timeParts[1], 10);
   
-  // The API dates correspond to Iran Standard Time (UTC+03:30).
-  // 13:00 IRST = 09:30 UTC. So we subtract 3.5 hours from the parsed "local" time to get true UTC.
+  // The API returns the stadium's local time without an offset.
+  // We use the stadiumId to get the UTC offset for that specific stadium.
+  const tzOffset = stadiumId && stadiumTzOffsets[stadiumId] !== undefined ? stadiumTzOffsets[stadiumId] : -4; // Default to EDT if unknown
+
   const parsedUtcTimestamp = Date.UTC(year, month, day, hour, minute);
-  return new Date(parsedUtcTimestamp - (3.5 * 60 * 60 * 1000));
+  return new Date(parsedUtcTimestamp - (tzOffset * 60 * 60 * 1000));
 }
 
 // --- WORLD CUP 2026 API DATA ---
@@ -199,7 +221,7 @@ async function fetchRealMatches() {
       const todayStr = now.toDateString();
       const upcomingAndLive = validMatches.filter(g => {
         if (g.finished === "TRUE") return false;
-        const matchDate = parseApiDate(g.local_date);
+        const matchDate = parseApiDate(g.local_date, g.stadium_id);
         if (!matchDate) return true;
         return matchDate.toDateString() === todayStr;
       });
@@ -207,8 +229,8 @@ async function fetchRealMatches() {
       
       // Sort completed matches by date descending (most recent first)
       completed.sort((a, b) => {
-        const da = parseApiDate(a.local_date);
-        const db = parseApiDate(b.local_date);
+        const da = parseApiDate(a.local_date, a.stadium_id);
+        const db = parseApiDate(b.local_date, b.stadium_id);
         return (da && db) ? db.getTime() - da.getTime() : 0;
       });
       
@@ -217,8 +239,8 @@ async function fetchRealMatches() {
       
       // Sort upcoming/live matches by date ascending (chronological)
       upcomingAndLive.sort((a, b) => {
-        const da = parseApiDate(a.local_date);
-        const db = parseApiDate(b.local_date);
+        const da = parseApiDate(a.local_date, a.stadium_id);
+        const db = parseApiDate(b.local_date, b.stadium_id);
         return (da && db) ? da.getTime() - db.getTime() : 0;
       });
 
@@ -248,7 +270,7 @@ async function fetchRealMatches() {
            e.away_scorers.split(',').forEach(sc => events.push({ team: 'B', text: sc.trim() }));
         }
 
-        let parsedDate = parseApiDate(e.local_date);
+        let parsedDate = parseApiDate(e.local_date, e.stadium_id);
         let rawDateStr = parsedDate && !isNaN(parsedDate.getTime()) ? parsedDate.toISOString() : null;
         let timeStr = (parsedDate && !isNaN(parsedDate.getTime())) ? parsedDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'TBD';
         let formattedDateStr = (parsedDate && !isNaN(parsedDate.getTime())) ? parsedDate.toLocaleDateString() + ' ' + parsedDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : e.local_date;
@@ -785,15 +807,15 @@ async function fetchFixtures() {
 
       // Sort Fixtures chronologically (ascending date)
       fixturesList.sort((a, b) => {
-        const da = parseApiDate(a.local_date);
-        const db = parseApiDate(b.local_date);
+        const da = parseApiDate(a.local_date, a.stadium_id);
+        const db = parseApiDate(b.local_date, b.stadium_id);
         return (da && db) ? da.getTime() - db.getTime() : 0;
       });
 
       // Sort Results reverse-chronologically (descending date, most recent first)
       resultsList.sort((a, b) => {
-        const da = parseApiDate(a.local_date);
-        const db = parseApiDate(b.local_date);
+        const da = parseApiDate(a.local_date, a.stadium_id);
+        const db = parseApiDate(b.local_date, b.stadium_id);
         return (da && db) ? db.getTime() - da.getTime() : 0;
       });
 
@@ -813,7 +835,7 @@ async function fetchFixtures() {
             statusText = `Live ${e.time_elapsed}'`;
           }
 
-          let pd = parseApiDate(e.local_date);
+          let pd = parseApiDate(e.local_date, e.stadium_id);
           let timeStr = (pd && !isNaN(pd.getTime())) ? pd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'TBD';
           let formattedDateStr = (pd && !isNaN(pd.getTime())) ? pd.toLocaleDateString() + ' ' + pd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : e.local_date;
 
@@ -862,7 +884,7 @@ async function fetchFixtures() {
                e.away_scorers.split(',').forEach(sc => events.push({ team: 'B', text: sc.trim() }));
             }
 
-            let pd = parseApiDate(e.local_date);
+            let pd = parseApiDate(e.local_date, e.stadium_id);
             let timeStr = (pd && !isNaN(pd.getTime())) ? pd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'TBD';
             let formattedDateStr = (pd && !isNaN(pd.getTime())) ? pd.toLocaleDateString() + ' ' + pd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : e.local_date;
 
@@ -1687,7 +1709,7 @@ async function loadFavoriteTeam() {
         const nextMatch = matchesData.games.find(m => (m.home_team_id === team.id || m.away_team_id === team.id) && m.finished === "FALSE");
         
         if (nextMatch) {
-          const pd = parseApiDate(nextMatch.local_date);
+          const pd = parseApiDate(nextMatch.local_date, nextMatch.stadium_id);
           const timeStr = (pd && !isNaN(pd.getTime())) ? pd.toLocaleDateString() + ' ' + pd.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : nextMatch.local_date;
           document.getElementById('favTeamNextMatch').innerHTML = `${nextMatch.home_team_name_en} vs ${nextMatch.away_team_name_en}<br><span style="font-size:0.8rem; font-weight:normal;">${timeStr}</span>`;
         } else {
