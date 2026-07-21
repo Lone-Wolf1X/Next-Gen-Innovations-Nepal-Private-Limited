@@ -13,6 +13,8 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/animations.css">
   <link rel="icon" href="logo/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Google Adsense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5547100647408071" crossorigin="anonymous"></script>
   <!-- AMP Auto Ads Script -->
@@ -67,7 +69,7 @@
           </h1>
           <p class="hero-nepali anim-hero-nepali">नेक्स्ट जेन इनोभेसनस् प्रा.लि.</p>
           <p class="hero-sub anim-hero-sub">
-            We deliver world-class <strong id="typedText" class="text-indigo">FinTech Solutions</strong><br>
+            We deliver world-class <strong id="typedText" class="text-cyan">FinTech Solutions</strong><br>
             — from AI-powered banking platforms to enterprise software, built by Nepali talent for the world.
           </p>
           <div class="hero-btns anim-hero-btns">
@@ -96,24 +98,27 @@
 
         <!-- RIGHT — floating 3D Visual & cards -->
         <div class="hero-visual anim-hero-visual"
-          style="position: relative; display: flex; justify-content: center; align-items: center;">
-          <img src="assets/hero-3d.png" alt="Premium 3D FinTech Asset"
-            style="width: 100%; max-width: 500px; animation: float 6s ease-in-out infinite; filter: drop-shadow(0 20px 40px rgba(26,52,138,0.3)); border-radius: 24px;">
+          style="position: relative; display: flex; justify-content: center; align-items: center; min-height: 440px;">
+          <!-- Rotating glow ring -->
+          <div class="hero-glow-ring"></div>
+          <div class="hero-glow-ring-inner"></div>
 
-          <!-- Keep some float cards overlaying the image for depth -->
-          <div class="hero-card-stack" style="position: absolute; inset: 0; pointer-events: none;">
-            <div class="hero-float-card" style="top: 10%; right: -10%;">
-              <div class="fc-icon teal">🤖</div>
-              <div>
-                <div class="fc-title">FinTech AI</div>
-                <div class="fc-sub">Next-Gen Intelligence</div>
-              </div>
+          <!-- Center image -->
+          <img src="assets/hero-3d.png" alt="Premium 3D FinTech Asset"
+            style="width: 100%; max-width: 340px; animation: float 6s ease-in-out infinite; filter: drop-shadow(0 0 40px rgba(124,58,237,0.5)); border-radius: 50%; position: relative; z-index: 1;">
+
+          <!-- Floating cards -->
+          <div class="hero-float-card" style="top: 5%; right: -8%;">
+            <div class="fc-icon purple">🤖</div>
+            <div>
+              <div class="fc-title">FinTech AI</div>
+              <div class="fc-sub">Next-Gen Intelligence</div>
             </div>
-            <div class="hero-float-card"
-              style="bottom: 10%; left: -10%; flex-direction: column; text-align: center; padding: 16px 24px;">
-              <div class="fc-num" data-target="99" data-suffix="%">99%</div>
-              <div class="fc-title" style="font-size:0.75rem; margin-top:4px;">Enterprise Uptime</div>
-            </div>
+          </div>
+          <div class="hero-float-card"
+            style="bottom: 10%; left: -8%; flex-direction: column; text-align: center; padding: 18px 26px;">
+            <div class="fc-num" data-target="99" data-suffix="%">99%</div>
+            <div class="fc-title" style="font-size:0.75rem; margin-top:6px;">Enterprise Uptime</div>
           </div>
         </div>
       </div>
@@ -500,18 +505,7 @@
       fetch(API).then(r => r.json()).then(d => init(d.banners || [])).catch(() => { });
     })();
   </script>
-  <!-- WORLD CUP POPUP BANNER -->
-  <div id="wcPopup" style="position:fixed;bottom:20px;right:20px;background:linear-gradient(135deg,#0B1120,#10B981);color:white;padding:20px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.4);z-index:9999;max-width:320px;display:none;animation:slideUp 0.5s ease-out forwards;">
-    <button onclick="document.getElementById('wcPopup').style.display='none'" style="position:absolute;top:10px;right:10px;background:none;border:none;color:white;cursor:pointer;font-size:20px;">&times;</button>
-    <h3 style="margin-bottom:8px;font-family:'Outfit',sans-serif;font-weight:800;font-size:1.2rem;">🏆 World Cup 2026 Craze Fest!</h3>
-    <p style="font-size:0.9rem;margin-bottom:12px;opacity:0.9;">Predict exact match scores and win Next Gen T-Shirts, a Smartwatch & Daily Recharges!</p>
-  </div>
-  <style>
-    @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-  </style>
-  <script>
-    setTimeout(() => { document.getElementById('wcPopup').style.display = 'block'; }, 2000);
-  </script>
+
 </body>
 
 </html>

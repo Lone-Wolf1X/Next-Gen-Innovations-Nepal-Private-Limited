@@ -1,16 +1,16 @@
 /* =========================================================
-   Next Gen Innovations Nepal — Animations
+   Next Gen Innovations Nepal — Animations (Bold Redesign)
    ========================================================= */
 
 /* ─── KEYFRAMES ──────────────────────────────────────────── */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-14px); }
+  50%       { transform: translateY(-16px); }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.5; transform: scale(1.4); }
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
+  50%       { opacity: 0.7; transform: scale(1.3); box-shadow: 0 0 0 6px rgba(16,185,129,0); }
 }
 
 @keyframes fadeInDown {
@@ -64,15 +64,37 @@
   to { transform: scale(3); opacity: 0; }
 }
 
-@keyframes countUp { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.9; }
+}
+
+@keyframes text-flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.8; }
+  94% { opacity: 1; }
+  96% { opacity: 0.9; }
+  97% { opacity: 1; }
+}
+
+@keyframes border-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(124,58,237,0.3); }
+  50% { box-shadow: 0 0 40px rgba(6,182,212,0.5); }
+}
 
 /* ─── HERO ENTER ANIMATIONS ──────────────────────────────── */
 .anim-hero-badge  { animation: fadeInDown 0.7s ease both; animation-delay: 0.1s; }
 .anim-hero-title  { animation: fadeInUp  0.75s ease both; animation-delay: 0.25s; }
-.anim-hero-sub    { animation: fadeInUp  0.75s ease both; animation-delay: 0.4s; }
-.anim-hero-nepali { animation: fadeInUp  0.7s ease both;  animation-delay: 0.5s; }
-.anim-hero-btns   { animation: fadeInUp  0.75s ease both; animation-delay: 0.6s; }
-.anim-hero-stats  { animation: fadeInUp  0.75s ease both; animation-delay: 0.75s; }
+.anim-hero-nepali { animation: fadeInUp  0.7s ease both;  animation-delay: 0.4s; }
+.anim-hero-sub    { animation: fadeInUp  0.75s ease both; animation-delay: 0.5s; }
+.anim-hero-btns   { animation: fadeInUp  0.75s ease both; animation-delay: 0.65s; }
+.anim-hero-stats  { animation: fadeInUp  0.75s ease both; animation-delay: 0.8s; }
 .anim-hero-visual { animation: fadeInRight 0.9s ease both; animation-delay: 0.3s; }
 
 /* ─── NAV ANIMATION ──────────────────────────────────────── */
@@ -86,30 +108,32 @@
 .nav-links li:nth-child(5) { animation-delay: 0.25s; }
 .nav-links li:nth-child(6) { animation-delay: 0.30s; }
 
-/* ─── FLOATING BLOB BACKGROUND ───────────────────────────── */
+/* ─── FLOATING BLOBS ─────────────────────────────────────── */
 .blob {
   position: absolute;
   border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-  filter: blur(48px);
+  filter: blur(60px);
   opacity: 0.12;
-  animation: blobMove 12s ease-in-out infinite;
+  animation: blobMove 14s ease-in-out infinite;
   pointer-events: none;
   z-index: 0;
 }
 
 .blob-1 {
-  width: 400px; height: 400px;
-  background: var(--indigo);
-  top: 10%; right: 5%;
-  animation-duration: 14s;
+  width: 450px; height: 450px;
+  background: #7C3AED;
+  top: 5%; right: 5%;
+  animation-duration: 16s;
+  animation: blobMove 16s ease-in-out infinite, glow-pulse 4s ease-in-out infinite;
 }
 
 .blob-2 {
-  width: 300px; height: 300px;
-  background: var(--teal);
+  width: 350px; height: 350px;
+  background: #06B6D4;
   bottom: 10%; left: 5%;
-  animation-duration: 10s;
-  animation-delay: -4s;
+  animation-duration: 12s;
+  animation-delay: -5s;
+  animation: blobMove 12s ease-in-out infinite, glow-pulse 5s ease-in-out infinite;
 }
 
 /* ─── HOVER EFFECTS ──────────────────────────────────────── */
@@ -117,25 +141,25 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .hover-lift:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 40px rgba(15,28,63,0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.4);
 }
 
 /* ─── SHIMMER LOADER ─────────────────────────────────────── */
 .shimmer {
-  background: linear-gradient(90deg, #eef2ff 25%, #dce7ff 50%, #eef2ff 75%);
+  background: linear-gradient(90deg, rgba(124,58,237,0.1) 25%, rgba(6,182,212,0.15) 50%, rgba(124,58,237,0.1) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
 
 /* ─── GRADIENT TEXT ANIMATED ─────────────────────────────── */
 .gradient-text-anim {
-  background: linear-gradient(270deg, var(--teal), var(--indigo), var(--teal));
-  background-size: 300% 300%;
+  background: linear-gradient(270deg, #06B6D4, #A855F7, #F472B6, #06B6D4);
+  background-size: 400% 400%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: gradientShift 4s ease infinite;
+  animation: gradientShift 5s ease infinite;
 }
 
 /* ─── RIPPLE BUTTON ──────────────────────────────────────── */
@@ -145,7 +169,7 @@
   position: absolute;
   width: 20px; height: 20px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.35);
   transform: scale(0);
   pointer-events: none;
 }
@@ -153,7 +177,12 @@
   animation: ripple 0.5s ease;
 }
 
-/* ─── PAGE-SPECIFIC ANIMATIONS ───────────────────────────── */
+/* ─── ANIMATED BORDER GLOW ───────────────────────────────── */
+.anim-border-glow {
+  animation: border-glow 3s ease-in-out infinite;
+}
+
+/* ─── PAGE-SPECIFIC ──────────────────────────────────────── */
 .scale-in { animation: scaleIn 0.6s ease both; }
 
 /* ─── REDUCE MOTION ──────────────────────────────────────── */
