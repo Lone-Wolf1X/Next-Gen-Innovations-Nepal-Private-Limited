@@ -3,271 +3,279 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GyanBazi — Nepal's Premier Exam Prep</title>
-  <meta name="description" content="Prepare for Banking, Lok Sewa Aayog, CMAT and other competitive exams with GyanBazi.">
+  <title>Dashboard | GyanBazi</title>
   <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/learn/css/learn-platform.css">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Outfit', sans-serif; background: #f8fafd; }
-    /* Stunning Hero */
-    .hero-dhansu {
-      background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%);
-      padding: 100px 24px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-dhansu::before {
-      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-      background: radial-gradient(circle, rgba(14,165,233,0.05) 0%, transparent 60%);
-      animation: rotate 30s linear infinite;
-    }
-    @keyframes rotate { 100% { transform: rotate(360deg); } }
-    .hero-dhansu h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; color: #0f172a; line-height: 1.1; margin-bottom: 24px; letter-spacing: -1px; }
-    .hero-dhansu h1 span { background: linear-gradient(to right, #0ea5e9, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero-dhansu p { font-size: 1.1rem; color: #64748b; max-width: 600px; margin: 0 auto 32px; }
-    
-    /* Logged In Dashboard */
-    .user-dash { display: none; padding: 40px 24px; max-width: 1200px; margin: 0 auto; }
-    .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
-    .dash-greeting h2 { font-size: 2rem; font-weight: 700; color: #0f172a; }
-    .dash-greeting p { color: #64748b; }
-    
-    /* Stats Grid */
-    .stats-glass {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 40px;
-    }
-    .stat-card {
-      background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.5); border-radius: 20px;
-      padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-      display: flex; align-items: center; gap: 16px; transition: transform 0.3s ease;
-    }
-    .stat-card:hover { transform: translateY(-5px); }
-    .stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
-    .stat-info h4 { color: #64748b; font-size: 0.9rem; margin-bottom: 4px; font-weight: 500; }
-    .stat-info .val { font-size: 1.8rem; font-weight: 700; color: #0f172a; }
-    
-    /* Freemium Banner */
-    .freemium-banner {
-      background: linear-gradient(135deg, #1e293b, #0f172a); color: white;
-      border-radius: 20px; padding: 32px; display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 40px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15); flex-wrap: wrap; gap: 24px;
-    }
-    .free-limit { background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px; font-weight: 600; font-size: 0.9rem; }
-    
-    /* Leaderboard & Sets Grid */
-    .two-col { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 40px; }
-    @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
-    .section-box { background: white; border-radius: 20px; padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-    .section-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
-    
-    .lb-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
-    .lb-item:last-child { border: none; }
-    .lb-user { display: flex; align-items: center; gap: 12px; }
-    .lb-avatar { width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #64748b; }
-    .lb-points { font-weight: 700; color: #0ea5e9; }
-    
-    /* Topnav Fixes */
-    .topnav-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; padding: 16px 24px; align-items: center; }
-    .topnav-logo { font-weight: 800; font-size: 1.5rem; color: #0ea5e9; text-decoration: none; }
-    .topnav-actions { display: flex; gap: 12px; align-items: center; }
-  </style>
 </head>
 <body>
 
-<nav class="topnav">
-  <div class="topnav-inner">
-    <a href="/learn/index.html" class="topnav-logo">GyanBazi</a>
-    <div class="topnav-actions" id="navActions">
-      <!-- Injected by auth -->
-    </div>
-  </div>
-</nav>
+<div class="page-loader" id="pageLoader">
+  <div class="logo">NL</div>
+  <div class="loading-spinner"></div>
+</div>
 
-<!-- LOGGED OUT HERO -->
-<section class="hero-dhansu" id="loggedOutHero">
-  <div style="position: relative; z-index: 1;">
-    <div style="background: rgba(14,165,233,0.1); color: #0ea5e9; padding: 6px 16px; border-radius: 20px; display: inline-block; font-weight: 600; margin-bottom: 20px; font-size: 0.9rem;">
-      🎉 Nepal's Smartest Exam Prep
-    </div>
-    <h1>Crack Your Dream Exam<br><span>Smarter, Not Harder.</span></h1>
-    <p>Gamified mock tests for Banking, Lok Sewa, and Entrance exams. Practice daily, climb the leaderboard, and win prizes!</p>
-    <div style="display:flex;gap:16px;justify-content:center;">
-      <button onclick="window.location.href='/learn/login.html'" class="btn btn-primary btn-xl" style="background:#0ea5e9;border-radius:30px;padding:16px 40px;font-size:1.1rem;box-shadow:0 10px 20px rgba(14,165,233,0.3);">Start Free Practice</button>
-    </div>
-  </div>
-</section>
-
-<!-- LOGGED IN DASHBOARD -->
-<section class="user-dash" id="loggedInDash">
-  <div class="dash-header">
-    <div class="dash-greeting">
-      <h2 id="userNameGreet">Welcome back!</h2>
-      <p>Let's continue your learning streak today.</p>
-    </div>
-    <a href="/learn/profile.html" class="btn btn-outline" style="border-radius:20px;">View Full Profile</a>
-  </div>
-
-  <div class="freemium-banner" id="premiumBanner">
-    <div>
-      <h3 style="font-size:1.5rem;font-weight:700;margin-bottom:8px;">Unlock Unlimited Practice 🚀</h3>
-      <p style="color:#94a3b8;max-width:500px;">Get access to all premium model sets, detailed analytics, and remove daily test limits.</p>
-    </div>
-    <div style="display:flex;align-items:center;gap:16px;">
-      <div class="free-limit" id="freeLimitText">2 Free Tests Left Today</div>
-      <button class="btn btn-primary" style="background:linear-gradient(45deg,#f59e0b,#ef4444);border:none;border-radius:30px;box-shadow:0 10px 20px rgba(239,68,68,0.3);">Go Premium</button>
-    </div>
-  </div>
-
-  <div class="stats-glass">
-    <div class="stat-card">
-      <div class="stat-icon" style="background:rgba(245,158,11,0.1);color:#f59e0b;">🔥</div>
-      <div class="stat-info">
-        <h4>Daily Streak</h4>
-        <div class="val" id="valStreak">0 Days</div>
-      </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon" style="background:rgba(14,165,233,0.1);color:#0ea5e9;">🏆</div>
-      <div class="stat-info">
-        <h4>Total Points</h4>
-        <div class="val" id="valPoints">0</div>
-      </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon" style="background:rgba(16,185,129,0.1);color:#10b981;">🎯</div>
-      <div class="stat-info">
-        <h4>Tests Taken</h4>
-        <div class="val" id="valTests">0</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="two-col">
-    <!-- Categories / Sets -->
-    <div class="section-box">
-      <div class="section-title">
-        Recommended Practice Sets
-        <a href="/learn/categories.html" style="font-size:0.9rem;color:#0ea5e9;text-decoration:none;">View All</a>
-      </div>
-      <div class="category-grid" id="recSetsGrid" style="grid-template-columns: repeat(auto-fit,minmax(200px,1fr));">
-        <!-- Rendered via JS -->
+<div class="app-layout" id="appLayout" style="display:none;">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo">NL</div>
+      <div>
+        <div class="sidebar-name">GyanBazi</div>
+        <div class="sidebar-tagline">Exam Preparation</div>
       </div>
     </div>
 
-    <!-- Leaderboard -->
-    <div class="section-box">
-      <div class="section-title">
-        Top Scholars 🏅
-      </div>
-      <div id="leaderboardList">
-        <!-- Rendered via JS -->
-        <div style="text-align:center;padding:20px;color:#94a3b8;">Loading...</div>
-      </div>
-      <div style="margin-top:20px;background:#f8fafd;padding:16px;border-radius:12px;text-align:center;">
-        <span style="font-size:1.5rem;display:block;margin-bottom:8px;">🎁</span>
-        <strong style="color:#0f172a;font-size:0.9rem;">Monthly Prize Pool</strong>
-        <p style="font-size:0.8rem;color:#64748b;margin-top:4px;">Top 3 players win exclusive GyanBazi merch and Premium access every month!</p>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Main</div>
+      <a href="/learn/index.html" class="sidebar-link active">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+        Dashboard
+      </a>
+      <a href="/learn/categories.html" class="sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/></svg>
+        Exam Categories
+      </a>
+
+      <div class="sidebar-section-title">My Learning</div>
+      <a href="/learn/profile.html" class="sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+        My Profile
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user" id="sidebarUser" onclick="handleSignOut()">
+        <div class="avatar-placeholder sidebar-avatar" id="userAvatar">U</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="userName">Loading...</div>
+          <div class="sidebar-user-email" id="userEmail">...</div>
+        </div>
+        <svg style="width:16px;color:var(--text-muted);flex-shrink:0;" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/></svg>
       </div>
     </div>
-  </div>
-</section>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div class="page-topbar">
+      <div>
+        <h2 class="page-title">Dashboard</h2>
+        <div class="page-subtitle" id="pageGreeting">Welcome back 👋</div>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm btn-icon" id="mobileSidebarBtn" style="display:none;" onclick="toggleSidebar()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <a href="/learn/categories.html" class="btn btn-primary btn-sm">Practice Now →</a>
+      </div>
+    </div>
+
+    <div class="page-body">
+
+      <!-- Freemium Banner -->
+      <div class="card card-padded" id="premiumBanner" style="background:var(--primary-light); border-color:var(--primary-border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div>
+          <h3 style="font-size:1.25rem; font-weight:700; color:var(--primary-dark); margin-bottom:4px;">Unlock Unlimited Practice 🚀</h3>
+          <p style="font-size:0.875rem; color:var(--primary);">Get access to all premium model sets, detailed analytics, and remove daily test limits.</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <div style="font-weight:600; color:var(--primary-dark);" id="freeLimitText">2 Free Tests Left Today</div>
+          <button class="btn btn-primary" style="background:linear-gradient(45deg,#f59e0b,#ef4444); border:none; box-shadow:0 4px 10px rgba(239,68,68,0.3);">Go Premium</button>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid" style="margin-top:24px;">
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-orange">🔥</div>
+          <div class="stat-content">
+            <div class="stat-label">Daily Streak</div>
+            <div class="stat-value" id="valStreak">0 Days</div>
+            <div class="stat-sub">Keep it up!</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-blue">🏆</div>
+          <div class="stat-content">
+            <div class="stat-label">Total Points</div>
+            <div class="stat-value" id="valPoints">0</div>
+            <div class="stat-sub">Earned via tests</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-green">🎯</div>
+          <div class="stat-content">
+            <div class="stat-label">Tests Taken</div>
+            <div class="stat-value" id="valTests">0</div>
+            <div class="stat-sub">Total mock tests</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Grid -->
+      <div class="dashboard-grid">
+
+        <!-- Recommended Sets -->
+        <div>
+          <div class="section-head">
+            <div>
+              <div class="section-head-title">Recommended Practice Sets</div>
+              <div class="section-head-sub">Model tests curated for you</div>
+            </div>
+            <a href="/learn/categories.html" class="btn btn-ghost btn-sm">View All →</a>
+          </div>
+          <div class="card card-padded" style="padding:0;">
+            <div id="recSetsGrid">
+               <!-- JS populated -->
+               <div style="padding:24px;">
+                 <div class="skeleton" style="height:60px;margin-bottom:10px;"></div>
+                 <div class="skeleton" style="height:60px;"></div>
+               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar widgets -->
+        <div class="dashboard-side">
+          <!-- Leaderboard -->
+          <div class="card card-padded">
+            <div class="section-head-title" style="margin-bottom:14px;">Top Scholars 🏅</div>
+            <div id="leaderboardList" style="display:flex; flex-direction:column; gap:12px;">
+              <div class="skeleton" style="height:40px;"></div>
+              <div class="skeleton" style="height:40px;"></div>
+              <div class="skeleton" style="height:40px;"></div>
+            </div>
+          </div>
+
+          <!-- Monthly Prize Pool -->
+          <div class="card card-padded" style="background:#f8fafd; border-color:#e2e8f0; text-align:center;">
+            <span style="font-size:1.5rem;display:block;margin-bottom:8px;">🎁</span>
+            <strong style="color:var(--text-primary);font-size:0.9rem;">Monthly Prize Pool</strong>
+            <p style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">Top 3 players win exclusive GyanBazi merch and Premium access every month!</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="/learn/js/firebase-config.js"></script>
-<script src="/learn/js/db.js"></script>
 <script src="/learn/js/auth.js"></script>
-
+<script src="/learn/js/db.js"></script>
 <script>
-  const loggedOutHero = document.getElementById('loggedOutHero');
-  const loggedInDash = document.getElementById('loggedInDash');
-  const navActions = document.getElementById('navActions');
+async function initDashboard() {
+  const user = await Auth.requireAuth();
+  
+  // Set greeting
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('pageGreeting').textContent = `${greeting}, ${user.displayName?.split(' ')[0] || 'Scholar'} 👋`;
 
-  firebase.auth().onAuthStateChanged(async (user) => {
-    if (user) {
-      // User is logged in
-      loggedOutHero.style.display = 'none';
-      loggedInDash.style.display = 'block';
-      navActions.innerHTML = `
-        <div style="display:flex;align-items:center;gap:12px;">
-          <span style="font-weight:600;color:#0f172a;">${user.displayName || 'User'}</span>
-          <img src="${user.photoURL || '/logo/default-avatar.png'}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2NjdWE0MSI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAy 12IDJ6bTAgM2MxLjY2IDAgMyAxLjM0IDMgM3MtMS4zNCAzLTMgMy0zLTEuMzQtMy0zIDEuMzQtMyAzLTN6bTAgMTQuMmMtMi41IDAtNC43MS0xLjI4LTYtMy4yMi4wMy0xLjk5IDQtMy4wOCA2LTMuMDhzNS45NyAxLjA5IDYgMy4wOGMtMS4yOSAxLjk0LTMuNSAzLjIyLTYgMy4yMnoiLz48L3N2Zz4='">
-          <button onclick="Auth.signOut()" class="btn btn-outline btn-sm">Logout</button>
-        </div>
-      `;
-      document.getElementById('userNameGreet').textContent = `Hi, ${user.displayName.split(' ')[0]}!`;
-      
-      loadDashboardData(user.uid);
-    } else {
-      // Logged out
-      loggedOutHero.style.display = 'block';
-      loggedInDash.style.display = 'none';
-      navActions.innerHTML = `
-        <a href="/learn/login.html" class="btn btn-outline">Sign In</a>
-        <a href="/learn/login.html" class="btn btn-primary" style="background:#0ea5e9;">Join Free</a>
-      `;
-    }
-  });
+  // Set avatar
+  if (user.photoURL) {
+    document.getElementById('userAvatar').innerHTML = `<img src="${user.photoURL}" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">`;
+  } else {
+    document.getElementById('userAvatar').textContent = (user.displayName || 'U')[0].toUpperCase();
+  }
+  document.getElementById('userName').textContent = user.displayName || 'User';
+  document.getElementById('userEmail').textContent = user.email;
 
-  async function loadDashboardData(uid) {
-    try {
-      // Load user stats
-      const userProfile = await DB.users.getById(uid);
-      if (userProfile) {
-        document.getElementById('valStreak').textContent = `${userProfile.currentStreak || 0} Days`;
-        document.getElementById('valPoints').textContent = userProfile.totalPoints || 0;
-        document.getElementById('valTests').textContent = userProfile.totalTestsCompleted || 0;
-        
-        // Freemium check
-        if (userProfile.subscriptionTier === 'premium') {
-          document.getElementById('premiumBanner').style.display = 'none';
-        } else {
-          const taken = userProfile.testsTakenToday || 0;
-          const left = Math.max(0, 2 - taken);
-          document.getElementById('freeLimitText').textContent = `${left} Free Test${left !== 1 ? 's' : ''} Left Today`;
-          if (left === 0) {
-            document.getElementById('freeLimitText').style.color = '#ef4444';
-          }
+  // Load user stats
+  try {
+    const profile = await DB.users.getById(user.uid);
+    if (profile) {
+      document.getElementById('valStreak').textContent = `${profile.currentStreak || 0} Days`;
+      document.getElementById('valPoints').textContent = profile.totalPoints || 0;
+      document.getElementById('valTests').textContent = profile.totalTestsCompleted || 0;
+
+      if (profile.subscriptionTier === 'premium') {
+        document.getElementById('premiumBanner').style.display = 'none';
+      } else {
+        const taken = profile.testsTakenToday || 0;
+        const left = Math.max(0, 2 - taken);
+        document.getElementById('freeLimitText').textContent = `${left} Free Test${left !== 1 ? 's' : ''} Left Today`;
+        if (left === 0) {
+          document.getElementById('freeLimitText').style.color = '#ef4444';
         }
       }
+    }
+  } catch(e) {
+    console.error("Failed to load profile stats", e);
+  }
 
-      // Load Leaderboard
-      const lb = await fetch('/learn/backend/api/users.php?action=getLeaderboard').then(r=>r.json());
-      const lbHtml = lb.map((u, i) => `
-        <div class="lb-item">
-          <div class="lb-user">
-            <div style="width:24px;color:#94a3b8;font-weight:700;">#${i+1}</div>
-            <div class="lb-avatar">${u.photoUrl ? `<img src="${u.photoUrl}" style="width:100%;height:100%;border-radius:50%">` : u.name[0].toUpperCase()}</div>
-            <div style="font-weight:600;color:#0f172a;font-size:0.95rem;">${u.name} <span style="font-size:0.8rem;color:#f59e0b;margin-left:4px;">🔥${u.currentStreak}</span></div>
+  // Load recommended sets
+  try {
+    const sets = await DB.modelSets.getPublished();
+    const container = document.getElementById('recSetsGrid');
+    if(sets && sets.length > 0) {
+      container.innerHTML = sets.slice(0, 4).map(s => `
+        <a href="/learn/modelset-detail.html?id=${s.id}" style="display:flex;align-items:center;gap:16px;padding:16px 20px;border-bottom:1px solid var(--border);text-decoration:none;transition:all var(--transition);" onmouseover="this.style.background='var(--primary-light)'" onmouseout="this.style.background='transparent'">
+          <span style="font-size:1.8rem;">${s.icon || '📝'}</span>
+          <div style="flex:1;">
+            <div style="font-size:0.95rem;font-weight:600;color:var(--text-primary);">${s.title}</div>
+            <div style="font-size:0.8rem;color:var(--text-muted);">${s.totalQuestions} Questions • ${s.timeLimitMinutes} Mins</div>
           </div>
-          <div class="lb-points">${u.totalPoints} pts</div>
+          <button class="btn btn-primary btn-sm" style="background:#f1f5f9;color:var(--primary);border:none;">Start</button>
+        </a>
+      `).join('');
+    } else {
+      container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted);">Exams are being uploaded by Admins. Check back soon!</div>';
+    }
+  } catch(e) {
+    console.error("Failed to load sets", e);
+  }
+
+  // Load Leaderboard
+  try {
+    const lb = await fetch('/learn/backend/api/users.php?action=getLeaderboard').then(r=>r.json());
+    if (lb && !lb.error) {
+      const lbHtml = lb.map((u, i) => `
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);">
+          <div style="font-weight:700;color:var(--text-muted);width:20px;text-align:center;">#${i+1}</div>
+          <div style="width:32px;height:32px;border-radius:50%;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0;overflow:hidden;">
+            ${u.photoUrl ? `<img src="${u.photoUrl}" style="width:100%;height:100%;object-fit:cover;">` : u.name[0].toUpperCase()}
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${u.name}</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">${u.totalPoints} pts</div>
+          </div>
+          <div style="font-size:0.8rem;color:#f59e0b;font-weight:600;">🔥${u.currentStreak}</div>
         </div>
       `).join('');
-      document.getElementById('leaderboardList').innerHTML = lbHtml || '<div style="text-align:center;color:#94a3b8;padding:20px;">No scholars yet!</div>';
-
-      // Load Sample Sets
-      const sets = await DB.modelSets.getPublished();
-      if(sets && sets.length > 0) {
-        const setsHtml = sets.slice(0, 4).map(s => `
-          <div class="category-card" onclick="window.location.href='/learn/test-engine.html?setId=${s.id}'" style="cursor:pointer;padding:20px;border:1px solid #e2e8f0;border-radius:16px;">
-            <div style="font-size:1.5rem;margin-bottom:12px;">📝</div>
-            <div style="font-weight:700;color:#0f172a;margin-bottom:4px;font-size:1.1rem;">${s.title}</div>
-            <div style="color:#64748b;font-size:0.85rem;margin-bottom:16px;">${s.total_questions} Questions • ${s.time_limit_minutes} Mins</div>
-            <button class="btn btn-primary btn-sm" style="width:100%;background:#f1f5f9;color:#0ea5e9;border:none;">Start Practice</button>
-          </div>
-        `).join('');
-        document.getElementById('recSetsGrid').innerHTML = setsHtml;
-      } else {
-        document.getElementById('recSetsGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#94a3b8;">Exams are being uploaded by Admins. Check back soon!</div>';
-      }
-
-    } catch (e) {
-      console.error("Error loading dash data", e);
+      document.getElementById('leaderboardList').innerHTML = lbHtml || '<div style="text-align:center;color:var(--text-muted);padding:20px;">No scholars yet!</div>';
+    } else {
+      document.getElementById('leaderboardList').innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Could not load leaderboard</div>';
     }
+  } catch(e) {
+    console.error("Failed to load leaderboard", e);
+    document.getElementById('leaderboardList').innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Could not load leaderboard</div>';
   }
+
+  // Show app
+  document.getElementById('pageLoader').style.display = 'none';
+  document.getElementById('appLayout').style.display = 'flex';
+  checkMobile();
+}
+
+function checkMobile() {
+  const btn = document.getElementById('mobileSidebarBtn');
+  if (window.innerWidth <= 768) {
+    btn.style.display = 'flex';
+  }
+}
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('mobile-open');
+}
+async function handleSignOut() {
+  if (confirm('Are you sure you want to sign out?')) await Auth.signOut();
+}
+
+window.addEventListener('resize', checkMobile);
+initDashboard();
 </script>
 </body>
 </html>
