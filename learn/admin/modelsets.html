@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model Sets | Admin | GyanBazi</title>
+  <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/learn/css/learn-platform.css">
+</head>
+<body>
+<div class="page-loader" id="pageLoader"><div class="logo">NL</div><div class="loading-spinner"></div></div>
+
+<!-- Model Set Modal -->
+<div class="modal-backdrop" id="setModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3 class="modal-title" id="setModalTitle">Create Model Set</h3>
+      <button class="modal-close" onclick="closeSetModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div class="form-group" style="grid-column:1/-1;">
+          <label class="form-label">Title *</label>
+          <input class="form-input" id="sTitle" placeholder="e.g. RBB 5th Level Model Set 2081" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category *</label>
+          <select class="form-select" id="sCategory" required onchange="loadQuestionsForSet()">
+            <option value="">Select Category</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Icon (emoji)</label>
+          <input class="form-input" id="sIcon" placeholder="🏦" maxlength="4">
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+          <label class="form-label">Description</label>
+          <textarea class="form-textarea" id="sDesc" rows="2" placeholder="Brief description of this model set..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Time Limit (minutes) *</label>
+          <input class="form-input" type="number" id="sTime" value="120" min="5" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Total Marks *</label>
+          <input class="form-input" type="number" id="sMarks" value="100" min="1" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Difficulty</label>
+          <select class="form-select" id="sDifficulty">
+            <option value="easy">Easy</option>
+            <option value="medium" selected>Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Passing Score (%)</label>
+          <input class="form-input" type="number" id="sPassing" value="40" min="0" max="100">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Negative Marking</label>
+          <select class="form-select" id="sNegMarking">
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Negative Mark Value</label>
+          <input class="form-input" type="number" id="sNegVal" value="0.25" min="0" step="0.25">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="sStatus">
+            <option value="draft">Draft (not visible to users)</option>
+            <option value="published">Published (visible)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Question Selection -->
+      <div style="border-top:1px solid var(--border);padding-top:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div>
+            <div style="font-weight:700;font-size:0.9rem;">Select Questions</div>
+            <div style="font-size:0.8rem;color:var(--text-muted);" id="selectedQCount">0 selected</div>
+          </div>
+          <div class="search-bar" style="max-width:260px;">
+            <input type="text" id="qSearchModal" placeholder="Search questions..." oninput="filterModalQs()">
+          </div>
+        </div>
+        <div id="questionPickerList" style="max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius-md);">
+          <div class="empty-state"><div class="empty-icon">📂</div><div class="empty-desc">Select a category first to see questions.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeSetModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveModelSet()" id="setSaveBtn">Save Model Set</button>
+    </div>
+  </div>
+</div>
+
+<div class="app-layout" id="appLayout" style="display:none;">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="sidebar-logo" style="background:linear-gradient(135deg,#DC2626,#B91C1C);">A</div><div><div class="sidebar-name">Admin Panel</div><div class="sidebar-tagline">GyanBazi</div></div></div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Overview</div>
+      <a href="/learn/admin/index.html" class="sidebar-link"><svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>Dashboard</a>
+      <div class="sidebar-section-title">Content</div>
+      <a href="/learn/admin/categories.html" class="sidebar-link"><svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/></svg>Categories</a>
+      <a href="/learn/admin/questions.html" class="sidebar-link"><svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>Questions</a>
+      <a href="/learn/admin/modelsets.html" class="sidebar-link active"><svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg>Model Sets</a>
+      <div class="sidebar-section-title">System</div>
+      <a href="/learn/dashboard.html" class="sidebar-link"><svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/></svg>Back to Platform</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user" onclick="Auth.signOut()"><div class="sidebar-avatar" id="adminAvatar">A</div><div class="sidebar-user-info"><div class="sidebar-user-name" id="adminName">Admin</div></div></div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-topbar">
+      <div><div class="page-title">Model Sets</div><div class="page-subtitle">Manage exam model sets</div></div>
+      <div class="topbar-right">
+        <button class="btn btn-primary btn-sm" onclick="openSetModal()">+ Create Model Set</button>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="card">
+        <div id="setsTableWrap">
+          <div style="padding:24px;"><div class="skeleton" style="height:44px;margin-bottom:8px;"></div><div class="skeleton" style="height:44px;"></div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast-container"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="/learn/js/firebase-config.js"></script>
+<script src="/learn/js/auth.js"></script>
+<script src="/learn/js/db.js"></script>
+<script>
+let currentUser, allCategories = [], allModelSets = [], availableQs = [], selectedQIds = new Set(), editingSetId = null;
+
+async function init() {
+  currentUser = await Auth.requireAdmin();
+  document.getElementById('adminAvatar').textContent = (currentUser.displayName||'A')[0];
+  document.getElementById('adminName').textContent = currentUser.displayName || 'Admin';
+  allCategories = await DB.categories.getAllAdmin();
+  populateCatSelect();
+  await loadSets();
+  document.getElementById('pageLoader').style.display = 'none';
+  document.getElementById('appLayout').style.display = 'flex';
+  if (new URLSearchParams(window.location.search).get('action') === 'new') openSetModal();
+}
+
+function populateCatSelect() {
+  document.getElementById('sCategory').innerHTML = `<option value="">Select Category</option>${allCategories.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}`;
+}
+
+async function loadSets() {
+  allModelSets = await DB.modelSets.getAll();
+  renderSetsTable();
+}
+
+function renderSetsTable() {
+  const wrap = document.getElementById('setsTableWrap');
+  if (!allModelSets.length) {
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">No model sets yet</div><div class="empty-desc">Create your first model set to start serving tests to users.</div></div>`;
+    return;
+  }
+  const catMap = Object.fromEntries(allCategories.map(c=>[c.id,c.name]));
+  const rows = allModelSets.map(s => `
+    <tr>
+      <td><div style="font-weight:600;">${s.icon||''} ${s.title}</div></td>
+      <td><span class="badge badge-neutral">${catMap[s.categoryId]||'—'}</span></td>
+      <td style="font-size:0.875rem;">${s.totalQuestions||0} Qs · ${s.timeLimitMinutes} min</td>
+      <td><span class="badge ${s.status==='published'?'badge-success':'badge-neutral'}">${s.status||'draft'}</span></td>
+      <td>
+        <div class="table-actions">
+          <button class="btn btn-ghost btn-sm btn-icon" onclick="editSet('${s.id}')" title="Edit">✏️</button>
+          <button class="btn btn-ghost btn-sm btn-icon" onclick="togglePublish('${s.id}','${s.status}')" title="${s.status==='published'?'Unpublish':'Publish'}">
+            ${s.status==='published'?'🔒':'🚀'}
+          </button>
+          <button class="btn btn-ghost btn-sm btn-icon" onclick="deleteSet('${s.id}')" title="Delete">🗑️</button>
+        </div>
+      </td>
+    </tr>`).join('');
+  wrap.innerHTML = `<table class="admin-table"><thead><tr><th>Title</th><th>Category</th><th>Details</th><th>Status</th><th style="text-align:right;">Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+async function loadQuestionsForSet() {
+  const catId = document.getElementById('sCategory').value;
+  if (!catId) { availableQs = []; renderQuestionPicker(); return; }
+  availableQs = await DB.questions.getByCategory(catId, 500);
+  renderQuestionPicker();
+}
+
+function filterModalQs() {
+  const q = document.getElementById('qSearchModal').value.toLowerCase();
+  renderQuestionPicker(q);
+}
+
+function renderQuestionPicker(search = '') {
+  const list = document.getElementById('questionPickerList');
+  const filtered = search ? availableQs.filter(q => q.questionText?.toLowerCase().includes(search)) : availableQs;
+  if (!filtered.length) {
+    list.innerHTML = `<div class="empty-state" style="padding:24px;"><div class="empty-icon">❓</div><div class="empty-desc">${availableQs.length===0?'No questions for this category. Add questions first.':'No matching questions.'}</div></div>`;
+    return;
+  }
+  list.innerHTML = filtered.map(q => `
+    <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;${selectedQIds.has(q.id)?'background:var(--primary-light);':''}" onchange="toggleQ('${q.id}',this)">
+      <input type="checkbox" style="margin-top:3px;flex-shrink:0;" ${selectedQIds.has(q.id)?'checked':''}>
+      <span style="font-size:0.8375rem;line-height:1.5;">${q.questionText?.slice(0,100)}${q.questionText?.length>100?'...':''}</span>
+    </label>`).join('');
+  updateSelCount();
+}
+
+function toggleQ(qId, label) {
+  const checked = label.querySelector('input').checked;
+  if (checked) selectedQIds.add(qId); else selectedQIds.delete(qId);
+  label.style.background = checked ? 'var(--primary-light)' : '';
+  updateSelCount();
+}
+
+function updateSelCount() {
+  document.getElementById('selectedQCount').textContent = `${selectedQIds.size} selected`;
+}
+
+function openSetModal(setData = null) {
+  editingSetId = setData?.id || null;
+  selectedQIds = new Set(setData?.questionIds || []);
+  document.getElementById('setModalTitle').textContent = editingSetId ? 'Edit Model Set' : 'Create Model Set';
+  document.getElementById('sTitle').value = setData?.title || '';
+  document.getElementById('sCategory').value = setData?.categoryId || '';
+  document.getElementById('sIcon').value = setData?.icon || '';
+  document.getElementById('sDesc').value = setData?.description || '';
+  document.getElementById('sTime').value = setData?.timeLimitMinutes || 120;
+  document.getElementById('sMarks').value = setData?.totalMarks || 100;
+  document.getElementById('sDifficulty').value = setData?.difficulty || 'medium';
+  document.getElementById('sPassing').value = setData?.passingScore || 40;
+  document.getElementById('sNegMarking').value = String(setData?.negativeMarking ?? true);
+  document.getElementById('sNegVal').value = setData?.negativeMarkValue || 0.25;
+  document.getElementById('sStatus').value = setData?.status || 'draft';
+  if (setData?.categoryId) loadQuestionsForSet();
+  else { availableQs = []; renderQuestionPicker(); }
+  document.getElementById('setModal').classList.add('open');
+}
+
+async function editSet(id) {
+  const set = allModelSets.find(s => s.id === id);
+  if (set) openSetModal(set);
+}
+
+function closeSetModal() { document.getElementById('setModal').classList.remove('open'); editingSetId = null; }
+
+async function saveModelSet() {
+  const btn = document.getElementById('setSaveBtn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+  const data = {
+    title: document.getElementById('sTitle').value.trim(),
+    categoryId: document.getElementById('sCategory').value,
+    icon: document.getElementById('sIcon').value || '📝',
+    description: document.getElementById('sDesc').value.trim(),
+    timeLimitMinutes: parseInt(document.getElementById('sTime').value),
+    totalMarks: parseInt(document.getElementById('sMarks').value),
+    difficulty: document.getElementById('sDifficulty').value,
+    passingScore: parseInt(document.getElementById('sPassing').value),
+    negativeMarking: document.getElementById('sNegMarking').value === 'true',
+    negativeMarkValue: parseFloat(document.getElementById('sNegVal').value),
+    status: document.getElementById('sStatus').value,
+    questionIds: Array.from(selectedQIds),
+    totalQuestions: selectedQIds.size,
+  };
+  if (!data.title || !data.categoryId) {
+    showToast('Title and Category are required.', 'error');
+    btn.disabled = false; btn.textContent = 'Save Model Set'; return;
+  }
+  try {
+    if (editingSetId) {
+      await DB.modelSets.update(editingSetId, data, currentUser.uid);
+      showToast('Model set updated!', 'success');
+    } else {
+      await DB.modelSets.create(data, currentUser.uid);
+      showToast('Model set created!', 'success');
+    }
+    closeSetModal();
+    await loadSets();
+  } catch(err) { showToast('Error: '+err.message, 'error'); }
+  btn.disabled = false; btn.textContent = 'Save Model Set';
+}
+
+async function togglePublish(id, currentStatus) {
+  const newStatus = currentStatus === 'published' ? 'draft' : 'published';
+  await DB.modelSets.update(id, { status: newStatus }, currentUser.uid);
+  showToast(`Model set ${newStatus === 'published' ? 'published!' : 'unpublished.'}`, 'info');
+  await loadSets();
+}
+
+async function deleteSet(id) {
+  if (confirm('Delete this model set? This cannot be undone.')) {
+    await DB.modelSets.delete(id, currentUser.uid);
+    showToast('Model set deleted.', 'info');
+    await loadSets();
+  }
+}
+
+init();
+</script>
+</body>
+</html>

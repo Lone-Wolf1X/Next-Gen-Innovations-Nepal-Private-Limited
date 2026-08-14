@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Syllabus Roadmap | GyanBazi</title>
+  <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/learn/css/learn-platform.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    .roadmap-container { max-width: 800px; margin: 40px auto; padding: 24px; }
+    .roadmap-header { text-align: center; margin-bottom: 40px; }
+    .roadmap-title { font-size: 2.5rem; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
+    .roadmap-subtitle { font-size: 1.1rem; color: #64748b; }
+    
+    .timeline { position: relative; padding-left: 40px; }
+    .timeline::before { content: ''; position: absolute; left: 19px; top: 0; bottom: 0; width: 2px; background: #e2e8f0; }
+    
+    .chapter-card { position: relative; background: white; border-radius: 16px; padding: 24px; margin-bottom: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; }
+    .chapter-node { position: absolute; left: -31px; top: 24px; width: 20px; height: 20px; border-radius: 50%; background: white; border: 4px solid #0ea5e9; z-index: 2; }
+    .chapter-node.completed { background: #0ea5e9; border-color: #0ea5e9; box-shadow: 0 0 0 4px rgba(14,165,233,0.2); }
+    
+    .chapter-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+    .chapter-name { font-size: 1.25rem; font-weight: 700; color: #0f172a; }
+    .chapter-meta { font-size: 0.9rem; color: #64748b; background: #f8fafd; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
+    
+    .progress-track { background: #e2e8f0; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 16px; }
+    .progress-fill { background: linear-gradient(90deg, #0ea5e9, #3b82f6); height: 100%; border-radius: 4px; transition: width 1s ease; }
+    .progress-text { font-size: 0.85rem; color: #64748b; margin-top: 8px; text-align: right; font-weight: 600; }
+    
+    .start-btn { display: inline-block; margin-top: 16px; padding: 8px 24px; background: #f0f9ff; color: #0ea5e9; border-radius: 20px; font-weight: 600; text-decoration: none; border: 1px solid #bae6fd; transition: all 0.2s; }
+    .start-btn:hover { background: #0ea5e9; color: white; }
+  </style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner" style="max-width:1200px; margin:0 auto; padding:16px 24px; display:flex; justify-content:space-between;">
+    <a href="/learn/categories.html" style="font-weight:700; color:#0f172a; text-decoration:none;">← Back to Categories</a>
+    <div id="navUser" style="font-weight:600; color:#64748b;"></div>
+  </div>
+</nav>
+
+<div class="roadmap-container">
+  <div class="roadmap-header">
+    <div id="catIcon" style="font-size:3rem; margin-bottom:16px;">📚</div>
+    <h1 class="roadmap-title" id="catTitle">Loading Syllabus...</h1>
+    <p class="roadmap-subtitle" id="catDesc">Track your progress and conquer the exam.</p>
+  </div>
+
+  <div class="timeline" id="timelineList">
+    <div style="text-align:center; padding:40px; color:#94a3b8;">Fetching your learning path...</div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="/learn/js/firebase-config.js"></script>
+<script src="/learn/js/db.js"></script>
+<script src="/learn/js/auth.js"></script>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const catId = urlParams.get('cat');
+
+  if (!catId) {
+    window.location.href = '/learn/categories.html';
+  }
+
+  Auth.requireAuth().then(user => {
+    document.getElementById('navUser').textContent = user.displayName || 'User';
+    loadRoadmap(user.uid);
+  }).catch(() => {
+    // If not logged in, still show the roadmap but without user progress
+    document.getElementById('navUser').innerHTML = `<a href="/learn/login.html" class="btn btn-primary btn-sm">Log in to track progress</a>`;
+    loadRoadmap('');
+  });
+
+  async function loadRoadmap(userId) {
+    try {
+      const data = await DB.categories.getRoadmap(catId, userId);
+      if (!data || !data.category) throw new Error("Category not found");
+
+      document.getElementById('catTitle').textContent = data.category.name + " Roadmap";
+      document.getElementById('catDesc').textContent = data.category.description || "Master all topics to pass your exam.";
+      document.getElementById('catIcon').textContent = data.category.icon || "📚";
+
+      const tList = document.getElementById('timelineList');
+      if (data.subjects && data.subjects.length > 0) {
+        tList.innerHTML = data.subjects.map((sub, index) => {
+          const pct = sub.progressPercentage || 0;
+          const isCompleted = pct === 100;
+          
+          return `
+            <div class="chapter-card">
+              <div class="chapter-node ${isCompleted ? 'completed' : ''}"></div>
+              <div class="chapter-header">
+                <div>
+                  <div style="font-size:0.85rem; color:#0ea5e9; font-weight:700; margin-bottom:4px; text-transform:uppercase; letter-spacing:1px;">Chapter ${index + 1}</div>
+                  <div class="chapter-name">${sub.name}</div>
+                </div>
+                <div class="chapter-meta">${sub.totalAvailableQuestions} Questions</div>
+              </div>
+              
+              <div class="progress-track">
+                <div class="progress-fill" style="width: ${pct}%"></div>
+              </div>
+              <div class="progress-text">${pct}% Mastered</div>
+              
+              <a href="/learn/modelsets.html?cat=${catId}" class="start-btn">Take Mock Tests</a>
+            </div>
+          `;
+        }).join('');
+      } else {
+        tList.innerHTML = `<div style="text-align:center; padding:40px; color:#64748b; background:white; border-radius:16px;">Syllabus chapters are currently being uploaded by the admin.</div>`;
+      }
+
+    } catch(e) {
+      document.getElementById('timelineList').innerHTML = `<div style="color:red; text-align:center;">Error loading syllabus: ${e.message}</div>`;
+    }
+  }
+</script>
+</body>
+</html>

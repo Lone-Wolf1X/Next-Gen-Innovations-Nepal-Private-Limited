@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model Sets | GyanBazi</title>
+  <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/learn/css/learn-platform.css">
+</head>
+<body>
+<div class="page-loader" id="pageLoader"><div class="logo">NL</div><div class="loading-spinner"></div></div>
+<div class="app-layout" id="appLayout" style="display:none;">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand"><div class="sidebar-logo">NL</div><div><div class="sidebar-name">GyanBazi</div><div class="sidebar-tagline">Exam Preparation</div></div></div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Main</div>
+      <a href="/learn/dashboard.html" class="sidebar-link"><svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>Dashboard</a>
+      <a href="/learn/categories.html" class="sidebar-link active"><svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/></svg>Exam Categories</a>
+      <div class="sidebar-section-title">My Learning</div>
+      <a href="/learn/profile.html" class="sidebar-link"><svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>My Profile</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user" onclick="handleSignOut()">
+        <div class="sidebar-avatar" id="userAvatar">U</div>
+        <div class="sidebar-user-info"><div class="sidebar-user-name" id="userName">User</div><div class="sidebar-user-email" id="userEmail">...</div></div>
+      </div>
+    </div>
+  </aside>
+  <main class="main-content">
+    <div class="page-topbar">
+      <div>
+        <div class="page-title" id="catName">Model Sets</div>
+        <div class="page-subtitle"><a href="/learn/categories.html" style="color:var(--primary);">← All Categories</a></div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="modelset-grid" id="setsGrid">
+        <div class="skeleton" style="height:200px;border-radius:var(--radius-lg);"></div>
+        <div class="skeleton" style="height:200px;border-radius:var(--radius-lg);"></div>
+        <div class="skeleton" style="height:200px;border-radius:var(--radius-lg);"></div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="/learn/js/firebase-config.js"></script>
+<script src="/learn/js/auth.js"></script>
+<script src="/learn/js/db.js"></script>
+<script>
+async function init() {
+  const user = await Auth.requireAuth();
+  if (user.photoURL) document.getElementById('userAvatar').innerHTML = `<img src="${user.photoURL}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">`;
+  else document.getElementById('userAvatar').textContent = (user.displayName||'U')[0];
+  document.getElementById('userName').textContent = user.displayName || 'User';
+  document.getElementById('userEmail').textContent = user.email;
+
+  const params = new URLSearchParams(window.location.search);
+  const catId = params.get('cat');
+
+  if (catId) {
+    const cat = await DB.categories.getById(catId);
+    if (cat) document.getElementById('catName').textContent = cat.name;
+  }
+
+  const sets = await DB.modelSets.getPublished(catId || null);
+  renderSets(sets);
+
+  document.getElementById('pageLoader').style.display = 'none';
+  document.getElementById('appLayout').style.display = 'flex';
+}
+
+function renderSets(sets) {
+  const container = document.getElementById('setsGrid');
+  if (!sets || sets.length === 0) {
+    container.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><div class="empty-icon">📝</div><div class="empty-title">No model sets available</div><div class="empty-desc">Check back soon — the admin is preparing model sets for this category.</div></div>`;
+    return;
+  }
+  container.innerHTML = sets.map(s => `
+    <a href="/learn/modelset-detail.html?id=${s.id}" class="modelset-card">
+      <div class="modelset-top">
+        <div class="modelset-icon">${s.icon || '📝'}</div>
+        <div class="modelset-badges">
+          <span class="badge badge-${s.difficulty || 'medium'}">${(s.difficulty||'Medium').charAt(0).toUpperCase()+(s.difficulty||'medium').slice(1)}</span>
+          ${s.negativeMarking ? '<span class="badge badge-danger">-ve Marking</span>' : ''}
+        </div>
+      </div>
+      <div class="modelset-title">${s.title}</div>
+      <div class="modelset-desc">${s.description || 'Practice your exam skills with this model set.'}</div>
+      <div class="modelset-meta">
+        <div class="meta-item">📝 <span>${s.totalQuestions} Questions</span></div>
+        <div class="meta-item">⏱ <span>${s.timeLimitMinutes} min</span></div>
+        <div class="meta-item">🎯 <span>${s.totalMarks} Marks</span></div>
+      </div>
+    </a>`).join('');
+}
+
+async function handleSignOut() { if(confirm('Sign out?')) await Auth.signOut(); }
+init();
+</script>
+</body>
+</html>

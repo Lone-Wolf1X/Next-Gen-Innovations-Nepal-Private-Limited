@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile | GyanBazi</title>
+  <meta name="description" content="Your personal exam preparation dashboard — track performance, attempt tests, and improve daily.">
+  <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/learn/css/learn-platform.css">
+</head>
+<body>
+
+<div class="page-loader" id="pageLoader">
+  <div class="logo">NL</div>
+  <div class="loading-spinner"></div>
+</div>
+
+<div class="app-layout" id="appLayout" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo">NL</div>
+      <div>
+        <div class="sidebar-name">GyanBazi</div>
+        <div class="sidebar-tagline">Exam Preparation</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Main</div>
+      <a href="/learn/dashboard.html" class="sidebar-link active">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+        Dashboard
+      </a>
+      <a href="/learn/categories.html" class="sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/></svg>
+        Exam Categories
+      </a>
+
+      <div class="sidebar-section-title">My Learning</div>
+      <a href="/learn/profile.html" class="sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+        My Profile
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user" id="sidebarUser" onclick="handleSignOut()">
+        <div class="avatar-placeholder sidebar-avatar" id="userAvatar">U</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="userName">Loading...</div>
+          <div class="sidebar-user-email" id="userEmail">...</div>
+        </div>
+        <svg style="width:16px;color:var(--text-muted);flex-shrink:0;" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/></svg>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div class="page-topbar">
+      <div>
+        <h2 class="page-title">My Profile</h2>
+        <div class="page-subtitle">Continue your exam preparation</div>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-ghost btn-sm btn-icon" id="mobileSidebarBtn" style="display:none;" onclick="toggleSidebar()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <a href="/learn/categories.html" class="btn btn-primary btn-sm">Practice Now →</a>
+      </div>
+    </div>
+
+    <div class="page-body">
+
+      <!-- Welcome Banner -->
+      <div class="welcome-banner" id="welcomeBanner">
+        <div class="welcome-text">
+          <div class="welcome-greeting">Welcome back,</div>
+          <div class="welcome-name" id="welcomeName">Loading...</div>
+          <div class="welcome-sub">Keep practicing — consistency is key to success!</div>
+        </div>
+        <div class="welcome-action">
+          <a href="/learn/categories.html" class="btn">Start New Test →</a>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-blue">📝</div>
+          <div class="stat-content">
+            <div class="stat-label">Tests Completed</div>
+            <div class="stat-value" id="statTests">—</div>
+            <div class="stat-sub">Total attempts</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-green">🎯</div>
+          <div class="stat-content">
+            <div class="stat-label">Average Score</div>
+            <div class="stat-value" id="statAvg">—</div>
+            <div class="stat-sub">Across all tests</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-orange">🏆</div>
+          <div class="stat-content">
+            <div class="stat-label">Best Score</div>
+            <div class="stat-value" id="statBest">—</div>
+            <div class="stat-sub">Personal best</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-purple">📊</div>
+          <div class="stat-content">
+            <div class="stat-label">Tests Attempted</div>
+            <div class="stat-value" id="statAttempted">—</div>
+            <div class="stat-sub">Including incomplete</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Grid -->
+      <div class="dashboard-grid">
+
+        <!-- Recent Tests -->
+        <div>
+          <div class="section-head">
+            <div>
+              <div class="section-head-title">Recent Test Results</div>
+              <div class="section-head-sub">Your last 5 test attempts</div>
+            </div>
+            <a href="/learn/profile.html" class="btn btn-ghost btn-sm">View All →</a>
+          </div>
+          <div class="card">
+            <div id="recentTestsContent">
+              <div style="padding:24px;">
+                <div class="skeleton" style="height:40px;margin-bottom:10px;"></div>
+                <div class="skeleton" style="height:40px;margin-bottom:10px;"></div>
+                <div class="skeleton" style="height:40px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar widgets -->
+        <div class="dashboard-side">
+
+          <!-- Quick Access -->
+          <div class="card card-padded">
+            <div class="section-head-title" style="margin-bottom:14px;">Quick Access</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <a href="/learn/categories.html" class="btn btn-outline" style="justify-content:flex-start;gap:10px;">
+                <span>📚</span> Browse Categories
+              </a>
+              <a href="/learn/profile.html" class="btn btn-ghost" style="justify-content:flex-start;gap:10px;border:1px solid var(--border);">
+                <span>📈</span> My Progress
+              </a>
+            </div>
+          </div>
+
+          <!-- Recommended Sets -->
+          <div class="card card-padded">
+            <div class="section-head-title" style="margin-bottom:14px;">Recommended for You</div>
+            <div id="recommendedSets">
+              <div class="skeleton" style="height:70px;margin-bottom:10px;border-radius:var(--radius-md);"></div>
+              <div class="skeleton" style="height:70px;border-radius:var(--radius-md);"></div>
+            </div>
+          </div>
+
+          <!-- Tip of the day -->
+          <div class="card card-padded" style="background:var(--primary-light);border-color:var(--primary-border);">
+            <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--primary);margin-bottom:8px;">💡 Preparation Tip</div>
+            <div style="font-size:0.875rem;color:var(--text-secondary);line-height:1.6;" id="dailyTip">
+              Practice at least 2 model sets per week consistently for best results. Focus on understanding explanations, not just memorizing answers.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="/learn/js/firebase-config.js"></script>
+<script src="/learn/js/auth.js"></script>
+<script src="/learn/js/db.js"></script>
+<script>
+const tips = [
+  "Practice at least 2 model sets per week consistently for best results.",
+  "Read every explanation carefully — even for questions you got right.",
+  "Time yourself: if you spend more than 72 seconds on a single MCQ, mark and move on.",
+  "Focus on your weak subjects first. Improvement there yields the most gains.",
+  "Review your incorrect answers the day after your test for better retention.",
+  "Negative marking: it's better to leave uncertain answers blank than guess randomly.",
+];
+
+async function initDashboard() {
+  const user = await Auth.requireAuth().then(user => {
+      // Keep profile UI
+    });
+  
+  // Set greeting
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('pageGreeting').textContent = `${greeting} 👋`;
+  document.getElementById('welcomeName').textContent = user.displayName?.split(' ')[0] || 'there';
+
+  // Set avatar
+  if (user.photoURL) {
+    document.getElementById('userAvatar').innerHTML = `<img src="${user.photoURL}" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">`;
+  } else {
+    document.getElementById('userAvatar').textContent = (user.displayName || 'U')[0].toUpperCase();
+  }
+  document.getElementById('userName').textContent = user.displayName || 'User';
+  document.getElementById('userEmail').textContent = user.email;
+
+  // Load user profile stats
+  const profile = await DB.users.getById(user.uid);
+  if (profile) {
+    document.getElementById('statTests').textContent = profile.totalTestsCompleted || 0;
+    document.getElementById('statAvg').textContent = profile.averageScore ? `${profile.averageScore}%` : '—';
+    document.getElementById('statBest').textContent = profile.bestScore ? `${profile.bestScore}%` : '—';
+    document.getElementById('statAttempted').textContent = profile.totalTestsAttempted || 0;
+  }
+
+  // Load recent test results
+  const recentResults = await DB.results.getByUser(user.uid, 5);
+  renderRecentTests(recentResults);
+
+  // Load recommended model sets
+  const allSets = await DB.modelSets.getPublished();
+  renderRecommended(allSets.slice(0, 3));
+
+  // Daily tip
+  const tipIdx = new Date().getDate() % tips.length;
+  document.getElementById('dailyTip').textContent = tips[tipIdx];
+
+  // Show app
+  document.getElementById('pageLoader').style.display = 'none';
+  document.getElementById('appLayout').style.display = 'flex';
+  checkMobile();
+}
+
+function renderRecentTests(results) {
+  const container = document.getElementById('recentTestsContent');
+  if (!results || results.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📝</div>
+        <div class="empty-title">No tests taken yet</div>
+        <div class="empty-desc">Start your first mock test to see your results here.</div>
+        <a href="/learn/categories.html" class="btn btn-primary btn-sm">Browse Tests →</a>
+      </div>`;
+    return;
+  }
+
+  const rows = results.map(r => {
+    const scoreColor = r.scorePercentage >= 70 ? 'var(--success)' : r.scorePercentage >= 40 ? 'var(--warning)' : 'var(--danger)';
+    return `
+      <tr>
+        <td style="max-width:200px;">
+          <div style="font-weight:600;font-size:0.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Model Set</div>
+          <div style="font-size:0.775rem;color:var(--text-muted);">${formatDate(r.completedAt)}</div>
+        </td>
+        <td>
+          <span style="font-weight:700;color:${scoreColor};font-family:'JetBrains Mono',monospace;">${r.scorePercentage}%</span>
+        </td>
+        <td><span style="font-size:0.8rem;color:var(--text-secondary);">${r.correctAnswers}/${r.totalQuestions}</span></td>
+        <td>
+          <a href="/learn/result.html?id=${r.id}" class="btn btn-ghost btn-sm">Review</a>
+        </td>
+      </tr>`;
+  }).join('');
+
+  container.innerHTML = `
+    <table class="admin-table">
+      <thead><tr><th>Test</th><th>Score</th><th>Correct</th><th>Action</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function renderRecommended(sets) {
+  const container = document.getElementById('recommendedSets');
+  if (!sets || sets.length === 0) {
+    container.innerHTML = `<p style="font-size:0.8375rem;color:var(--text-muted);">No model sets available yet. Check back soon!</p>`;
+    return;
+  }
+  container.innerHTML = sets.map(s => `
+    <a href="/learn/modelset-detail.html?id=${s.id}" style="display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px;text-decoration:none;transition:all var(--transition);" onmouseover="this.style.borderColor='var(--primary-border)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='white'">
+      <span style="font-size:1.5rem;">${s.icon || '📝'}</span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:0.8375rem;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.title}</div>
+        <div style="font-size:0.75rem;color:var(--text-muted);">${s.totalQuestions} Qs · ${s.timeLimitMinutes} min</div>
+      </div>
+      <svg style="width:16px;color:var(--text-muted);flex-shrink:0;" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+    </a>
+  `).join('');
+}
+
+function checkMobile() {
+  const btn = document.getElementById('mobileSidebarBtn');
+  if (window.innerWidth <= 768) {
+    btn.style.display = 'flex';
+  }
+}
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('mobile-open');
+}
+async function handleSignOut() {
+  if (confirm('Are you sure you want to sign out?')) await Auth.signOut();
+}
+
+window.addEventListener('resize', checkMobile);
+initDashboard();
+</script>
+</body>
+</html>

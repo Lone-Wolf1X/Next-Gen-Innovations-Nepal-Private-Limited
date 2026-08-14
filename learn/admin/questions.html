@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Questions | Admin | GyanBazi</title>
+  <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/learn/css/learn-platform.css">
+</head>
+<body>
+<div class="page-loader" id="pageLoader"><div class="logo">NL</div><div class="loading-spinner"></div></div>
+
+<!-- Question Modal -->
+<div class="modal-backdrop" id="qModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3 class="modal-title" id="modalTitle">Add Question</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="questionForm" onsubmit="saveQuestion(event)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div class="form-group">
+            <label class="form-label">Category *</label>
+            <select class="form-select" id="qCategory" required onchange="loadSubjectsForForm()">
+              <option value="">Select Category</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Subject</label>
+            <select class="form-select" id="qSubject">
+              <option value="">Select Subject (optional)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:16px;">
+          <label class="form-label">Question Text *</label>
+          <textarea class="form-textarea" id="qText" placeholder="Enter the question..." required rows="3"></textarea>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div class="form-group">
+            <label class="form-label">Option A *</label>
+            <input class="form-input" id="qOptA" placeholder="Option A" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Option B *</label>
+            <input class="form-input" id="qOptB" placeholder="Option B" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Option C *</label>
+            <input class="form-input" id="qOptC" placeholder="Option C" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Option D *</label>
+            <input class="form-input" id="qOptD" placeholder="Option D" required>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div class="form-group">
+            <label class="form-label">Correct Answer *</label>
+            <select class="form-select" id="qCorrect" required>
+              <option value="">Select</option>
+              <option value="a">A</option>
+              <option value="b">B</option>
+              <option value="c">C</option>
+              <option value="d">D</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Difficulty</label>
+            <select class="form-select" id="qDifficulty">
+              <option value="easy">Easy</option>
+              <option value="medium" selected>Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Marks</label>
+            <input class="form-input" type="number" id="qMarks" value="1" min="0.5" step="0.5">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Neg. Marks</label>
+            <input class="form-input" type="number" id="qNeg" value="0.25" min="0" step="0.25">
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:16px;">
+          <label class="form-label">Topic / Tag</label>
+          <input class="form-input" id="qTopic" placeholder="e.g. Banking History, Economy...">
+        </div>
+
+        <div class="form-group" style="margin-bottom:8px;">
+          <label class="form-label">Explanation (shown after test)</label>
+          <textarea class="form-textarea" id="qExplanation" placeholder="Explain why the correct answer is correct..." rows="3"></textarea>
+        </div>
+
+        <input type="hidden" id="qId">
+        <input type="hidden" id="qCategoryId">
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveQuestion(event)" id="saveBtn">Save Question</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div class="modal-backdrop" id="deleteModal">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header"><h3 class="modal-title">Delete Question</h3><button class="modal-close" onclick="document.getElementById('deleteModal').classList.remove('open')">✕</button></div>
+    <div class="modal-body"><p style="color:var(--text-secondary);">Are you sure you want to delete this question? This action cannot be undone.</p></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="document.getElementById('deleteModal').classList.remove('open')">Cancel</button>
+      <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="app-layout" id="appLayout" style="display:none;">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="sidebar-logo" style="background:linear-gradient(135deg,#DC2626,#B91C1C);">A</div><div><div class="sidebar-name">Admin Panel</div><div class="sidebar-tagline">GyanBazi</div></div></div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Overview</div>
+      <a href="/learn/admin/index.html" class="sidebar-link"><svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>Dashboard</a>
+      <div class="sidebar-section-title">Content</div>
+      <a href="/learn/admin/categories.html" class="sidebar-link"><svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/></svg>Categories</a>
+      <a href="/learn/admin/questions.html" class="sidebar-link active"><svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>Questions</a>
+      <a href="/learn/admin/modelsets.html" class="sidebar-link"><svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg>Model Sets</a>
+      <div class="sidebar-section-title">System</div>
+      <a href="/learn/dashboard.html" class="sidebar-link"><svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/></svg>Back to Platform</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user" onclick="Auth.signOut()"><div class="sidebar-avatar" id="adminAvatar">A</div><div class="sidebar-user-info"><div class="sidebar-user-name" id="adminName">Admin</div></div></div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-topbar">
+      <div><div class="page-title">Question Bank</div><div class="page-subtitle" id="qCount">Loading...</div></div>
+      <div class="topbar-right">
+        <button class="btn btn-primary btn-sm" onclick="openModal()">+ Add Question</button>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="filter-row" style="margin-bottom:16px;">
+        <div class="search-bar" style="flex:1;max-width:360px;">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="searchInput" placeholder="Search questions..." oninput="filterQuestions()">
+        </div>
+        <select class="form-select" id="filterCat" style="width:auto;" onchange="loadQuestions()">
+          <option value="">All Categories</option>
+        </select>
+        <select class="form-select" id="filterDiff" style="width:auto;" onchange="filterQuestions()">
+          <option value="">All Difficulty</option>
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </div>
+
+      <div class="card">
+        <div id="questionsTableWrap">
+          <div style="padding:24px;"><div class="skeleton" style="height:44px;margin-bottom:8px;"></div><div class="skeleton" style="height:44px;margin-bottom:8px;"></div><div class="skeleton" style="height:44px;"></div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast-container"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="/learn/js/firebase-config.js"></script>
+<script src="/learn/js/auth.js"></script>
+<script src="/learn/js/db.js"></script>
+<script>
+let currentUser, allQuestions = [], allCategories = [], allSubjects = [], editingId = null;
+
+async function init() {
+  currentUser = await Auth.requireAdmin();
+  document.getElementById('adminAvatar').textContent = (currentUser.displayName||'A')[0];
+  document.getElementById('adminName').textContent = currentUser.displayName || 'Admin';
+
+  allCategories = await DB.categories.getAllAdmin();
+  populateCatSelects();
+  allSubjects = await DB.subjects.getAll();
+
+  await loadQuestions();
+
+  document.getElementById('pageLoader').style.display = 'none';
+  document.getElementById('appLayout').style.display = 'flex';
+
+  // Auto-open modal if ?action=new
+  if (new URLSearchParams(window.location.search).get('action') === 'new') openModal();
+}
+
+function populateCatSelects() {
+  const opts = allCategories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  document.getElementById('filterCat').innerHTML = `<option value="">All Categories</option>${opts}`;
+  document.getElementById('qCategory').innerHTML = `<option value="">Select Category</option>${opts}`;
+}
+
+function loadSubjectsForForm() {
+  const catId = document.getElementById('qCategory').value;
+  const subs = allSubjects.filter(s => s.categoryId === catId);
+  document.getElementById('qSubject').innerHTML = `<option value="">No specific subject</option>${subs.map(s => `<option value="${s.id}">${s.name}</option>`).join('')}`;
+}
+
+async function loadQuestions() {
+  const catId = document.getElementById('filterCat')?.value;
+  allQuestions = await DB.questions.getAll({ categoryId: catId || undefined });
+  filterQuestions();
+}
+
+function filterQuestions() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const diff = document.getElementById('filterDiff').value;
+  let filtered = allQuestions;
+  if (search) filtered = filtered.filter(q => q.questionText?.toLowerCase().includes(search));
+  if (diff) filtered = filtered.filter(q => q.difficulty === diff);
+  document.getElementById('qCount').textContent = `${filtered.length} questions`;
+  renderTable(filtered);
+}
+
+function renderTable(questions) {
+  const wrap = document.getElementById('questionsTableWrap');
+  if (!questions.length) {
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">❓</div><div class="empty-title">No questions found</div><div class="empty-desc">Add your first question to get started.</div></div>`;
+    return;
+  }
+  const catMap = Object.fromEntries(allCategories.map(c => [c.id, c.name]));
+  const rows = questions.map(q => `
+    <tr>
+      <td style="max-width:360px;"><div style="font-size:0.875rem;font-weight:500;line-height:1.4;">${q.questionText?.slice(0,90)}${q.questionText?.length > 90 ? '...' : ''}</div></td>
+      <td><span class="badge badge-neutral">${catMap[q.categoryId] || '—'}</span></td>
+      <td><span class="badge badge-${q.difficulty||'medium'}">${(q.difficulty||'Medium').charAt(0).toUpperCase()+(q.difficulty||'medium').slice(1)}</span></td>
+      <td><span class="badge ${q.status==='published'?'badge-success':'badge-neutral'}">${q.status||'published'}</span></td>
+      <td>
+        <div class="table-actions">
+          <button class="btn btn-ghost btn-sm btn-icon" onclick="editQuestion('${q.id}')" title="Edit">✏️</button>
+          <button class="btn btn-ghost btn-sm btn-icon" onclick="promptDelete('${q.id}')" title="Delete">🗑️</button>
+        </div>
+      </td>
+    </tr>`).join('');
+  wrap.innerHTML = `<table class="admin-table"><thead><tr><th>Question</th><th>Category</th><th>Difficulty</th><th>Status</th><th style="text-align:right;">Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function openModal(qData = null) {
+  editingId = qData?.id || null;
+  document.getElementById('modalTitle').textContent = editingId ? 'Edit Question' : 'Add Question';
+  document.getElementById('qText').value = qData?.questionText || '';
+  document.getElementById('qCategory').value = qData?.categoryId || '';
+  if (qData?.categoryId) loadSubjectsForForm();
+  document.getElementById('qSubject').value = qData?.subjectId || '';
+  document.getElementById('qOptA').value = qData?.options?.a || '';
+  document.getElementById('qOptB').value = qData?.options?.b || '';
+  document.getElementById('qOptC').value = qData?.options?.c || '';
+  document.getElementById('qOptD').value = qData?.options?.d || '';
+  document.getElementById('qCorrect').value = qData?.correctOption || '';
+  document.getElementById('qDifficulty').value = qData?.difficulty || 'medium';
+  document.getElementById('qMarks').value = qData?.marks ?? 1;
+  document.getElementById('qNeg').value = qData?.negativeMarks ?? 0.25;
+  document.getElementById('qTopic').value = qData?.topic || '';
+  document.getElementById('qExplanation').value = qData?.explanation || '';
+  document.getElementById('qId').value = qData?.id || '';
+  document.getElementById('qModal').classList.add('open');
+}
+
+function editQuestion(id) {
+  const q = allQuestions.find(q => q.id === id);
+  if (q) openModal(q);
+}
+
+function closeModal() { document.getElementById('qModal').classList.remove('open'); editingId = null; }
+
+async function saveQuestion(e) {
+  if (e) e.preventDefault();
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+
+  const data = {
+    questionText: document.getElementById('qText').value.trim(),
+    categoryId: document.getElementById('qCategory').value,
+    subjectId: document.getElementById('qSubject').value || null,
+    options: {
+      a: document.getElementById('qOptA').value.trim(),
+      b: document.getElementById('qOptB').value.trim(),
+      c: document.getElementById('qOptC').value.trim(),
+      d: document.getElementById('qOptD').value.trim(),
+    },
+    correctOption: document.getElementById('qCorrect').value,
+    difficulty: document.getElementById('qDifficulty').value,
+    marks: parseFloat(document.getElementById('qMarks').value) || 1,
+    negativeMarks: parseFloat(document.getElementById('qNeg').value) || 0.25,
+    topic: document.getElementById('qTopic').value.trim(),
+    explanation: document.getElementById('qExplanation').value.trim(),
+    status: 'published',
+  };
+
+  try {
+    if (editingId) {
+      await DB.questions.update(editingId, data, currentUser.uid);
+      showToast('Question updated!', 'success');
+    } else {
+      await DB.questions.create(data, currentUser.uid);
+      showToast('Question created!', 'success');
+    }
+    closeModal();
+    await loadQuestions();
+  } catch (err) {
+    showToast('Error: ' + err.message, 'error');
+  }
+  btn.disabled = false; btn.textContent = 'Save Question';
+}
+
+let deleteTargetId = null;
+function promptDelete(id) {
+  deleteTargetId = id;
+  document.getElementById('deleteModal').classList.add('open');
+  document.getElementById('confirmDeleteBtn').onclick = async () => {
+    await DB.questions.delete(deleteTargetId, currentUser.uid);
+    document.getElementById('deleteModal').classList.remove('open');
+    showToast('Question deleted.', 'info');
+    await loadQuestions();
+  };
+}
+
+init();
+</script>
+</body>
+</html>

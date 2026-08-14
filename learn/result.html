@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Result | GyanBazi</title>
+  <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/learn/css/learn-platform.css">
+</head>
+<body>
+
+<div class="page-loader" id="pageLoader">
+  <div class="logo">NL</div>
+  <div class="loading-spinner"></div>
+</div>
+
+<div id="resultPage" style="display:none;">
+
+  <!-- Result Hero -->
+  <div class="result-hero" id="resultHero">
+    <!-- Back button -->
+    <div style="position:absolute;top:20px;left:24px;">
+      <a href="/learn/dashboard.html" style="color:rgba(255,255,255,0.8);font-size:0.875rem;display:flex;align-items:center;gap:6px;">
+        ← Dashboard
+      </a>
+    </div>
+
+    <div style="position:absolute;top:20px;right:24px;">
+      <span id="personalBestBadge" style="display:none;background:rgba(255,255,255,0.2);color:white;padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:700;">🏆 Personal Best!</span>
+    </div>
+
+    <h1 style="color:white;font-size:1.5rem;font-weight:700;margin-bottom:24px;opacity:0.9;">Test Completed</h1>
+
+    <!-- Score Ring -->
+    <div class="score-ring-wrap">
+      <div class="score-ring">
+        <svg width="160" height="160" viewBox="0 0 160 160">
+          <circle class="score-ring-bg" cx="80" cy="80" r="68"/>
+          <circle class="score-ring-fill" id="scoreRingFill" cx="80" cy="80" r="68"
+            stroke-dasharray="427"
+            stroke-dashoffset="427"/>
+        </svg>
+        <div class="score-ring-text">
+          <span class="score-pct" id="scorePct">0%</span>
+          <span class="score-label">Score</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result Stats Bar -->
+    <div class="result-stats">
+      <div class="result-stat">
+        <span class="result-stat-val" id="rCorrect">0</span>
+        <div class="result-stat-label">✅ Correct</div>
+      </div>
+      <div class="result-stat">
+        <span class="result-stat-val" id="rIncorrect">0</span>
+        <div class="result-stat-label">❌ Incorrect</div>
+      </div>
+      <div class="result-stat">
+        <span class="result-stat-val" id="rUnattempted">0</span>
+        <div class="result-stat-label">— Unattempted</div>
+      </div>
+      <div class="result-stat">
+        <span class="result-stat-val" id="rTime">—</span>
+        <div class="result-stat-label">⏱ Time Taken</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result Body -->
+  <div class="result-body">
+
+    <!-- Score Summary Cards -->
+    <div class="result-summary-grid" style="margin-bottom:32px;">
+      <div class="card card-padded" style="text-align:center;">
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;">Marks Obtained</div>
+        <div style="font-size:2rem;font-weight:800;color:var(--primary);font-family:'JetBrains Mono',monospace;" id="marksObtained">—</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);" id="totalMarks">out of —</div>
+      </div>
+      <div class="card card-padded" style="text-align:center;">
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;">Accuracy</div>
+        <div style="font-size:2rem;font-weight:800;color:var(--success);font-family:'JetBrains Mono',monospace;" id="accuracy">—</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);">of answered Qs</div>
+      </div>
+      <div class="card card-padded" style="text-align:center;">
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;">Negative Marks</div>
+        <div style="font-size:2rem;font-weight:800;color:var(--danger);font-family:'JetBrains Mono',monospace;" id="negMarks">—</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);">deducted</div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:36px;">
+      <a href="/learn/categories.html" class="btn btn-primary">Practice Again →</a>
+      <a href="/learn/dashboard.html" class="btn btn-outline">← Dashboard</a>
+      <button class="btn btn-ghost" onclick="scrollToReview()">View Answer Review ↓</button>
+    </div>
+
+    <!-- Answer Review -->
+    <div>
+      <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:20px;" id="reviewHeading">Answer Review</h2>
+      <div id="answerReview">
+        <div class="skeleton" style="height:100px;margin-bottom:14px;border-radius:var(--radius-lg);"></div>
+        <div class="skeleton" style="height:100px;margin-bottom:14px;border-radius:var(--radius-lg);"></div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="/learn/js/firebase-config.js"></script>
+<script src="/learn/js/auth.js"></script>
+<script src="/learn/js/db.js"></script>
+<script>
+const CIRCUMFERENCE = 2 * Math.PI * 68; // r=68
+
+async function initResult() {
+  const params = new URLSearchParams(window.location.search);
+  const resultId = params.get('id');
+  if (!resultId) { window.location.href = '/learn/dashboard.html'; return; }
+
+  await Auth.requireAuth();
+
+  const result = await DB.results.getById(resultId);
+  if (!result) {
+    document.getElementById('pageLoader').innerHTML = '<div style="text-align:center;padding:40px;"><p>Result not found.</p><a href="/learn/dashboard.html" class="btn btn-primary">← Dashboard</a></div>';
+    return;
+  }
+
+  // Populate hero stats
+  document.getElementById('scorePct').textContent = `${result.scorePercentage}%`;
+  document.getElementById('rCorrect').textContent = result.correctAnswers;
+  document.getElementById('rIncorrect').textContent = result.incorrectAnswers;
+  document.getElementById('rUnattempted').textContent = result.unattemptedQuestions;
+  document.getElementById('rTime').textContent = formatTime(result.timeTakenSeconds || 0);
+  document.getElementById('marksObtained').textContent = result.finalScore?.toFixed(2) ?? '0';
+  document.getElementById('totalMarks').textContent = `out of ${result.totalMarks}`;
+  document.getElementById('accuracy').textContent = `${result.accuracy}%`;
+  document.getElementById('negMarks').textContent = result.negativeMarks?.toFixed(2) ?? '0';
+
+  if (result.isPersonalBest) {
+    document.getElementById('personalBestBadge').style.display = 'inline-block';
+  }
+
+  // Animate score ring
+  setTimeout(() => {
+    const pct = result.scorePercentage / 100;
+    const offset = CIRCUMFERENCE - (pct * CIRCUMFERENCE);
+    document.getElementById('scoreRingFill').style.strokeDashoffset = offset;
+
+    // Color the ring based on score
+    const ringColor = result.scorePercentage >= 70 ? '#4ade80' : result.scorePercentage >= 40 ? '#fbbf24' : '#f87171';
+    document.getElementById('scoreRingFill').style.stroke = ringColor;
+  }, 300);
+
+  // Color hero based on score
+  const heroBg = result.scorePercentage >= 70
+    ? 'linear-gradient(135deg, #15803d, #16a34a)'
+    : result.scorePercentage >= 40
+      ? 'linear-gradient(135deg, #b45309, #d97706)'
+      : 'linear-gradient(135deg, #b91c1c, #dc2626)';
+  document.getElementById('resultHero').style.background = heroBg;
+
+  // Render answer review
+  renderAnswerReview(result.questionReview || []);
+
+  // Show page
+  document.getElementById('pageLoader').style.display = 'none';
+  document.getElementById('resultPage').style.display = 'block';
+}
+
+function renderAnswerReview(questions) {
+  const container = document.getElementById('answerReview');
+  document.getElementById('reviewHeading').textContent = `Answer Review (${questions.length} Questions)`;
+  const optKeys = ['a','b','c','d'];
+  const optLabels = ['A','B','C','D'];
+
+  container.innerHTML = questions.map((q, i) => {
+    const statusClass = q.status;
+    const statusIcon = q.status === 'correct' ? '✅ Correct' : q.status === 'incorrect' ? '❌ Incorrect' : '— Unattempted';
+
+    const optionsHtml = optKeys.map((key, ki) => {
+      let cls = 'review-option';
+      if (key === q.correctOption) cls += ' correct-opt';
+      else if (key === q.userAnswer && q.status === 'incorrect') cls += ' user-wrong';
+      return `<div class="${cls}"><span class="opt-key">${optLabels[ki]}</span><span>${q.options?.[key] || ''}</span></div>`;
+    }).join('');
+
+    return `
+      <div class="review-item ${statusClass}">
+        <div class="review-header">
+          <span class="review-qnum">Question ${i + 1}</span>
+          <span class="review-status ${statusClass}">${statusIcon}</span>
+        </div>
+        <div class="review-question">${q.questionText}</div>
+        <div class="review-options">${optionsHtml}</div>
+        ${q.explanation ? `<div class="review-explanation"><strong>Explanation:</strong> ${q.explanation}</div>` : ''}
+      </div>`;
+  }).join('');
+}
+
+function scrollToReview() {
+  document.getElementById('answerReview').scrollIntoView({ behavior: 'smooth' });
+}
+
+initResult();
+</script>
+</body>
+</html>

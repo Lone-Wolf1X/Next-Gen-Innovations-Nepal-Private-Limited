@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Seed Learning DB</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="/learn/js/firebase-config.js"></script>
+  <style>
+    body { font-family: system-ui; padding: 40px; background: #0F1C3F; color: white; text-align: center; }
+    button { padding: 12px 24px; font-size: 1.2rem; cursor: pointer; background: #00C9B1; border: none; border-radius: 8px; color: white; font-weight: bold; }
+    #log { margin-top: 20px; text-align: left; background: #1A348A; padding: 20px; border-radius: 8px; min-height: 200px; font-family: monospace; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>GyanBazi Database Seeder</h1>
+  <p>Click below to populate Categories, Subjects, Questions, and Model Sets (RBB & Sangathit Sangh).</p>
+  <button onclick="runSeed()">Seed Database Now</button>
+  <div id="log">Waiting to start...</div>
+
+  <script>
+    const logDiv = document.getElementById('log');
+    function log(msg) { logDiv.innerHTML += msg + '\n'; console.log(msg); }
+    const ts = firebase.firestore.FieldValue.serverTimestamp;
+
+    const categories = [
+      { id: 'cat_rbb', name: 'Banking Exams (RBB)', description: 'Preparation for Rastriya Banijya Bank and other banking sector examinations.', icon: '🏦', order: 1, isActive: true },
+      { id: 'cat_sangathit', name: 'Sangathit Sangh Sanstha', description: 'Preparation for organizational licensing and Lok Sewa Aayog equivalent exams.', icon: '📜', order: 2, isActive: true }
+    ];
+
+    const subjects = [
+      { id: 'sub_rbb_gk', categoryId: 'cat_rbb', name: 'General Knowledge & Banking', order: 1, isActive: true },
+      { id: 'sub_rbb_mgnt', categoryId: 'cat_rbb', name: 'Management & IT', order: 2, isActive: true },
+      { id: 'sub_san_gk', categoryId: 'cat_sangathit', name: 'General Awareness', order: 1, isActive: true }
+    ];
+
+    const questions = [
+      { id: 'q_rbb_1', categoryId: 'cat_rbb', subjectId: 'sub_rbb_gk', questionText: 'When was Rastriya Banijya Bank established?', options: ['2022 BS', '2021 BS', '2013 BS', '2024 BS'], correctOption: '2022 BS', explanation: 'Rastriya Banijya Bank was established on Magh 10, 2022 BS (January 23, 1966 AD).', marks: 1, negativeMarks: 0.2, status: 'published' },
+      { id: 'q_rbb_2', categoryId: 'cat_rbb', subjectId: 'sub_rbb_gk', questionText: 'Who is the central bank of Nepal?', options: ['Rastriya Banijya Bank', 'Nepal Rastra Bank', 'Nepal Bank Limited', 'Agriculture Development Bank'], correctOption: 'Nepal Rastra Bank', explanation: 'Nepal Rastra Bank (NRB) is the central bank of Nepal, established in 2013 BS.', marks: 1, negativeMarks: 0.2, status: 'published' },
+      { id: 'q_rbb_3', categoryId: 'cat_rbb', subjectId: 'sub_rbb_mgnt', questionText: 'Which function is considered the primary function of management?', options: ['Planning', 'Organizing', 'Directing', 'Controlling'], correctOption: 'Planning', explanation: 'Planning is the basic and primary function of management that precedes all other functions.', marks: 1, negativeMarks: 0.2, status: 'published' },
+      { id: 'q_san_1', categoryId: 'cat_sangathit', subjectId: 'sub_san_gk', questionText: 'Which is the deepest lake of Nepal?', options: ['Rara Lake', 'Fewa Lake', 'Shey Phoksundo Lake', 'Tilicho Lake'], correctOption: 'Shey Phoksundo Lake', explanation: 'Shey Phoksundo is the deepest lake in Nepal with a maximum depth of 145m.', marks: 1, negativeMarks: 0.2, status: 'published' },
+      { id: 'q_san_2', categoryId: 'cat_sangathit', subjectId: 'sub_san_gk', questionText: 'According to the Constitution of Nepal, how many fundamental rights are provisioned?', options: ['31', '32', '33', '34'], correctOption: '31', explanation: 'Part 3 of the Constitution of Nepal provides 31 fundamental rights from Article 16 to 46.', marks: 1, negativeMarks: 0.2, status: 'published' }
+    ];
+
+    const modelSets = [
+      { id: 'ms_rbb_1', categoryId: 'cat_rbb', title: 'RBB 5th Level - Model Set 1', description: 'A comprehensive mock test covering GK, Banking, and Management for RBB 5th Level Assistant.', timeLimitMinutes: 15, totalMarks: 3, negativeMarking: true, negativeMarkValue: 0.2, questionIds: ['q_rbb_1', 'q_rbb_2', 'q_rbb_3'], status: 'published', publishedAt: ts() },
+      { id: 'ms_san_1', categoryId: 'cat_sangathit', title: 'Sangathit Sangh - License Set 1', description: 'Practice test for organizational licensing containing general awareness questions.', timeLimitMinutes: 10, totalMarks: 2, negativeMarking: true, negativeMarkValue: 0.2, questionIds: ['q_san_1', 'q_san_2'], status: 'published', publishedAt: ts() }
+    ];
+
+    async function runSeed() {
+      try {
+        log('Starting seed...');
+        
+        const catBatch = db.batch();
+        categories.forEach(c => { const { id, ...data } = c; catBatch.set(db.collection('examCategories').doc(id), { ...data, createdAt: ts(), createdBy: 'seed' }); });
+        await catBatch.commit();
+        log('✅ Seeded Categories');
+
+        const subBatch = db.batch();
+        subjects.forEach(c => { const { id, ...data } = c; subBatch.set(db.collection('subjects').doc(id), { ...data, createdAt: ts(), createdBy: 'seed' }); });
+        await subBatch.commit();
+        log('✅ Seeded Subjects');
+
+        const qBatch = db.batch();
+        questions.forEach(c => { const { id, ...data } = c; qBatch.set(db.collection('questions').doc(id), { ...data, createdAt: ts(), updatedAt: ts(), createdBy: 'seed' }); });
+        await qBatch.commit();
+        log('✅ Seeded Questions');
+
+        const msBatch = db.batch();
+        modelSets.forEach(c => { const { id, ...data } = c; msBatch.set(db.collection('modelSets').doc(id), { ...data, createdAt: ts(), createdBy: 'seed' }); });
+        await msBatch.commit();
+        log('✅ Seeded Model Sets');
+
+        log('\n🎉 ALL DONE! You can now close this page and test the platform.');
+      } catch (err) {
+        log('❌ ERROR: ' + err.message);
+      }
+    }
+  </script>
+</body>
+</html>

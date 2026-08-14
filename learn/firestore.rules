@@ -1,0 +1,106 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── HELPER FUNCTIONS ───────────────────────────────────
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isValidUser() {
+      return isSignedIn() && isOwner(request.auth.uid);
+    }
+
+    // ─── USERS ─────────────────────────────────────────────
+    match /users/{userId} {
+      // Users can read/write their own profile; admins can read all
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId)
+        && request.resource.data.keys().hasAll(['uid', 'email', 'displayName', 'role', 'createdAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.role in ['user', 'admin'];
+      allow update: if (isOwner(userId) && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'uid']))
+        || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ─── EXAM CATEGORIES ────────────────────────────────────
+    match /examCategories/{catId} {
+      // Any signed-in user can read active categories
+      allow read: if isSignedIn() && resource.data.isActive == true;
+      // Admin can read all (including hidden)
+      allow read: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ─── SUBJECTS ───────────────────────────────────────────
+    match /subjects/{subId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ─── QUESTIONS ──────────────────────────────────────────
+    match /questions/{qId} {
+      // Users can only read published questions
+      allow read: if isSignedIn() && resource.data.status == 'published';
+      // Admin can read all
+      allow read: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ─── MODEL SETS ─────────────────────────────────────────
+    match /modelSets/{setId} {
+      // Users can read published sets
+      allow read: if isSignedIn() && resource.data.status == 'published';
+      // Admin can read all
+      allow read: if isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ─── TEST ATTEMPTS ───────────────────────────────────────
+    match /testAttempts/{attemptId} {
+      // Users can only read/write their own attempts
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == 'in_progress';
+      allow update: if isSignedIn()
+        && resource.data.userId == request.auth.uid
+        && resource.data.status == 'in_progress'
+        // Prevent changing userId or modelSetId after creation
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.modelSetId == resource.data.modelSetId;
+      allow delete: if false; // Never delete attempts
+      // Admin can read all
+      allow read: if isAdmin();
+    }
+
+    // ─── TEST RESULTS ────────────────────────────────────────
+    match /testResults/{resultId} {
+      // Users can read their own results
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      // Results are created server-side via client (from db.js submit function)
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if false; // Results are immutable
+      allow delete: if isAdmin();
+      // Admin can read all
+      allow read: if isAdmin();
+    }
+
+    // ─── AUDIT LOGS ──────────────────────────────────────────
+    match /auditLogs/{logId} {
+      allow read, write: if isAdmin();
+    }
+
+  }
+}

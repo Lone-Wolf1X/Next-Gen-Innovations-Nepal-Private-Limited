@@ -1,0 +1,37 @@
+{
+  "title": "Rastriya Banijya Bank (RBB) 5th Level - Mock Test 1",
+  "description": "Full mock test based on the latest RBB syllabus for Assistant Level.",
+  "timeLimitMinutes": 45,
+  "questions": [
+    {
+      "questionText": "When was Rastriya Banijya Bank established?",
+      "options": ["A. 2022 BS", "B. 2024 BS", "C. 2013 BS", "D. 2041 BS"],
+      "correctOption": "A. 2022 BS",
+      "explanation": "Rastriya Banijya Bank was established on Magh 10, 2022 BS under the RBB Act."
+    },
+    {
+      "questionText": "What is the minimum capital requirement for a Class 'A' Commercial Bank in Nepal?",
+      "options": ["A. 2 Billion", "B. 4 Billion", "C. 8 Billion", "D. 10 Billion"],
+      "correctOption": "C. 8 Billion",
+      "explanation": "Nepal Rastra Bank mandates a minimum paid-up capital of NPR 8 Billion for Class 'A' Commercial Banks."
+    },
+    {
+      "questionText": "Which accounting principle states that a business is a separate entity from its owners?",
+      "options": ["A. Going Concern", "B. Business Entity Concept", "C. Dual Aspect", "D. Matching Concept"],
+      "correctOption": "B. Business Entity Concept",
+      "explanation": "The Business Entity Concept assumes that the financial transactions of a business are kept separate from the personal affairs of its owners."
+    },
+    {
+      "questionText": "What is the primary function of Nepal Rastra Bank?",
+      "options": ["A. Issuing currency", "B. Accepting deposits from public", "C. Providing personal loans", "D. Commercial trading"],
+      "correctOption": "A. Issuing currency",
+      "explanation": "As the central bank, NRB's primary functions include issuing currency, managing foreign exchange, and regulating other banks."
+    },
+    {
+      "questionText": "Which type of account generally offers the highest interest rate?",
+      "options": ["A. Current Account", "B. Saving Account", "C. Fixed Deposit Account", "D. Call Account"],
+      "correctOption": "C. Fixed Deposit Account",
+      "explanation": "Fixed Deposit Accounts lock in money for a specific term and thus offer higher interest rates compared to saving or current accounts."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "title": "Sangathit Sanstha - Assistant Level Mock 1",
+  "description": "Public Enterprise (Sangathit Sanstha) general knowledge and administrative mock test.",
+  "timeLimitMinutes": 45,
+  "questions": [
+    {
+      "questionText": "What is the primary motive of a Public Enterprise (Sangathit Sanstha)?",
+      "options": ["A. Maximum Profit", "B. Public Welfare and Service", "C. Monopoly Control", "D. Tax Evasion"],
+      "correctOption": "B. Public Welfare and Service",
+      "explanation": "Unlike private companies, public enterprises are primarily established for public welfare and providing essential services."
+    },
+    {
+      "questionText": "Who appoints the Board of Directors of a fully government-owned Public Enterprise in Nepal?",
+      "options": ["A. Public Service Commission", "B. Nepal Rastra Bank", "C. Government of Nepal (Cabinet)", "D. Shareholders"],
+      "correctOption": "C. Government of Nepal (Cabinet)",
+      "explanation": "The Government of Nepal (Council of Ministers) appoints the board members of fully state-owned enterprises."
+    },
+    {
+      "questionText": "Which of the following is an example of a Public Enterprise in Nepal?",
+      "options": ["A. Nabil Bank", "B. Nepal Electricity Authority (NEA)", "C. Ncell", "D. Chaudhary Group"],
+      "correctOption": "B. Nepal Electricity Authority (NEA)",
+      "explanation": "NEA is a fully government-owned public enterprise responsible for electricity generation and distribution."
+    },
+    {
+      "questionText": "What is the standard working hours per week as per the Labor Act of Nepal?",
+      "options": ["A. 40 hours", "B. 45 hours", "C. 48 hours", "D. 50 hours"],
+      "correctOption": "C. 48 hours",
+      "explanation": "The Labor Act stipulates a maximum of 8 hours a day and 48 hours a week as standard working hours."
+    },
+    {
+      "questionText": "What does GDP stand for?",
+      "options": ["A. Gross Domestic Product", "B. Gross Development Plan", "C. General Domestic Product", "D. Global Domestic Product"],
+      "correctOption": "A. Gross Domestic Product",
+      "explanation": "GDP stands for Gross Domestic Product, which measures the total monetary value of all final goods and services produced within a country."
+    }
+  ]
+}

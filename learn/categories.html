@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exam Categories | GyanBazi</title>
+  <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/learn/css/learn-platform.css">
+</head>
+<body>
+<div class="page-loader" id="pageLoader"><div class="logo">NL</div><div class="loading-spinner"></div></div>
+
+<div class="app-layout" id="appLayout" style="display:none;">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo">NL</div>
+      <div><div class="sidebar-name">GyanBazi</div><div class="sidebar-tagline">Exam Preparation</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Main</div>
+      <a href="/learn/dashboard.html" class="sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+        Dashboard
+      </a>
+      <a href="/learn/categories.html" class="sidebar-link active">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/></svg>
+        Exam Categories
+      </a>
+      <div class="sidebar-section-title">My Learning</div>
+      <a href="/learn/profile.html" class="sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+        My Profile
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user" onclick="handleSignOut()">
+        <div class="sidebar-avatar" id="userAvatar">U</div>
+        <div class="sidebar-user-info"><div class="sidebar-user-name" id="userName">User</div><div class="sidebar-user-email" id="userEmail">...</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-topbar">
+      <div><div class="page-title">Exam Categories</div><div class="page-subtitle">Choose your target exam to begin</div></div>
+    </div>
+    <div class="page-body">
+      <div class="category-grid" id="categoriesGrid">
+        <div class="skeleton" style="height:180px;border-radius:var(--radius-lg);"></div>
+        <div class="skeleton" style="height:180px;border-radius:var(--radius-lg);"></div>
+        <div class="skeleton" style="height:180px;border-radius:var(--radius-lg);"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="/learn/js/firebase-config.js"></script>
+<script src="/learn/js/auth.js"></script>
+<script src="/learn/js/db.js"></script>
+<script>
+async function init() {
+  const user = await Auth.requireAuth();
+  setUserUI(user);
+  const cats = await DB.categories.getAll();
+  renderCategories(cats);
+  document.getElementById('pageLoader').style.display = 'none';
+  document.getElementById('appLayout').style.display = 'flex';
+}
+function setUserUI(user) {
+  if (user.photoURL) document.getElementById('userAvatar').innerHTML = `<img src="${user.photoURL}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">`;
+  else document.getElementById('userAvatar').textContent = (user.displayName||'U')[0];
+  document.getElementById('userName').textContent = user.displayName || 'User';
+  document.getElementById('userEmail').textContent = user.email;
+}
+function renderCategories(cats) {
+  const container = document.getElementById('categoriesGrid');
+  if (!cats || cats.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1;">
+        <div class="empty-icon">📚</div>
+        <div class="empty-title">No categories yet</div>
+        <div class="empty-desc">The admin is setting up exam categories. Please check back soon.</div>
+      </div>`;
+    return;
+  }
+  container.innerHTML = cats.map(c => `
+    <div class="category-card">
+      <div class="category-icon-wrap">${c.icon || '📚'}</div>
+      <div class="category-name">${c.name}</div>
+      <div class="category-desc">${c.description || ''}</div>
+      <div style="display:flex; gap:12px; margin-top:24px;">
+        <a href="/learn/roadmap.html?cat=${c.id}" class="btn btn-outline btn-sm" style="flex:1; text-align:center;">Syllabus</a>
+        <a href="/learn/modelsets.html?cat=${c.id}" class="btn btn-primary btn-sm" style="flex:1; text-align:center;">Mock Tests</a>
+      </div>
+    </div>`).join('');
+}
+async function handleSignOut() {
+  if (confirm('Sign out?')) await Auth.signOut();
+}
+init();
+</script>
+</body>
+</html>

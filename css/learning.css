@@ -1,0 +1,247 @@
+/* =========================================================
+   Learning Module specific styles
+   ========================================================= */
+
+/* Hero Section for Learning */
+.learning-hero {
+  padding-top: 120px;
+  padding-bottom: 60px;
+  text-align: center;
+  background: radial-gradient(circle at top, rgba(124,58,237,0.1) 0%, var(--bg-dark) 70%);
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.course-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(124,58,237,0.2);
+  border-radius: var(--radius-md);
+  padding: 40px 30px;
+  text-align: center;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.course-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--purple-light);
+  box-shadow: 0 10px 40px rgba(124,58,237,0.2);
+}
+
+.course-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+/* Tab Interface */
+.learning-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 10px;
+}
+
+.tab-btn {
+  background: transparent;
+  color: var(--text-body);
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.tab-btn:hover {
+  color: var(--white);
+  background: rgba(255,255,255,0.05);
+}
+
+.tab-btn.active {
+  color: var(--cyan);
+  background: rgba(6,182,212,0.1);
+  box-shadow: inset 0 -2px 0 var(--cyan);
+}
+
+.tab-content {
+  display: none;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Syllabus Table Styling */
+.syllabus-table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 30px;
+  background: rgba(255,255,255,0.02);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.05);
+  padding: 20px;
+}
+
+.syllabus-table-wrapper h3 {
+  margin-bottom: 15px;
+  color: var(--purple-light);
+}
+
+.syllabus-table-wrapper h4 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: var(--cyan);
+  font-size: 1.1rem;
+}
+
+.syllabus-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.syllabus-list li {
+  margin-bottom: 8px;
+  color: var(--text-body);
+  position: relative;
+  padding-left: 20px;
+}
+
+.syllabus-list li::before {
+  content: '•';
+  color: var(--cyan);
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.syllabus-list ul {
+  padding-left: 20px;
+  margin-top: 8px;
+}
+
+/* Exam Simulator Styles */
+.exam-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(124,58,237,0.1);
+  padding: 20px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 30px;
+  border: 1px solid rgba(124,58,237,0.3);
+}
+
+.exam-timer {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--pink-light);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mcq-question {
+  background: var(--bg-card);
+  padding: 24px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 24px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.mcq-question h4 {
+  margin-bottom: 16px;
+  color: var(--white);
+  font-family: 'Inter', sans-serif;
+  font-size: 1.1rem;
+}
+
+.mcq-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mcq-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.mcq-option:hover {
+  background: rgba(6,182,212,0.1);
+  border-color: rgba(6,182,212,0.3);
+}
+
+.mcq-option input[type="radio"] {
+  cursor: pointer;
+  accent-color: var(--cyan);
+  width: 18px;
+  height: 18px;
+}
+
+.exam-submit {
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* Results Display */
+.exam-results {
+  display: none;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid var(--green);
+  padding: 30px;
+  border-radius: var(--radius-md);
+  text-align: center;
+  margin-top: 30px;
+}
+
+.exam-results h3 {
+  color: var(--green);
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.mcq-option.correct {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: var(--green);
+}
+
+.mcq-option.wrong {
+  background: rgba(236, 72, 153, 0.2);
+  border-color: var(--pink);
+}
+
+/* Markdown Notes Styling */
+.notes-content {
+  background: var(--bg-card);
+  padding: 40px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.notes-content h2 { margin-top: 30px; margin-bottom: 15px; color: var(--purple-light); }
+.notes-content h3 { margin-top: 25px; margin-bottom: 10px; color: var(--cyan); }
+.notes-content p { margin-bottom: 15px; color: var(--text-body); line-height: 1.8; }
