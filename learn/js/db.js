@@ -170,6 +170,9 @@ const DB = (() => {
         email: user.email,
         photoUrl: user.photoURL
       });
+    },
+    async recordLogin(uid) {
+      return await fetchAPI('users.php?action=recordLogin', 'POST', { uid });
     }
   };
 

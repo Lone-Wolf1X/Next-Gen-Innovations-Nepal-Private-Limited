@@ -6,7 +6,7 @@ $action = $_GET['action'] ?? '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($action === 'getAll') {
-        $stmt = $pdo->prepare("SELECT * FROM exam_categories WHERE is_active = 1 ORDER BY display_order ASC");
+        $stmt = $pdo->prepare("SELECT * FROM exam_categories WHERE is_active = true ORDER BY display_order ASC");
         $stmt->execute();
         sendJson($stmt->fetchAll());
     } elseif ($action === 'getAllAdmin') {
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $data['name'], 
             $data['description'] ?? '', 
             $data['icon'] ?? '', 
-            $data['isActive'] ?? 1, 
+            $data['isActive'] ?? 'true', 
             $data['order'] ?? 0, 
             $data['adminId'] ?? ''
         ]);
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $data['name'], 
             $data['description'] ?? '', 
             $data['icon'] ?? '', 
-            $data['isActive'] ?? 1, 
+            $data['isActive'] ?? 'true', 
             $data['order'] ?? 0, 
             $id
         ]);
