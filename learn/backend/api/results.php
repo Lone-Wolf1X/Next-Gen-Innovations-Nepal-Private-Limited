@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // Insert Result
         $id = uniqid();
         $pdo->prepare("INSERT INTO test_results (id, attempt_id, user_id, model_set_id, total_questions, correct_answers, incorrect_answers, unattempted_questions, marks_obtained, negative_marks, final_score, total_marks, score_percentage, accuracy, time_taken_seconds, is_personal_best, question_review) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
-            ->execute([$id, $attemptId, $userId, $modelSetId, count($questionList), $correct, $incorrect, $unattempted, $marksObtained, $negativeMarks, $finalScore, $totalMarks, $scorePercentage, $accuracy, $timeTaken, $isPersonalBest ? 1 : 0, json_encode($questionReview)]);
+            ->execute([$id, $attemptId, $userId, $modelSetId, count($questionList), $correct, $incorrect, $unattempted, $marksObtained, $negativeMarks, $finalScore, $totalMarks, $scorePercentage, $accuracy, $timeTaken, $isPersonalBest ? 'true' : 'false', json_encode($questionReview)]);
 
         // Update Attempt
         $pdo->prepare("UPDATE test_attempts SET status = 'completed', submitted_at = CURRENT_TIMESTAMP WHERE id = ?")->execute([$attemptId]);
