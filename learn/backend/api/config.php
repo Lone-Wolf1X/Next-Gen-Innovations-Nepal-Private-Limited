@@ -13,16 +13,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // Database Credentials
 define('DB_HOST', 'localhost');
-define('DB_USER', 'root');      // TODO: Change to your DB user
-define('DB_PASS', '');          // TODO: Change to your DB password
-define('DB_NAME', 'gyanbazi');  // TODO: Change to your DB name
+define('DB_USER', 'next_gen_user');
+define('DB_PASS', 'NextGen123!@#');
+define('DB_NAME', 'next_gen_db');
 
 // Admin Configuration
 define('ADMIN_EMAILS', ['abhi.pwn2020@gmail.com']);
 
 function getDbConnection() {
     try {
-        $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
+        $dsn = "pgsql:host=" . DB_HOST . ";dbname=" . DB_NAME;
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
