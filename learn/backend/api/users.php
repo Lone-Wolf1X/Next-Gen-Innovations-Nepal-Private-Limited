@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         
         $role = in_array($email, ADMIN_EMAILS) ? 'admin' : 'user';
 
-        $stmt = $pdo->prepare("INSERT IGNORE INTO users (uid, name, email, photo_url, role) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $pdo->prepare("INSERT INTO users (uid, name, email, photo_url, role) VALUES (?, ?, ?, ?, ?) ON CONFLICT (uid) DO NOTHING");
         $stmt->execute([
             $uid,
             $data['name'] ?? 'User',
