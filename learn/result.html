@@ -20,7 +20,7 @@
   <div class="result-hero" id="resultHero">
     <!-- Back button -->
     <div style="position:absolute;top:20px;left:24px;">
-      <a href="/learn/dashboard.html" style="color:rgba(255,255,255,0.8);font-size:0.875rem;display:flex;align-items:center;gap:6px;">
+      <a href="/learn/index.html" style="color:rgba(255,255,255,0.8);font-size:0.875rem;display:flex;align-items:center;gap:6px;">
         ← Dashboard
       </a>
     </div>
@@ -93,7 +93,7 @@
     <!-- Action Buttons -->
     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:36px;">
       <a href="/learn/categories.html" class="btn btn-primary">Practice Again →</a>
-      <a href="/learn/dashboard.html" class="btn btn-outline">← Dashboard</a>
+      <a href="/learn/index.html" class="btn btn-outline">← Dashboard</a>
       <button class="btn btn-ghost" onclick="scrollToReview()">View Answer Review ↓</button>
     </div>
 
@@ -122,13 +122,13 @@ const CIRCUMFERENCE = 2 * Math.PI * 68; // r=68
 async function initResult() {
   const params = new URLSearchParams(window.location.search);
   const resultId = params.get('id');
-  if (!resultId) { window.location.href = '/learn/dashboard.html'; return; }
+  if (!resultId) { window.location.href = '/learn/index.html'; return; }
 
   await Auth.requireAuth();
 
   const result = await DB.results.getById(resultId);
   if (!result) {
-    document.getElementById('pageLoader').innerHTML = '<div style="text-align:center;padding:40px;"><p>Result not found.</p><a href="/learn/dashboard.html" class="btn btn-primary">← Dashboard</a></div>';
+    document.getElementById('pageLoader').innerHTML = '<div style="text-align:center;padding:40px;"><p>Result not found.</p><a href="/learn/index.html" class="btn btn-primary">← Dashboard</a></div>';
     return;
   }
 
