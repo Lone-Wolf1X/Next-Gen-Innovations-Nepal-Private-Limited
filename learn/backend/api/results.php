@@ -73,16 +73,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pointsEarned = 10 + round($scorePercentage);
 
         // Update User
-        $uStmt = $pdo->prepare("SELECT best_score, total_points, total_tests_completed FROM users WHERE uid = ?");
+        $uStmt = $pdo->prepare("SELECT best_score, total_points, total_tests_completed, daily_points, points_last_updated FROM users WHERE uid = ?");
         $uStmt->execute([$userId]);
         $user = $uStmt->fetch();
 
         $isPersonalBest = $user && $scorePercentage > $user['best_score'];
         $newBest = $isPersonalBest ? $scorePercentage : ($user['best_score'] ?? 0);
         $newPoints = ($user['total_points'] ?? 0) + $pointsEarned;
+        
+        $today = date('Y-m-d');
+        $newDailyPoints = ($user && $user['points_last_updated'] === $today) ? (($user['daily_points'] ?? 0) + $pointsEarned) : $pointsEarned;
         $newCompleted = ($user['total_tests_completed'] ?? 0) + 1;
 
-        $pdo->prepare("UPDATE users SET best_score = ?, total_points = ?, total_tests_completed = ? WHERE uid = ?")->execute([$newBest, $newPoints, $newCompleted, $userId]);
+        $pdo->prepare("UPDATE users SET best_score = ?, total_points = ?, daily_points = ?, points_last_updated = ?, total_tests_completed = ? WHERE uid = ?")->execute([$newBest, $newPoints, $newDailyPoints, $today, $newCompleted, $userId]);
 
         // Insert Result
         $id = uniqid();

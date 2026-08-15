@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Live Exam | GyanBazi</title>
+  <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/learn/css/learn-platform.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #f8fafc; }
+    .container { max-width: 600px; margin: 100px auto; text-align: center; }
+    .live-card {
+      background: white;
+      border-radius: 20px;
+      padding: 48px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+      border: 1px solid var(--border);
+    }
+    .icon { font-size: 4rem; margin-bottom: 24px; }
+    .title { font-size: 2rem; font-weight: 800; color: #111827; margin-bottom: 12px; }
+    .desc { font-size: 1.1rem; color: #6b7280; margin-bottom: 32px; line-height: 1.5; }
+    .timer {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 32px;
+      font-variant-numeric: tabular-nums;
+    }
+    .btn-action {
+      padding: 16px 32px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 12px;
+      width: 100%;
+      border: none;
+      color: white;
+      transition: 0.2s;
+    }
+    .btn-start {
+      background: linear-gradient(135deg, var(--primary), #6366f1);
+      cursor: pointer;
+      box-shadow: 0 8px 15px rgba(79, 70, 229, 0.3);
+    }
+    .btn-start:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(79, 70, 229, 0.4); }
+    .btn-wait { background: #9ca3af; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+<div class="page-loader" id="pageLoader">
+  <div class="logo">NL</div>
+  <div class="loading-spinner"></div>
+</div>
+
+<div class="container" id="appLayout" style="display:none;">
+  <div class="live-card">
+    <div class="icon">⏱️</div>
+    <div class="title">Daily Sprint Exam</div>
+    <div class="desc" id="examDesc">Loading today's exam details...</div>
+    
+    <div class="timer" id="timer">--:--:--</div>
+    
+    <button class="btn-action btn-wait" id="actionBtn" disabled>Checking Status...</button>
+    <a href="/learn/index.html" style="display:block; margin-top:24px; color:var(--primary); text-decoration:none; font-weight:600;">← Back to Dashboard</a>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="/learn/js/firebase-config.js"></script>
+<script>
+  let currentUser = null;
+  let interval = null;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        window.location.href = '/learn/login.html';
+        return;
+      }
+      currentUser = user;
+      document.getElementById('pageLoader').style.display = 'none';
+      document.getElementById('appLayout').style.display = 'block';
+      loadExam();
+    });
+  });
+
+  async function loadExam() {
+    try {
+      // 1. Get User Enrollment
+      const enrollments = await fetch('/learn/backend/api/vacancies.php?action=myEnrollments', {
+        headers: { 'Authorization': `Bearer ${currentUser.uid}` }
+      }).then(r=>r.json());
+
+      if(!enrollments || enrollments.length === 0) {
+        document.getElementById('examDesc').textContent = "You must enroll in a course first.";
+        return;
+      }
+      const vacancyId = enrollments[0].vacancy_id;
+
+      // 2. Fetch Daily Live Exam for this vacancy
+      const exam = await fetch(`/learn/backend/api/model_sets.php?action=getDailyLive&vacancyId=${vacancyId}`).then(r=>r.json());
+      
+      if (!exam) {
+        document.getElementById('examDesc').textContent = "No live exam scheduled for today yet. Please check back later.";
+        document.getElementById('timer').style.display = 'none';
+        return;
+      }
+
+      document.getElementById('examDesc').textContent = exam.title;
+
+      const startTime = new Date(exam.liveStartTime).getTime();
+      const endTime = new Date(exam.liveEndTime).getTime();
+      const btn = document.getElementById('actionBtn');
+      const timerEl = document.getElementById('timer');
+
+      function updateStatus() {
+        const now = new Date().getTime();
+        
+        if (now < startTime) {
+          // Waiting to start
+          const diff = startTime - now;
+          timerEl.textContent = formatTime(diff);
+          btn.className = 'btn-action btn-wait';
+          btn.textContent = 'Starts Soon';
+          btn.disabled = true;
+        } else if (now >= startTime && now <= endTime) {
+          // Ongoing
+          timerEl.textContent = "LIVE NOW";
+          timerEl.style.color = '#ef4444';
+          btn.className = 'btn-action btn-start';
+          btn.textContent = 'Start Exam';
+          btn.disabled = false;
+          btn.onclick = () => { window.location.href = `/learn/test-engine.html?id=${exam.id}`; };
+          clearInterval(interval);
+        } else {
+          // Over
+          timerEl.textContent = "ENDED";
+          timerEl.style.color = '#9ca3af';
+          btn.className = 'btn-action btn-wait';
+          btn.textContent = 'Exam Over';
+          btn.disabled = true;
+          document.getElementById('examDesc').textContent = "This live exam has already concluded.";
+          clearInterval(interval);
+        }
+      }
+
+      updateStatus();
+      interval = setInterval(updateStatus, 1000);
+
+    } catch(e) {
+      document.getElementById('examDesc').textContent = "Failed to load live exam details.";
+    }
+  }
+
+  function formatTime(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const h = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+    const m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+    const s = (totalSeconds % 60).toString().padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  }
+</script>
+</body>
+</html>

@@ -5,13 +5,36 @@ $pdo = getDbConnection();
 $action = $_GET['action'] ?? '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if ($action === 'getPublished') {
+    if ($action === 'getDailyLive') {
+        $vacancyId = $_GET['vacancyId'] ?? null;
+        if (!$vacancyId) sendJson(null);
+        $stmt = $pdo->prepare("SELECT * FROM model_sets WHERE vacancy_id = ? AND is_daily_live = TRUE AND status = 'published' ORDER BY created_at DESC LIMIT 1");
+        $stmt->execute([$vacancyId]);
+        $data = $stmt->fetch();
+        if ($data) {
+            $data['questionIds'] = json_decode($data['question_ids']);
+            $data['timeLimitMinutes'] = (int)$data['time_limit_minutes'];
+            $data['totalMarks'] = (int)$data['total_marks'];
+            $data['totalQuestions'] = $data['questionIds'] ? count($data['questionIds']) : 0;
+            $data['categoryId'] = $data['category_id'];
+            $data['vacancyId'] = $data['vacancy_id'];
+            $data['isDailyLive'] = (bool)$data['is_daily_live'];
+            $data['liveStartTime'] = $data['live_start_time'];
+            $data['liveEndTime'] = $data['live_end_time'];
+        }
+        sendJson($data ?: null);
+    } elseif ($action === 'getPublished') {
         $categoryId = $_GET['categoryId'] ?? null;
+        $vacancyId = $_GET['vacancyId'] ?? null;
         $sql = "SELECT * FROM model_sets WHERE status = 'published'";
         $params = [];
         if ($categoryId) {
             $sql .= " AND category_id = ?";
             $params[] = $categoryId;
+        }
+        if ($vacancyId) {
+            $sql .= " AND vacancy_id = ?";
+            $params[] = $vacancyId;
         }
         $sql .= " ORDER BY published_at DESC";
         $stmt = $pdo->prepare($sql);
@@ -24,6 +47,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $s['totalMarks'] = (int)$s['total_marks'];
             $s['totalQuestions'] = $s['questionIds'] ? count($s['questionIds']) : 0;
             $s['categoryId'] = $s['category_id'];
+            $s['vacancyId'] = $s['vacancy_id'];
+            $s['isDailyLive'] = (bool)$s['is_daily_live'];
+            $s['liveStartTime'] = $s['live_start_time'];
+            $s['liveEndTime'] = $s['live_end_time'];
         }
         sendJson($sets);
     } elseif ($action === 'getAll') {
@@ -36,6 +63,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $s['totalMarks'] = (int)$s['total_marks'];
             $s['totalQuestions'] = $s['questionIds'] ? count($s['questionIds']) : 0;
             $s['categoryId'] = $s['category_id'];
+            $s['vacancyId'] = $s['vacancy_id'];
+            $s['isDailyLive'] = (bool)$s['is_daily_live'];
+            $s['liveStartTime'] = $s['live_start_time'];
+            $s['liveEndTime'] = $s['live_end_time'];
         }
         sendJson($sets);
     } elseif ($action === 'getById') {
@@ -49,6 +80,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $data['totalMarks'] = (int)$data['total_marks'];
             $data['totalQuestions'] = $data['questionIds'] ? count($data['questionIds']) : 0;
             $data['categoryId'] = $data['category_id'];
+            $data['vacancyId'] = $data['vacancy_id'];
+            $data['isDailyLive'] = (bool)$data['is_daily_live'];
+            $data['liveStartTime'] = $data['live_start_time'];
+            $data['liveEndTime'] = $data['live_end_time'];
         }
         sendJson($data ?: null);
     } elseif ($action === 'getWithQuestions') {
@@ -86,6 +121,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $set['questions'] = $questions;
         $set['timeLimitMinutes'] = (int)$set['time_limit_minutes'];
         $set['totalMarks'] = (int)$set['total_marks'];
+        $set['vacancyId'] = $set['vacancy_id'];
+        $set['isDailyLive'] = (bool)$set['is_daily_live'];
+        $set['liveStartTime'] = $set['live_start_time'];
+        $set['liveEndTime'] = $set['live_end_time'];
         sendJson($set);
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {

@@ -16,6 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $data['bestScore'] = (float)$data['best_score'];
             $data['currentStreak'] = (int)$data['current_streak'];
             $data['totalPoints'] = (int)$data['total_points'];
+            $data['dailyPoints'] = ($data['points_last_updated'] === date('Y-m-d')) ? (int)$data['daily_points'] : 0;
+            $data['lastCheckinDate'] = $data['last_checkin_date'];
             $data['subscriptionTier'] = $data['subscription_tier'];
             $data['testsTakenToday'] = (int)$data['tests_taken_today'];
             $data['role'] = $data['role'];
@@ -24,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         sendJson($data ?: null);
     } elseif ($action === 'getLeaderboard') {
-        $stmt = $pdo->prepare("SELECT name, photo_url as photoUrl, total_points as totalPoints, current_streak as currentStreak FROM users ORDER BY total_points DESC LIMIT 10");
+        $stmt = $pdo->prepare("SELECT name, photo_url as photoUrl, avatar_url as avatarUrl, daily_points as dailyPoints, current_streak as currentStreak FROM users WHERE points_last_updated = CURDATE() AND daily_points > 0 ORDER BY daily_points DESC LIMIT 10");
         $stmt->execute();
         sendJson($stmt->fetchAll());
     } elseif ($action === 'getAnalytics') {
@@ -183,6 +185,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             sendJson(["success" => true, "streak" => $streak]);
         }
         sendJson(["error" => "User not found"], 404);
+    } elseif ($action === 'checkIn') {
+        $uid = requireAuth();
+        $stmt = $pdo->prepare("SELECT last_checkin_date, points_last_updated, daily_points, total_points, current_streak FROM users WHERE uid = ?");
+        $stmt->execute([$uid]);
+        $user = $stmt->fetch();
+        if (!$user) sendJson(["error" => "User not found"], 404);
+
+        $today = date('Y-m-d');
+        if ($user['last_checkin_date'] === $today) {
+            sendJson(["error" => "Already checked in today"], 400);
+        }
+
+        // Add 50 points for daily check-in
+        $pointsToAdd = 50;
+        $totalPoints = $user['total_points'] + $pointsToAdd;
+        $dailyPoints = ($user['points_last_updated'] === $today) ? ($user['daily_points'] + $pointsToAdd) : $pointsToAdd;
+        
+        $uStmt = $pdo->prepare("UPDATE users SET last_checkin_date = ?, points_last_updated = ?, daily_points = ?, total_points = ? WHERE uid = ?");
+        $uStmt->execute([$today, $today, $dailyPoints, $totalPoints, $uid]);
+        
+        sendJson(["success" => true, "dailyPoints" => $dailyPoints, "totalPoints" => $totalPoints]);
     } elseif ($action === 'updateSubscription') {
         $uid = requireAuth();
         $uStmt = $pdo->prepare("SELECT email FROM users WHERE uid = ?");

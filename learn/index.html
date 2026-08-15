@@ -95,7 +95,15 @@
       </div>
 
       <!-- Stats Grid -->
-      <div class="stats-grid" style="margin-top:24px;">
+      <div class="stats-grid" style="margin-top:24px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+        <div class="stat-card">
+          <div class="stat-icon stat-icon-purple">💎</div>
+          <div class="stat-content">
+            <div class="stat-label">Total Points</div>
+            <div class="stat-value" id="valTotalPoints">0</div>
+            <div class="stat-sub"><span id="valDailyPoints" style="color:var(--green);font-weight:600;">+0 today</span></div>
+          </div>
+        </div>
         <div class="stat-card">
           <div class="stat-icon stat-icon-orange">🔥</div>
           <div class="stat-content">
@@ -125,68 +133,39 @@
       <!-- Dashboard Grid -->
       <div class="dashboard-grid">
 
-        <div style="display:flex; flex-direction:column; gap:24px;">
-          <!-- Performance Analytics -->
-          <div>
-            <div class="section-head" style="margin-bottom:16px;">
-              <div>
-                <div class="section-head-title">Performance Analytics</div>
-                <div class="section-head-sub">Your learning progress over time</div>
-              </div>
-            </div>
-            <div class="card card-padded" style="margin-bottom:24px;">
-              <canvas id="perfChart" style="width:100%; height:280px;"></canvas>
-            </div>
-            
-            <div class="section-head" style="margin-bottom:16px;">
-              <div>
-                <div class="section-head-title">Study Focus Areas</div>
-              </div>
-            </div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;" id="focusAreas">
-              <!-- Weak/Strong Subjects injected here -->
-              <div class="skeleton" style="height:120px;"></div>
-              <div class="skeleton" style="height:120px;"></div>
-            </div>
+        <div style="display:flex; flex-direction:column; gap:24px; flex:1;">
+          <!-- Vacancy Timeline Tracker -->
+          <div class="card card-padded" id="vacancyTracker" style="background: white;">
+            <div class="skeleton" style="height:150px;"></div>
+          </div>
+          
+          <!-- Study Roadmap -->
+          <div class="card card-padded" id="studyRoadmap" style="background: white;">
+            <div class="skeleton" style="height:200px;"></div>
           </div>
 
-          <!-- Recommended Sets -->
-          <div>
-            <div class="section-head" style="margin-bottom:16px;">
-            <div>
-              <div class="section-head-title">Recommended Practice Sets</div>
-              <div class="section-head-sub">Model tests curated for you</div>
-            </div>
-            <a href="/learn/categories.html" class="btn btn-ghost btn-sm">View All →</a>
-          </div>
-          <div class="card card-padded" style="padding:0;">
-            <div id="recSetsGrid">
-               <!-- JS populated -->
-               <div style="padding:24px;">
-                 <div class="skeleton" style="height:60px;margin-bottom:10px;"></div>
-                 <div class="skeleton" style="height:60px;"></div>
-               </div>
-            </div>
+          <!-- Practice Actions -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;" id="practiceActions">
+             <!-- Rendered dynamically -->
           </div>
         </div>
 
         <!-- Sidebar widgets -->
-        <div class="dashboard-side">
-          <!-- Leaderboard -->
-          <div class="card card-padded">
-            <div class="section-head-title" style="margin-bottom:14px;">Top Scholars 🏅</div>
-            <div id="leaderboardList" style="display:flex; flex-direction:column; gap:12px;">
-              <div class="skeleton" style="height:40px;"></div>
-              <div class="skeleton" style="height:40px;"></div>
-              <div class="skeleton" style="height:40px;"></div>
-            </div>
+        <div class="dashboard-side" style="width: 300px; display: flex; flex-direction: column; gap: 16px;">
+          <!-- Daily Check-in -->
+          <div class="card card-padded" style="background:#f8fafd; border-color:#e2e8f0; text-align:center;">
+            <span style="font-size:1.5rem;display:block;margin-bottom:8px;">🎯</span>
+            <strong style="color:var(--text-primary);font-size:0.9rem;">Daily Check-in</strong>
+            <p style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;margin-bottom:12px;">Check in daily to earn 50 points and maintain your streak!</p>
+            <button id="checkInBtn" class="btn btn-primary btn-sm" style="width:100%;" onclick="handleCheckIn()">Claim 50 Points</button>
           </div>
 
-          <!-- Monthly Prize Pool -->
-          <div class="card card-padded" style="background:#f8fafd; border-color:#e2e8f0; text-align:center;">
-            <span style="font-size:1.5rem;display:block;margin-bottom:8px;">🎁</span>
-            <strong style="color:var(--text-primary);font-size:0.9rem;">Monthly Prize Pool</strong>
-            <p style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">Top 3 players win exclusive GyanBazi merch and Premium access every month!</p>
+          <!-- Daily Live Exam -->
+          <div class="card card-padded" style="background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; text-align:center; border: none; box-shadow: 0 10px 25px rgba(79,70,229,0.3);">
+            <span style="font-size:2rem;display:block;margin-bottom:8px;">⏱️</span>
+            <strong style="font-size:1.1rem; display:block; margin-bottom: 4px;">Daily Live Exam</strong>
+            <p style="font-size:0.85rem; opacity: 0.9; margin-bottom: 16px;">Compete with others in the daily sprint.</p>
+            <button class="btn btn-primary" style="width:100%; background: white; color: #4f46e5; font-weight: bold;" onclick="window.location.href='/learn/live-exam.html'">Join Live Exam</button>
           </div>
         </div>
 
@@ -225,6 +204,46 @@ async function initDashboard() {
     if (profile) {
       document.getElementById('valStreak').textContent = `${profile.currentStreak || 0} Days`;
       document.getElementById('valTests').textContent = profile.totalTestsCompleted || 0;
+      document.getElementById('valTotalPoints').textContent = profile.totalPoints || 0;
+      document.getElementById('valDailyPoints').textContent = `+${profile.dailyPoints || 0} today`;
+
+      // Update Check-in UI
+      const checkInBtn = document.getElementById('checkInBtn');
+      const todayDate = new Date().toISOString().split('T')[0]; // Simple YYYY-MM-DD (local time may vary, but it's okay for UI state)
+      if (profile.lastCheckinDate === todayDate) {
+        checkInBtn.textContent = 'Checked In ✅';
+        checkInBtn.disabled = true;
+        checkInBtn.style.opacity = '0.7';
+        checkInBtn.style.cursor = 'not-allowed';
+      } else {
+        checkInBtn.textContent = 'Claim 50 Points';
+        checkInBtn.disabled = false;
+        checkInBtn.onclick = async () => {
+          checkInBtn.disabled = true;
+          checkInBtn.textContent = 'Claiming...';
+          try {
+            const res = await fetch('/learn/backend/api/users.php?action=checkIn', { 
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${user.uid}` }
+            }).then(r=>r.json());
+            if (res.success) {
+              checkInBtn.textContent = 'Checked In ✅';
+              checkInBtn.style.opacity = '0.7';
+              checkInBtn.style.cursor = 'not-allowed';
+              document.getElementById('valTotalPoints').textContent = res.totalPoints;
+              document.getElementById('valDailyPoints').textContent = `+${res.dailyPoints} today`;
+            } else {
+              alert(res.error || 'Check-in failed');
+              checkInBtn.textContent = 'Claim 50 Points';
+              checkInBtn.disabled = false;
+            }
+          } catch(e) {
+            alert('Network error');
+            checkInBtn.textContent = 'Claim 50 Points';
+            checkInBtn.disabled = false;
+          }
+        };
+      }
 
       if (profile.subscriptionTier === 'premium') {
         document.getElementById('premiumBanner').style.display = 'none';
@@ -238,116 +257,73 @@ async function initDashboard() {
       }
     }
 
-    const analytics = await DB.users.getAnalytics(user.uid);
-    if (analytics && !analytics.error) {
-      document.getElementById('valPoints').textContent = `${analytics.averageScore || 0}%`;
+    // Load Enrolled Vacancy Details
+    try {
+      const enrollments = await fetch('/learn/backend/api/vacancies.php?action=myEnrollments', {
+        headers: { 'Authorization': `Bearer ${user.uid}` }
+      }).then(r=>r.json());
       
-      // Render Chart
-      const ctx = document.getElementById('perfChart').getContext('2d');
-      const scores = analytics.recentScores || [];
-      if (scores.length > 0) {
-        new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: scores.map((s, i) => `Test ${i+1}`),
-            datasets: [{
-              label: 'Score %',
-              data: scores.map(s => s.score_percentage),
-              borderColor: '#2563eb',
-              backgroundColor: 'rgba(37,99,235,0.1)',
-              borderWidth: 2,
-              tension: 0.3,
-              fill: true,
-              pointBackgroundColor: '#ffffff',
-              pointBorderColor: '#2563eb',
-              pointRadius: 4
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: { y: { min: 0, max: 100 } },
-            plugins: { legend: { display: false } }
-          }
-        });
-      } else {
-        document.getElementById('perfChart').parentElement.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-muted);">Take a test to see your performance trend!</div>';
+      if(enrollments && enrollments.length > 0) {
+        const v = enrollments[0]; // Active vacancy
+        document.getElementById('pageGreeting').textContent = `Target: ${v.title} 🎯`;
+        
+        // Timeline HTML
+        const timelineHtml = `
+          <div class="section-head-title" style="margin-bottom: 16px;">Vacancy Timeline</div>
+          <div style="display:flex; justify-content: space-between; position: relative;">
+             <div style="position:absolute; top: 10px; left: 20px; right: 20px; height: 4px; background: #e5e7eb; z-index: 0;"></div>
+             <div style="text-align: center; z-index: 1; background: white; padding: 0 10px;">
+               <div style="width:24px; height:24px; border-radius:50%; background:var(--primary); color:white; display:flex; align-items:center; justify-content:center; margin:0 auto 8px; font-size:12px;">✓</div>
+               <div style="font-size:0.8rem; font-weight:600;">Open</div>
+               <div style="font-size:0.7rem; color:var(--text-muted);">${v.application_open_date}</div>
+             </div>
+             <div style="text-align: center; z-index: 1; background: white; padding: 0 10px;">
+               <div style="width:24px; height:24px; border-radius:50%; background:var(--primary); color:white; display:flex; align-items:center; justify-content:center; margin:0 auto 8px; font-size:12px;">✓</div>
+               <div style="font-size:0.8rem; font-weight:600;">Close</div>
+               <div style="font-size:0.7rem; color:var(--text-muted);">${v.application_close_date}</div>
+             </div>
+             <div style="text-align: center; z-index: 1; background: white; padding: 0 10px;">
+               <div style="width:24px; height:24px; border-radius:50%; background:#e5e7eb; color:#6b7280; display:flex; align-items:center; justify-content:center; margin:0 auto 8px; font-size:12px;">⏳</div>
+               <div style="font-size:0.8rem; font-weight:600;">Exam</div>
+               <div style="font-size:0.7rem; color:var(--text-muted);">${v.exam_date || 'TBA'}</div>
+             </div>
+          </div>
+        `;
+        document.getElementById('vacancyTracker').innerHTML = timelineHtml;
+
+        // Roadmap HTML
+        document.getElementById('studyRoadmap').innerHTML = `
+          <div class="section-head-title" style="margin-bottom: 16px;">Study Roadmap</div>
+          <div style="font-size:0.95rem; line-height: 1.6; color: var(--text-primary);">
+            ${v.roadmap_html || '<p>No roadmap available for this vacancy yet.</p>'}
+          </div>
+        `;
+
+        // Practice Actions
+        let actionsHtml = '';
+        if(v.has_objective) {
+           actionsHtml += `
+             <div class="card card-padded" style="text-align:center; cursor:pointer; transition:0.2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'" onclick="window.location.href='/learn/categories.html'">
+                <div style="font-size:2rem; margin-bottom:12px;">📝</div>
+                <div style="font-weight:700; font-size:1.1rem; color:var(--primary-dark);">Objective Practice</div>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;">MCQs & Mock Tests</p>
+             </div>
+           `;
+        }
+        if(v.has_subjective) {
+           actionsHtml += `
+             <div class="card card-padded" style="text-align:center; cursor:pointer; transition:0.2s;" onmouseover="this.style.borderColor='#f97316'" onmouseout="this.style.borderColor='var(--border)'" onclick="window.location.href='/learn/subjective.html?vacancy=${v.id}'">
+                <div style="font-size:2rem; margin-bottom:12px;">✍️</div>
+                <div style="font-weight:700; font-size:1.1rem; color:#c2410c;">Subjective Strategy</div>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;">Writing Guides & Answers</p>
+             </div>
+           `;
+        }
+        document.getElementById('practiceActions').innerHTML = actionsHtml;
       }
-
-      // Render Focus Areas
-      let focusHtml = '';
-      if (analytics.weakSubjects && analytics.weakSubjects.length > 0) {
-        focusHtml += analytics.weakSubjects.map(ws => `
-          <div class="card card-padded" style="border-left:4px solid #ef4444;">
-            <div style="font-size:0.75rem;font-weight:600;color:#ef4444;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Weak Subject</div>
-            <div style="font-weight:600;font-size:0.95rem;color:var(--text-primary);margin-bottom:8px;">${ws.subjectName}</div>
-            <div style="font-size:1.25rem;font-weight:700;color:var(--text-primary);">${ws.accuracy}% <span style="font-size:0.75rem;font-weight:500;color:var(--text-muted);">Accuracy</span></div>
-          </div>
-        `).join('');
-      }
-      if (analytics.strongSubjects && analytics.strongSubjects.length > 0) {
-        focusHtml += analytics.strongSubjects.map(ss => `
-          <div class="card card-padded" style="border-left:4px solid #10b981;">
-            <div style="font-size:0.75rem;font-weight:600;color:#10b981;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Strong Subject</div>
-            <div style="font-weight:600;font-size:0.95rem;color:var(--text-primary);margin-bottom:8px;">${ss.subjectName}</div>
-            <div style="font-size:1.25rem;font-weight:700;color:var(--text-primary);">${ss.accuracy}% <span style="font-size:0.75rem;font-weight:500;color:var(--text-muted);">Accuracy</span></div>
-          </div>
-        `).join('');
-      }
-      document.getElementById('focusAreas').innerHTML = focusHtml || '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:20px;">Complete tests across different subjects to see your focus areas.</div>';
+    } catch(e) {
+      console.error("Failed to load enrollments", e);
     }
-
-  } catch(e) {
-    console.error("Failed to load profile stats", e);
-  }
-
-  // Load recommended sets
-  try {
-    const sets = await DB.modelSets.getPublished();
-    const container = document.getElementById('recSetsGrid');
-    if(sets && sets.length > 0) {
-      container.innerHTML = sets.slice(0, 4).map(s => `
-        <a href="/learn/modelset-detail.html?id=${s.id}" style="display:flex;align-items:center;gap:16px;padding:16px 20px;border-bottom:1px solid var(--border);text-decoration:none;transition:all var(--transition);" onmouseover="this.style.background='var(--primary-light)'" onmouseout="this.style.background='transparent'">
-          <span style="font-size:1.8rem;">${s.icon || '📝'}</span>
-          <div style="flex:1;">
-            <div style="font-size:0.95rem;font-weight:600;color:var(--text-primary);">${s.title}</div>
-            <div style="font-size:0.8rem;color:var(--text-muted);">${s.totalQuestions} Questions • ${s.timeLimitMinutes} Mins</div>
-          </div>
-          <button class="btn btn-primary btn-sm" style="background:#f1f5f9;color:var(--primary);border:none;">Start</button>
-        </a>
-      `).join('');
-    } else {
-      container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted);">Exams are being uploaded by Admins. Check back soon!</div>';
-    }
-  } catch(e) {
-    console.error("Failed to load sets", e);
-  }
-
-  // Load Leaderboard
-  try {
-    const lb = await fetch('/learn/backend/api/users.php?action=getLeaderboard').then(r=>r.json());
-    if (lb && !lb.error) {
-      const lbHtml = lb.map((u, i) => `
-        <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);">
-          <div style="font-weight:700;color:var(--text-muted);width:20px;text-align:center;">#${i+1}</div>
-          <div style="width:32px;height:32px;border-radius:50%;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0;overflow:hidden;">
-            ${u.photoUrl ? `<img src="${u.photoUrl}" style="width:100%;height:100%;object-fit:cover;">` : u.name[0].toUpperCase()}
-          </div>
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:0.875rem;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${u.name}</div>
-            <div style="font-size:0.75rem;color:var(--text-muted);">${u.totalPoints} pts</div>
-          </div>
-          <div style="font-size:0.8rem;color:#f59e0b;font-weight:600;">🔥${u.currentStreak}</div>
-        </div>
-      `).join('');
-      document.getElementById('leaderboardList').innerHTML = lbHtml || '<div style="text-align:center;color:var(--text-muted);padding:20px;">No scholars yet!</div>';
-    } else {
-      document.getElementById('leaderboardList').innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Could not load leaderboard</div>';
-    }
-  } catch(e) {
-    console.error("Failed to load leaderboard", e);
-    document.getElementById('leaderboardList').innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Could not load leaderboard</div>';
-  }
 
   // Show app
   document.getElementById('pageLoader').style.display = 'none';

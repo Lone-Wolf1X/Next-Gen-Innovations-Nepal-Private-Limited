@@ -84,9 +84,24 @@ const Auth = (() => {
             window.location.href = '/learn/complete-profile.html';
           }
         } else {
-          // If profile is completed but they are on wizard pages, push them to dashboard
-          if (window.location.pathname.includes('complete-profile.html') || window.location.pathname.includes('verify-email.html')) {
-            window.location.href = '/learn/index.html';
+          // If profile is completed, check enrollments
+          try {
+            const enrollments = await fetch('/learn/backend/api/vacancies.php?action=myEnrollments', {
+              headers: { 'Authorization': `Bearer ${user.uid}` }
+            }).then(r => r.json());
+
+            if (Array.isArray(enrollments) && enrollments.length === 0) {
+              if (!window.location.pathname.includes('courses.html')) {
+                window.location.href = '/learn/courses.html';
+              }
+            } else {
+              // If profile is completed and enrolled, push to dashboard from wizard pages
+              if (window.location.pathname.includes('complete-profile.html') || window.location.pathname.includes('verify-email.html') || window.location.pathname.includes('courses.html')) {
+                window.location.href = '/learn/index.html';
+              }
+            }
+          } catch (e) {
+            console.error("Enrollment check failed", e);
           }
         }
         resolve(user);
