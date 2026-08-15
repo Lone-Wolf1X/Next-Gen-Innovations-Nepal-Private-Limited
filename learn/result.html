@@ -97,14 +97,59 @@
       <button class="btn btn-ghost" onclick="scrollToReview()">View Answer Review ↓</button>
     </div>
 
-    <!-- Answer Review -->
+    <!-- Answer Review Grid -->
     <div>
       <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:20px;" id="reviewHeading">Answer Review</h2>
-      <div id="answerReview">
-        <div class="skeleton" style="height:100px;margin-bottom:14px;border-radius:var(--radius-lg);"></div>
-        <div class="skeleton" style="height:100px;margin-bottom:14px;border-radius:var(--radius-lg);"></div>
+      <div class="nav-legend" style="margin-bottom:16px;">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--success);"></div>Correct</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--danger);"></div>Incorrect</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--border);"></div>Unattempted</div>
+      </div>
+      <div id="answerReviewGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:8px;">
+        <div class="skeleton" style="height:48px;border-radius:8px;"></div>
+        <div class="skeleton" style="height:48px;border-radius:8px;"></div>
+        <div class="skeleton" style="height:48px;border-radius:8px;"></div>
       </div>
     </div>
+
+    <!-- Review Modal -->
+    <div id="reviewModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:100;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);">
+      <div class="modal-content" style="background:var(--bg);width:100%;max-width:600px;border-radius:var(--radius-lg);box-shadow:0 10px 25px rgba(0,0,0,0.2);overflow:hidden;display:flex;flex-direction:column;max-height:90vh;animation:modalIn 0.3s ease;">
+        <div class="modal-header" style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <h3 id="modalQNum" style="font-size:1.1rem;font-weight:700;margin:0;">Question 1</h3>
+          <button onclick="closeReviewModal()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--text-muted);">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody" style="padding:20px;overflow-y:auto;flex:1;">
+          <!-- Content populated by JS -->
+        </div>
+      </div>
+    </div>
+    
+    <style>
+      @keyframes modalIn {
+        from { opacity: 0; transform: scale(0.95) translateY(10px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+      }
+      .grid-number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 48px;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        color: white;
+        transition: transform 0.2s, opacity 0.2s;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .grid-number:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+      }
+      .grid-correct { background: var(--success); }
+      .grid-incorrect { background: var(--danger); }
+      .grid-unattempted { background: var(--text-muted); color: var(--bg); }
+    </style>
 
   </div>
 
@@ -174,38 +219,53 @@ async function initResult() {
   document.getElementById('resultPage').style.display = 'block';
 }
 
+let globalQuestionReview = [];
+
 function renderAnswerReview(questions) {
-  const container = document.getElementById('answerReview');
+  globalQuestionReview = questions;
+  const container = document.getElementById('answerReviewGrid');
   document.getElementById('reviewHeading').textContent = `Answer Review (${questions.length} Questions)`;
-  const optKeys = ['a','b','c','d'];
-  const optLabels = ['A','B','C','D'];
 
   container.innerHTML = questions.map((q, i) => {
-    const statusClass = q.status;
-    const statusIcon = q.status === 'correct' ? '✅ Correct' : q.status === 'incorrect' ? '❌ Incorrect' : '— Unattempted';
-
-    const optionsHtml = optKeys.map((key, ki) => {
-      let cls = 'review-option';
-      if (key === q.correctOption) cls += ' correct-opt';
-      else if (key === q.userAnswer && q.status === 'incorrect') cls += ' user-wrong';
-      return `<div class="${cls}"><span class="opt-key">${optLabels[ki]}</span><span>${q.options?.[key] || ''}</span></div>`;
-    }).join('');
-
-    return `
-      <div class="review-item ${statusClass}">
-        <div class="review-header">
-          <span class="review-qnum">Question ${i + 1}</span>
-          <span class="review-status ${statusClass}">${statusIcon}</span>
-        </div>
-        <div class="review-question">${q.questionText}</div>
-        <div class="review-options">${optionsHtml}</div>
-        ${q.explanation ? `<div class="review-explanation"><strong>Explanation:</strong> ${q.explanation}</div>` : ''}
-      </div>`;
+    let bgClass = q.status === 'correct' ? 'grid-correct' : (q.status === 'incorrect' ? 'grid-incorrect' : 'grid-unattempted');
+    return `<div class="grid-number ${bgClass}" onclick="openReviewModal(${i})">${i + 1}</div>`;
   }).join('');
 }
 
+function openReviewModal(index) {
+  const q = globalQuestionReview[index];
+  if (!q) return;
+
+  const optKeys = ['a','b','c','d'];
+  const optLabels = ['A','B','C','D'];
+  
+  const statusIcon = q.status === 'correct' ? '✅ Correct' : q.status === 'incorrect' ? '❌ Incorrect' : '— Unattempted';
+
+  const optionsHtml = optKeys.map((key, ki) => {
+    let cls = 'review-option';
+    if (key === q.correctOption) cls += ' correct-opt';
+    else if (key === q.userAnswer && q.status === 'incorrect') cls += ' user-wrong';
+    return `<div class="${cls}"><span class="opt-key">${optLabels[ki]}</span><span>${q.options?.[key] || ''}</span></div>`;
+  }).join('');
+
+  document.getElementById('modalQNum').innerHTML = `Question ${index + 1} <span class="badge badge-neutral" style="margin-left:8px;">${statusIcon}</span>`;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="review-item" style="border:none;padding:0;background:transparent;">
+      <div class="review-question">${q.questionText}</div>
+      <div class="review-options">${optionsHtml}</div>
+      ${q.explanation ? `<div class="review-explanation" style="margin-top:20px;"><strong>Explanation:</strong><br/>${q.explanation}</div>` : ''}
+    </div>
+  `;
+
+  document.getElementById('reviewModal').style.display = 'flex';
+}
+
+function closeReviewModal() {
+  document.getElementById('reviewModal').style.display = 'none';
+}
+
 function scrollToReview() {
-  document.getElementById('answerReview').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('reviewHeading').scrollIntoView({ behavior: 'smooth' });
 }
 
 initResult();
