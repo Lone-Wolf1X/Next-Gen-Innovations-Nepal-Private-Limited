@@ -18,7 +18,7 @@ firebase.initializeApp(firebaseConfig);
 
 // Export services for use across files
 const auth = firebase.auth();
-const db   = firebase.firestore();
+// const db   = firebase.firestore(); // Migrated to PHP/MySQL (see db.js)
 
 // ─── Platform Config ─────────────────────────────────────
 const NGL_CONFIG = {

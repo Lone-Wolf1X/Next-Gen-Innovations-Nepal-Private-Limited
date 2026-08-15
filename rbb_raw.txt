@@ -1,0 +1,351 @@
+1. Scarcity in economics refers to:
+अर्थशास्त्रमा Scarcity भन्नाले के बुझिन्छ?
+A. Unlimited resources
+B. Resources being limited relative to unlimited wants
+C. Absence of demand
+D. Excess supply
+Answer: B
+
+2. The opportunity cost of a choice is:
+कुनै विकल्प रोज्दा Opportunity Cost भन्नाले:
+A. Total monetary cost
+B. Fixed cost
+C. Value of the next best alternative forgone
+D. Marginal cost
+Answer: C
+
+3. According to the law of demand, other things remaining constant, an increase in price generally causes:
+A. Increase in quantity demanded
+B. Decrease in quantity demanded
+C. Increase in supply only
+D. No change in demand
+Answer: B
+
+4. A market structure characterized by a single seller is called:
+A. Perfect competition
+B. Oligopoly
+C. Monopoly
+D. Monopolistic competition
+Answer: C
+
+5. GDP primarily measures:
+A. Total wealth of citizens
+B. Market value of final goods and services produced within a country during a period
+C. Government revenue only
+D. Total exports only
+Answer: B
+
+6. Which policy primarily deals with government revenue and expenditure?
+A. Monetary policy
+B. Fiscal policy
+C. Credit policy
+D. Trade policy
+Answer: B
+
+7. Monetary policy in Nepal is formulated and implemented by:
+A. Ministry of Finance
+B. Nepal Rastra Bank
+C. National Planning Commission
+D. Nepal Stock Exchange
+Answer: B
+
+8. The market where short-term financial instruments are traded is known as:
+A. Capital market
+B. Money market
+C. Commodity market
+D. Foreign tourism market
+Answer: B
+
+9. Which of the following is generally considered a capital market instrument?
+A. Treasury bill
+B. Commercial paper
+C. Ordinary share
+D. Call money
+Answer: C
+
+10. Repo transaction is primarily used for:
+A. Long-term equity financing
+B. Short-term liquidity management
+C. Foreign direct investment
+D. Insurance underwriting
+Answer: B
+
+11. In a repo transaction, the party selling securities with an agreement to repurchase them is effectively obtaining:
+A. Equity capital
+B. Short-term funds
+C. Foreign currency permanently
+D. Dividend income
+Answer: B
+
+12. Reverse repo is generally used by the central bank to:
+A. Inject liquidity into the banking system
+B. Absorb liquidity from the banking system
+C. Increase government expenditure
+D. Increase bank capital
+Answer: B
+
+13. Open Market Operations (OMO) mainly involve:
+A. Buying and selling securities by the central bank
+B. Issuing passports
+C. Controlling imports
+D. Collecting income tax
+Answer: A
+
+14. CRR stands for:
+A. Credit Recovery Ratio
+B. Cash Reserve Ratio
+C. Capital Return Rate
+D. Current Revenue Ratio
+Answer: B
+
+15. The primary purpose of CRR is to:
+A. Ensure banks maintain a prescribed cash reserve
+B. Increase bank profit
+C. Increase share prices
+D. Reduce exports
+Answer: A
+
+16. SLR stands for:
+A. Statutory Liquidity Ratio
+B. Standard Lending Rate
+C. Secured Loan Ratio
+D. Special Liquidity Return
+Answer: A
+
+17. OTC market stands for:
+A. Official Trading Centre
+B. Over-the-Counter market
+C. Open Trade Capital
+D. Overseas Transfer Centre
+Answer: B
+
+18. Which institution is the central bank of Nepal?
+A. Rastriya Banijya Bank
+B. Nepal Bank Limited
+C. Nepal Rastra Bank
+D. Citizens Bank
+Answer: C
+
+19. Which of the following is a development bank in Nepal's BFIs classification?
+A. Class A
+B. Class B
+C. Class C
+D. Class D
+Answer: B
+
+20. Microfinance institutions primarily focus on:
+A. Large multinational corporations only
+B. Providing financial services to low-income and underserved groups
+C. Foreign exchange trading only
+D. Government bond trading only
+Answer: B
+
+21. EPF in Nepal stands for:
+A. Economic Planning Fund
+B. Employees Provident Fund
+C. Equity Protection Fund
+D. Employment Promotion Fund
+Answer: B
+
+22. CIT stands for:
+A. Citizens Investment Trust
+B. Central Investment Tax
+C. Citizens Insurance Tribunal
+D. Commercial Investment Trust
+Answer: A
+
+23. SSF stands for:
+A. Social Security Fund
+B. State Saving Fund
+C. Special Service Fund
+D. Social Saving Finance
+Answer: A
+
+24. Which one is NOT a banking institution under the traditional Class A–D BFI classification?
+A. Commercial Bank
+B. Development Bank
+C. Finance Company
+D. Insurance Company
+Answer: D
+
+25. Infrastructure development banks are primarily intended to support:
+A. Infrastructure financing and development
+B. Retail shopping
+C. Tourism ticketing only
+D. Personal remittance only
+Answer: A
+
+31. ECC in Nepal's payment system stands for:
+A. Electronic Credit Control
+B. Electronic Cheque Clearing
+C. Electronic Cash Collection
+D. External Cheque Control
+Answer: B
+
+32. IPS primarily refers to:
+A. Interbank Payment System
+B. International Payment Standard
+C. Internal Processing Service
+D. Investment Payment Scheme
+Answer: A
+
+33. RTGS stands for:
+A. Real Time Gross Settlement
+B. Real Transfer Government System
+C. Retail Transaction Gross Service
+D. Real Trade Guarantee System
+Answer: A
+
+34. RTGS is mainly designed for:
+A. Real-time settlement of transactions, generally on a gross basis
+B. Long-term share trading
+C. Insurance claims only
+D. Foreign tourism payments only
+Answer: A
+
+35. SWIFT primarily facilitates:
+A. International financial messaging
+B. Domestic ATM withdrawal only
+C. Share trading
+D. Insurance underwriting
+Answer: A
+
+36. Which technology allows contactless communication over a very short distance?
+A. NFC
+B. VPN
+C. FTP
+D. SMTP
+Answer: A
+
+37. QR stands for:
+A. Quick Response
+B. Quality Reserve
+C. Quick Remittance
+D. Quantitative Ratio
+Answer: A
+
+38. Which of the following is an example of a digital payment card?
+A. Debit card
+B. Citizenship card
+C. Library card
+D. Identity certificate
+Answer: A
+
+39. A digital wallet is mainly used for:
+A. Electronic storage/payment of money or payment credentials
+B. Printing currency notes
+C. Issuing passports
+D. Preparing government budgets
+Answer: A
+
+40. CBDC stands for:
+A. Central Bank Digital Currency
+B. Commercial Bank Digital Credit
+C. Central Banking Deposit Certificate
+D. Currency Banking Development Code
+Answer: A
+
+41. Capital fund of a bank mainly represents:
+A. The bank's capital base available to absorb losses
+B. Customer's ATM PIN
+C. Daily cash sales
+D. Government tax collection
+Answer: A
+
+42. Loan loss provisioning is primarily related to:
+A. Setting aside funds against expected/identified credit losses
+B. Increasing employee salary
+C. Increasing bank branches
+D. Foreign exchange conversion
+Answer: A
+
+43. CD Ratio generally means:
+A. Credit-Deposit Ratio
+B. Capital-Deposit Ratio
+C. Cash-Debt Ratio
+D. Credit-Debt Ratio
+Answer: A
+
+44. If a bank has credit of Rs. 80 billion and deposits of Rs. 100 billion, its CD ratio is:
+A. 60%
+B. 70%
+C. 80%
+D. 125%
+Answer: C
+
+45. LC in trade finance stands for:
+A. Loan Certificate
+B. Letter of Credit
+C. Liquidity Certificate
+D. Lending Contract
+Answer: B
+
+46. A bank guarantee primarily represents:
+A. A bank's commitment to make payment subject to specified terms if the applicant defaults
+B. A bank deposit
+C. A share dividend
+D. A government tax
+Answer: A
+
+47. KYC stands for:
+A. Know Your Customer
+B. Keep Your Cash
+C. Know Your Credit
+D. Keep Your Customer
+Answer: A
+
+48. The primary purpose of KYC is to:
+A. Identify and understand customers and manage associated risks
+B. Increase share prices
+C. Reduce employee numbers
+D. Calculate GDP
+Answer: A
+
+49. Credit information is particularly important for:
+A. Assessing borrower's creditworthiness
+B. Printing currency
+C. Determining tourism destinations
+D. Measuring rainfall
+Answer: A
+
+50. Which of the following is a major tourist destination of Nepal?
+A. Pokhara
+B. Tokyo
+C. Dubai
+D. Paris
+Answer: A
+
+51. The capital city of Nepal is:
+A. Pokhara
+B. Biratnagar
+C. Kathmandu
+D. Lalitpur
+Answer: C
+
+52. The highest mountain in the world is:
+A. K2
+B. Mount Everest
+C. Annapurna I
+D. Dhaulagiri
+Answer: B
+
+53. Nepal is located between:
+A. India and Bangladesh
+B. India and China
+C. China and Bhutan
+D. India and Pakistan
+Answer: B
+
+54. Which is a major export item of Nepal?
+A. Carpet
+B. Crude petroleum
+C. Passenger aircraft
+D. Gold bars
+Answer: A
+
+55. Which organization operates Nepal's stock exchange?
+A. Nepal Rastra Bank
+B. Nepal Stock Exchange (NEPSE)
+C. Ministry of Finance
+D. Employees Provident Fund
+Answer: B

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Profile | GyanBazi</title>
+  <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/learn/css/learn-platform.css">
+  <style>
+    body { 
+      background: #f8fafc; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+    }
+    .wizard-box { 
+      background: white; 
+      padding: 48px; 
+      border-radius: 24px; 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.06); 
+      max-width: 460px; 
+      width: 100%; 
+      border: 1px solid rgba(229, 231, 235, 0.6);
+    }
+    .wizard-title { font-size: 1.75rem; font-weight: 800; margin-bottom: 8px; color: #111827; letter-spacing: -0.5px; }
+    .wizard-sub { font-size: 0.95rem; color: #6b7280; margin-bottom: 32px; line-height: 1.6; }
+    
+    .premium-input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .premium-input-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 8px;
+    }
+    .premium-input-group input, .premium-input-group select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      background: #f9fafb;
+    }
+    .premium-input-group input:focus, .premium-input-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    }
+    
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), #6366f1);
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 8px 15px rgba(79, 70, 229, 0.2);
+    }
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 20px rgba(79, 70, 229, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-loader" id="pageLoader">
+  <div class="logo">NL</div>
+  <div class="loading-spinner"></div>
+</div>
+
+<div class="wizard-box">
+  <h1 class="wizard-title">Almost there! 🚀</h1>
+  <p class="wizard-sub">Please complete your profile to access the GyanBazi dashboard.</p>
+  
+  <form id="profileForm" onsubmit="submitProfile(event)">
+    <div class="premium-input-group">
+      <label>Nickname (Required)</label>
+      <input type="text" id="nickname" placeholder="E.g. LokSewaChamp" required>
+    </div>
+    
+    <div class="premium-input-group">
+      <label>Phone Number (Required)</label>
+      <input type="tel" id="phone" placeholder="98XXXXXXXX" required>
+    </div>
+
+    <div class="premium-input-group">
+      <label>Gender (Required)</label>
+      <select id="gender" required>
+        <option value="">Select Gender</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+
+    <div class="premium-input-group">
+      <label>Profile Photo (Optional)</label>
+      <input type="file" id="photo" accept="image/*" style="padding: 9px 12px;">
+      <small style="color:#6b7280;font-size:0.75rem;margin-top:6px;display:block;">If left empty, a random avatar based on your gender will be assigned.</small>
+    </div>
+
+    <!-- Password field only shown if signed in via Google -->
+    <div class="premium-input-group" id="passwordGroup" style="display:none;">
+      <label>Set a Password (Required)</label>
+      <input type="password" id="password" placeholder="Min 6 characters" minlength="6">
+      <small style="color:#6b7280;font-size:0.75rem;margin-top:6px;display:block;">You signed in with Google. Please set a password so you can also login using your email.</small>
+    </div>
+    
+    <div id="errorMsg" class="form-error" style="display:none;margin-bottom:16px;"></div>
+
+    <button type="submit" class="btn-submit" id="submitBtn">Complete Profile</button>
+  </form>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="/learn/js/firebase-config.js"></script>
+<script src="/learn/js/db.js?v=6"></script>
+<script>
+  let isGoogleUser = false;
+
+  auth.onAuthStateChanged((user) => {
+    document.getElementById('pageLoader').style.display = 'none';
+    if (!user) {
+      window.location.href = '/learn/login.html';
+      return;
+    }
+    
+    if (!user.emailVerified) {
+      window.location.href = '/learn/verify-email.html';
+      return;
+    }
+
+    // Check if user logged in ONLY via Google (no password provider)
+    const hasPasswordProvider = user.providerData.some(p => p.providerId === 'password');
+    if (!hasPasswordProvider) {
+      isGoogleUser = true;
+      document.getElementById('passwordGroup').style.display = 'block';
+      document.getElementById('password').required = true;
+    }
+  });
+
+  function showError(msg) {
+    const errEl = document.getElementById('errorMsg');
+    errEl.textContent = msg;
+    errEl.style.display = 'block';
+  }
+
+  async function submitProfile(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = 'Saving...';
+    document.getElementById('errorMsg').style.display = 'none';
+
+    const nickname = document.getElementById('nickname').value;
+    const phone = document.getElementById('phone').value;
+    const gender = document.getElementById('gender').value;
+    const photoInput = document.getElementById('photo');
+    
+    let avatarUrl = '';
+
+    // Handle Photo Upload via Base64 or Random Avatar
+    if (photoInput.files && photoInput.files[0]) {
+      const file = photoInput.files[0];
+      if (file.size > 2 * 1024 * 1024) { // 2MB limit
+        showError("Photo size must be less than 2MB.");
+        btn.disabled = false;
+        btn.innerHTML = 'Complete Profile';
+        return;
+      }
+      try {
+        avatarUrl = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = error => reject(error);
+          reader.readAsDataURL(file);
+        });
+      } catch (err) {
+        showError("Failed to read photo.");
+        btn.disabled = false;
+        btn.innerHTML = 'Complete Profile';
+        return;
+      }
+    } else {
+      // Generate random avatar based on gender
+      const randomSeed = Math.random().toString(36).substring(7);
+      if (gender === 'male') {
+        avatarUrl = `https://api.dicebear.com/9.x/avataaars/svg?seed=${randomSeed}&style=circle`;
+      } else if (gender === 'female') {
+        avatarUrl = `https://api.dicebear.com/9.x/avataaars/svg?seed=${randomSeed}f&style=circle`;
+      } else {
+        avatarUrl = `https://api.dicebear.com/9.x/avataaars/svg?seed=${randomSeed}o&style=circle`;
+      }
+    }
+    
+    try {
+      if (isGoogleUser) {
+        const pass = document.getElementById('password').value;
+        await auth.currentUser.updatePassword(pass);
+      }
+
+      // Save to MySQL Backend
+      const res = await DB.users.completeProfile(nickname, phone, gender, avatarUrl);
+      if (res && res.success) {
+        window.location.href = '/learn/homepage.html';
+      } else {
+        throw new Error(res.error || 'Failed to save profile to database.');
+      }
+    } catch(err) {
+      console.error(err);
+      showError(err.message);
+      btn.disabled = false;
+      btn.innerHTML = 'Complete Profile';
+    }
+  }
+</script>
+</body>
+</html>

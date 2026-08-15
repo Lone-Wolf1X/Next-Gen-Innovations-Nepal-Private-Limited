@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>GyanBazi — Learn. Practice. Succeed.</title>
+  <meta
+    name="description"
+    content="GyanBazi — Prepare for Loksewa, Banking and Competitive Exams with smart learning, mock tests and practice questions."
+  />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #3730a3;
+      --secondary: #f97316;
+      --dark: #111827;
+      --text: #4b5563;
+      --muted: #6b7280;
+      --light: #f8fafc;
+      --white: #ffffff;
+      --border: #e5e7eb;
+      --green: #10b981;
+      --shadow: 0 15px 40px rgba(15, 23, 42, 0.08);
+      --radius: 20px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      color: var(--dark);
+      background: var(--white);
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .container {
+      width: min(1180px, 92%);
+      margin: auto;
+    }
+
+    /* ================= NAVBAR ================= */
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid rgba(229, 231, 235, 0.7);
+    }
+
+    .navbar {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Poppins", sans-serif;
+      font-size: 25px;
+      font-weight: 800;
+      color: var(--dark);
+    }
+
+    .logo-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: white;
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.25);
+    }
+
+    .logo span {
+      color: var(--primary);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      color: #374151;
+      font-size: 14px;
+      font-weight: 600;
+      transition: 0.25s;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 11px;
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      transition: 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-outline {
+      color: var(--primary);
+      background: transparent;
+      border: 1px solid #c7d2fe;
+    }
+
+    .btn-outline:hover {
+      background: #eef2ff;
+    }
+
+    .btn-primary {
+      color: white;
+      background: linear-gradient(135deg, var(--primary), #6366f1);
+      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(79, 70, 229, 0.28);
+    }
+
+    .mobile-menu {
+      display: none;
+      border: none;
+      background: none;
+      font-size: 25px;
+    }
+
+    /* ================= HERO ================= */
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 90px 0 100px;
+      background:
+        radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.13), transparent 30%),
+        radial-gradient(circle at 90% 10%, rgba(249, 115, 22, 0.12), transparent 28%),
+        linear-gradient(180deg, #f8faff 0%, #ffffff 100%);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      align-items: center;
+      gap: 70px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #eef2ff;
+      color: var(--primary);
+      border: 1px solid #e0e7ff;
+      padding: 7px 12px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-family: "Poppins", sans-serif;
+      font-size: clamp(40px, 5vw, 64px);
+      line-height: 1.08;
+      letter-spacing: -2px;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 .highlight {
+      color: var(--primary);
+    }
+
+    .hero-text {
+      color: var(--text);
+      max-width: 590px;
+      font-size: 17px;
+      margin-bottom: 30px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 30px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .stat strong {
+      display: block;
+      font-family: "Poppins";
+      font-size: 24px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* Hero dashboard */
+
+    .hero-visual {
+      position: relative;
+    }
+
+    .dashboard {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 25px;
+      padding: 20px;
+      box-shadow: 0 30px 70px rgba(30, 41, 59, 0.12);
+      transform: rotate(1deg);
+    }
+
+    .dash-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .dash-title {
+      font-family: "Poppins";
+      font-weight: 700;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f97316, #fb923c);
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 700;
+    }
+
+    .progress-box {
+      padding: 18px;
+      border-radius: 17px;
+      background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+      margin-bottom: 15px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .progress {
+      height: 9px;
+      background: #dbeafe;
+      border-radius: 50px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      width: 72%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--primary), #818cf8);
+    }
+
+    .subject-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .subject-mini {
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 16px;
+      background: white;
+    }
+
+    .subject-mini .icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 10px;
+      background: #f3f4f6;
+    }
+
+    .subject-mini h4 {
+      font-size: 14px;
+      margin-bottom: 3px;
+    }
+
+    .subject-mini p {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .floating-card {
+      position: absolute;
+      padding: 14px 17px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .floating-card.one {
+      left: -35px;
+      bottom: 55px;
+    }
+
+    .floating-card.two {
+      right: -25px;
+      top: 80px;
+    }
+
+    /* ================= SECTION ================= */
+
+    section {
+      padding: 90px 0;
+    }
+
+    .section-head {
+      text-align: center;
+      max-width: 650px;
+      margin: 0 auto 45px;
+    }
+
+    .section-tag {
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
+    }
+
+    .section-head h2 {
+      font-family: "Poppins";
+      font-size: 36px;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+
+    .section-head p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    /* ================= EXAMS ================= */
+
+    .exam-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .exam-card {
+      position: relative;
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: white;
+      transition: 0.3s;
+      overflow: hidden;
+    }
+
+    .exam-card::after {
+      content: "";
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      right: -40px;
+      top: -40px;
+      background: rgba(79, 70, 229, 0.06);
+    }
+
+    .exam-card:hover {
+      transform: translateY(-7px);
+      box-shadow: var(--shadow);
+      border-color: #c7d2fe;
+    }
+
+    .exam-icon {
+      width: 55px;
+      height: 55px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      font-size: 25px;
+      margin-bottom: 20px;
+      background: #eef2ff;
+    }
+
+    .exam-card:nth-child(2) .exam-icon {
+      background: #fff7ed;
+    }
+
+    .exam-card:nth-child(3) .exam-icon {
+      background: #ecfdf5;
+    }
+
+    .exam-card h3 {
+      font-family: "Poppins";
+      margin-bottom: 8px;
+    }
+
+    .exam-card p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    .exam-link {
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    /* ================= FEATURES ================= */
+
+    .feature-section {
+      background: var(--light);
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .feature {
+      background: white;
+      padding: 25px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      background: #eef2ff;
+      margin-bottom: 17px;
+      font-size: 21px;
+    }
+
+    .feature h3 {
+      font-size: 16px;
+      margin-bottom: 7px;
+    }
+
+    .feature p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ================= QUIZ ================= */
+
+    .quiz-section {
+      background: #111827;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quiz-section::before {
+      content: "";
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: rgba(79, 70, 229, 0.2);
+      left: -150px;
+      top: -150px;
+    }
+
+    .quiz-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: center;
+    }
+
+    .quiz-content .section-tag {
+      color: #a5b4fc;
+    }
+
+    .quiz-content h2 {
+      font-family: "Poppins";
+      font-size: 40px;
+      line-height: 1.2;
+      margin-bottom: 15px;
+    }
+
+    .quiz-content p {
+      color: #cbd5e1;
+      max-width: 520px;
+      margin-bottom: 25px;
+    }
+
+    .quiz-box {
+      background: white;
+      color: var(--dark);
+      padding: 28px;
+      border-radius: 22px;
+      box-shadow: 0 25px 60px rgba(0,0,0,.25);
+    }
+
+    .quiz-top {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .quiz-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .question {
+      font-family: "Poppins";
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+
+    .option {
+      padding: 13px 15px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .option:hover {
+      border-color: var(--primary);
+      background: #eef2ff;
+    }
+
+    .option.correct {
+      background: #ecfdf5;
+      border-color: #86efac;
+      color: #047857;
+    }
+
+    /* ================= STATS ================= */
+
+    .stats-section {
+      padding: 60px 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .big-stat {
+      text-align: center;
+      padding: 30px 15px;
+      border-right: 1px solid var(--border);
+    }
+
+    .big-stat:last-child {
+      border-right: none;
+    }
+
+    .big-stat strong {
+      display: block;
+      font-family: "Poppins";
+      font-size: 30px;
+      color: var(--primary);
+    }
+
+    .big-stat span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ================= CTA ================= */
+
+    .cta {
+      padding: 80px 0;
+    }
+
+    .cta-box {
+      border-radius: 28px;
+      padding: 65px 40px;
+      text-align: center;
+      color: white;
+      background:
+        radial-gradient(circle at 10% 20%, rgba(255,255,255,.13), transparent 25%),
+        radial-gradient(circle at 90% 80%, rgba(255,255,255,.1), transparent 25%),
+        linear-gradient(135deg, #4338ca, #6366f1);
+    }
+
+    .cta-box h2 {
+      font-family: "Poppins";
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .cta-box p {
+      color: #e0e7ff;
+      max-width: 600px;
+      margin: 0 auto 25px;
+    }
+
+    .btn-white {
+      background: white;
+      color: var(--primary);
+    }
+
+    .btn-white:hover {
+      transform: translateY(-2px);
+    }
+
+    /* ================= FOOTER ================= */
+
+    footer {
+      background: #0f172a;
+      color: white;
+      padding: 60px 0 25px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 40px;
+      padding-bottom: 40px;
+    }
+
+    .footer-brand p {
+      color: #94a3b8;
+      font-size: 13px;
+      max-width: 330px;
+      margin-top: 15px;
+    }
+
+    footer .logo {
+      color: white;
+    }
+
+    footer .logo span {
+      color: #818cf8;
+    }
+
+    .footer-col h4 {
+      font-size: 14px;
+      margin-bottom: 17px;
+    }
+
+    .footer-col a {
+      display: block;
+      color: #94a3b8;
+      font-size: 13px;
+      margin-bottom: 10px;
+      transition: .2s;
+    }
+
+    .footer-col a:hover {
+      color: white;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid #1e293b;
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      color: #64748b;
+      font-size: 12px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media (max-width: 950px) {
+      .nav-links {
+        display: none;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .hero-grid,
+      .quiz-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-content {
+        text-align: center;
+      }
+
+      .hero-text {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-buttons,
+      .hero-stats {
+        justify-content: center;
+      }
+
+      .hero-visual {
+        max-width: 600px;
+        width: 100%;
+        margin: auto;
+      }
+
+      .features {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .footer-grid {
+        grid-template-columns: 2fr 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .navbar {
+        height: 68px;
+      }
+
+      .nav-actions .btn-outline {
+        display: none;
+      }
+
+      .hero {
+        padding: 60px 0 70px;
+      }
+
+      .hero h1 {
+        font-size: 40px;
+        letter-spacing: -1px;
+      }
+
+      .hero-text {
+        font-size: 15px;
+      }
+
+      section {
+        padding: 65px 0;
+      }
+
+      .section-head h2 {
+        font-size: 29px;
+      }
+
+      .exam-grid,
+      .features,
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        border-radius: 15px;
+      }
+
+      .big-stat {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .big-stat:last-child {
+        border-bottom: none;
+      }
+
+      .quiz-content h2 {
+        font-size: 31px;
+      }
+
+      .cta-box h2 {
+        font-size: 30px;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .footer-brand {
+        grid-column: 1 / -1;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .floating-card {
+        display: none;
+      }
+    }
+
+    @media (max-width: 450px) {
+      .logo {
+        font-size: 21px;
+      }
+
+      .logo-icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .nav-actions .btn-primary {
+        padding: 10px 13px;
+        font-size: 12px;
+      }
+
+      .subject-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 34px;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ================= NAVBAR ================= -->
+
+  <header>
+    <div class="container navbar">
+
+      <a href="#" class="logo">
+        <div class="logo-icon">G</div>
+        Gyan<span>Bazi</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#exams">Exams</a>
+        <a href="#features">Features</a>
+        <a href="#quiz">Daily Quiz</a>
+        <a href="#resources">Resources</a>
+        <a href="#about">About</a>
+      </nav>
+
+      <div class="nav-actions" id="navActions">
+        <a href="login.html" class="btn btn-outline" id="navLoginBtn">Login</a>
+        <a href="login.html" class="btn btn-primary" id="navStartBtn">Get Started</a>
+        <button class="mobile-menu" onclick="toggleMenu()">☰</button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Firebase and Auth State Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="/learn/js/firebase-config.js"></script>
+  <script src="/learn/js/db.js?v=6"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      auth.onAuthStateChanged(async (user) => {
+        const navActions = document.getElementById("navActions");
+        if (user) {
+          let avatarSrc = user.photoURL;
+          try {
+             // Fetch full profile to get custom uploaded avatar if any
+             const profile = await DB.users.getById(user.uid);
+             if(profile && profile.avatarUrl) avatarSrc = profile.avatarUrl;
+          } catch(e) {}
+          
+          let avatarHtml = avatarSrc 
+             ? `<img src="${avatarSrc}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--primary);box-shadow:0 2px 8px rgba(0,0,0,0.1);">`
+             : `<div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg, var(--primary), #818cf8);color:white;display:grid;place-items:center;font-weight:bold;font-size:16px;border:2px solid #e0e7ff;box-shadow:0 2px 8px rgba(0,0,0,0.1);">${(user.displayName||'U')[0].toUpperCase()}</div>`;
+
+          navActions.innerHTML = `
+            <div style="display:flex;align-items:center;gap:15px;">
+              ${avatarHtml}
+              <a href="index.html?v=1" class="btn btn-primary">Go to Dashboard →</a>
+            </div>
+            <button class="mobile-menu" onclick="toggleMenu()">☰</button>
+          `;
+          
+          // Also update bottom CTA
+          const ctaBtn = document.getElementById("ctaBtn");
+          if(ctaBtn) {
+            ctaBtn.href = "index.html?v=1";
+            ctaBtn.textContent = "Go to Dashboard →";
+          }
+        }
+      });
+    });
+  </script>
+
+
+  <!-- ================= HERO ================= -->
+
+  <main>
+
+    <section class="hero">
+
+      <div class="container hero-grid">
+
+        <div class="hero-content">
+
+          <div class="badge">
+            🚀 Nepal's Smart Exam Preparation Platform
+          </div>
+
+          <h1>
+            Learn Smart.<br />
+            Practice More.<br />
+            <span class="highlight">Crack Your Exam.</span>
+          </h1>
+
+          <p class="hero-text">
+            Prepare for Loksewa, Banking and Competitive Exams with
+            smart study materials, practice questions, mock tests,
+            current affairs and daily quizzes.
+          </p>
+
+          <div class="hero-buttons">
+            <a href="login.html" class="btn btn-primary">
+              Start Practicing Now →
+            </a>
+            <a href="#features" class="btn btn-outline">
+              Explore Features
+            </a>
+          </div>
+
+          <div class="hero-stats">
+
+            <div class="stat">
+              <strong>10K+</strong>
+              <span>Practice Questions</span>
+            </div>
+
+            <div class="stat">
+              <strong>500+</strong>
+              <span>Mock Tests</span>
+            </div>
+
+            <div class="stat">
+              <strong>25K+</strong>
+              <span>Students</span>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Dashboard -->
+
+        <div class="hero-visual">
+
+          <div class="dashboard">
+
+            <div class="dash-top">
+              <div>
+                <small style="color:#6b7280;">Good Morning 👋</small>
+                <div class="dash-title">Your Learning Dashboard</div>
+              </div>
+
+              <div class="avatar">A</div>
+            </div>
+
+            <div class="progress-box">
+
+              <div class="progress-header">
+                <span>Weekly Progress</span>
+                <span style="color:#4f46e5;">72%</span>
+              </div>
+
+              <div class="progress">
+                <div class="progress-bar"></div>
+              </div>
+
+              <small style="display:block;margin-top:9px;color:#6b7280;">
+                🔥 7 day learning streak
+              </small>
+
+            </div>
+
+            <div class="subject-grid">
+
+              <div class="subject-mini">
+                <div class="icon">🏛️</div>
+                <h4>Loksewa</h4>
+                <p>120+ Practice Sets</p>
+              </div>
+
+              <div class="subject-mini">
+                <div class="icon">🏦</div>
+                <h4>Banking</h4>
+                <p>85+ Mock Tests</p>
+              </div>
+
+              <div class="subject-mini">
+                <div class="icon">🧠</div>
+                <h4>General IQ</h4>
+                <p>2500+ Questions</p>
+              </div>
+
+              <div class="subject-mini">
+                <div class="icon">🌎</div>
+                <h4>Current Affairs</h4>
+                <p>Daily Updates</p>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="floating-card one">
+            🏆 Top 5% this week
+          </div>
+
+          <div class="floating-card two">
+            🔥 7 Day Streak
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= EXAM CATEGORIES ================= -->
+
+    <section id="exams">
+
+      <div class="container">
+
+        <div class="section-head">
+          <div class="section-tag">Choose Your Goal</div>
+
+          <h2>
+            Prepare for the Exam<br />
+            You Want to Crack
+          </h2>
+
+          <p>
+            Everything you need to prepare, practice and improve your
+            performance in one place.
+          </p>
+        </div>
+
+
+        <div class="exam-grid">
+
+          <div class="exam-card">
+
+            <div class="exam-icon">🏛️</div>
+
+            <h3>Loksewa Aayog</h3>
+
+            <p>
+              Prepare for Loksewa exams with syllabus-based notes,
+              MCQs, previous questions and mock tests.
+            </p>
+
+            <a href="#" class="exam-link">
+              Explore Loksewa →
+            </a>
+
+          </div>
+
+
+          <div class="exam-card">
+
+            <div class="exam-icon">🏦</div>
+
+            <h3>Banking Exams</h3>
+
+            <p>
+              Master banking concepts, GK, quantitative aptitude,
+              reasoning and computer knowledge.
+            </p>
+
+            <a href="#" class="exam-link">
+              Explore Banking →
+            </a>
+
+          </div>
+
+
+          <div class="exam-card">
+
+            <div class="exam-icon">🎯</div>
+
+            <h3>Competitive Exams</h3>
+
+            <p>
+              Build your skills for entrance exams and other
+              competitive examinations.
+            </p>
+
+            <a href="#" class="exam-link">
+              Explore Exams →
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= FEATURES ================= -->
+
+    <section class="feature-section" id="features">
+
+      <div class="container">
+
+        <div class="section-head">
+          <div class="section-tag">Why GyanBazi?</div>
+
+          <h2>
+            Everything You Need to<br />
+            Learn & Practice
+          </h2>
+
+          <p>
+            Study less randomly. Practice with purpose.
+            Track your progress and improve every day.
+          </p>
+        </div>
+
+
+        <div class="features">
+
+          <div class="feature">
+            <div class="feature-icon">📚</div>
+            <h3>Smart Study Materials</h3>
+            <p>
+              Easy-to-understand notes and topic-wise learning
+              resources.
+            </p>
+          </div>
+
+          <div class="feature">
+            <div class="feature-icon">📝</div>
+            <h3>Mock Tests</h3>
+            <p>
+              Real exam-style tests to improve your speed and accuracy.
+            </p>
+          </div>
+
+          <div class="feature">
+            <div class="feature-icon">⚡</div>
+            <h3>Daily Quiz</h3>
+            <p>
+              Challenge yourself with daily MCQs and current affairs.
+            </p>
+          </div>
+
+          <div class="feature">
+            <div class="feature-icon">📊</div>
+            <h3>Performance Tracking</h3>
+            <p>
+              Track scores, accuracy, progress and identify weak areas.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= DAILY QUIZ ================= -->
+
+    <section class="quiz-section" id="quiz">
+
+      <div class="container quiz-grid">
+
+        <div class="quiz-content">
+
+          <div class="section-tag">
+            Daily Challenge
+          </div>
+
+          <h2>
+            Test Your Knowledge<br />
+            Every Single Day.
+          </h2>
+
+          <p>
+            Take our daily quiz, compete with other learners and
+            build a consistent learning habit.
+          </p>
+
+          <a href="login.html" class="btn btn-primary">
+            Start Today's Quiz →
+          </a>
+
+        </div>
+
+
+        <div class="quiz-box">
+
+          <div class="quiz-top">
+
+            <div class="quiz-label">
+              TODAY'S QUESTION
+            </div>
+
+            <div style="font-size:12px;color:#6b7280;">
+              Question 01 / 10
+            </div>
+
+          </div>
+
+          <div class="question">
+            नेपालको संविधान कहिले जारी भएको हो?
+          </div>
+
+          <div class="option">
+            A. २०७२ असोज १
+          </div>
+
+          <div class="option correct">
+            B. २०७२ असोज ३ ✓
+          </div>
+
+          <div class="option">
+            C. २०७२ भदौ ३१
+          </div>
+
+          <div class="option">
+            D. २०७३ असोज ३
+          </div>
+
+          <button
+            class="btn btn-primary"
+            style="width:100%;margin-top:8px;"
+            onclick="nextQuestion()"
+          >
+            Next Question →
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= STATS ================= -->
+
+    <section class="stats-section">
+
+      <div class="container">
+
+        <div class="stats-grid">
+
+          <div class="big-stat">
+            <strong>25K+</strong>
+            <span>Active Learners</span>
+          </div>
+
+          <div class="big-stat">
+            <strong>10K+</strong>
+            <span>Practice Questions</span>
+          </div>
+
+          <div class="big-stat">
+            <strong>500+</strong>
+            <span>Mock Tests</span>
+          </div>
+
+          <div class="big-stat">
+            <strong>95%</strong>
+            <span>Student Satisfaction</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= RESOURCES ================= -->
+
+    <section id="resources">
+
+      <div class="container">
+
+        <div class="section-head">
+
+          <div class="section-tag">
+            Learn Better
+          </div>
+
+          <h2>
+            Your Complete Learning Toolkit
+          </h2>
+
+          <p>
+            Access everything from daily current affairs to previous
+            year questions and revision materials.
+          </p>
+
+        </div>
+
+
+        <div class="exam-grid">
+
+          <div class="exam-card">
+
+            <div class="exam-icon">📰</div>
+
+            <h3>Current Affairs</h3>
+
+            <p>
+              Stay updated with important national and international
+              events relevant to competitive exams.
+            </p>
+
+            <a href="login.html" class="exam-link">
+              Read Current Affairs →
+            </a>
+
+          </div>
+
+
+          <div class="exam-card">
+
+            <div class="exam-icon">📜</div>
+
+            <h3>Previous Questions</h3>
+
+            <p>
+              Practice questions from previous years and understand
+              actual exam patterns.
+            </p>
+
+            <a href="login.html" class="exam-link">
+              Practice Questions →
+            </a>
+
+          </div>
+
+
+          <div class="exam-card">
+
+            <div class="exam-icon">📖</div>
+
+            <h3>Study Notes</h3>
+
+            <p>
+              Revise important concepts with concise and
+              exam-focused study notes.
+            </p>
+
+            <a href="login.html" class="exam-link">
+              Browse Notes →
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= CTA ================= -->
+
+    <section class="cta">
+
+      <div class="container">
+
+        <div class="cta-box">
+
+          <h2>
+            Your Dream Career Starts Here.
+          </h2>
+
+          <p>
+            Stop wondering whether you're prepared.
+            Start practicing, track your progress and get closer
+            to your goal every day.
+          </p>
+
+          <a href="login.html" class="btn btn-white" id="ctaBtn">
+            Start Learning for Free →
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- ================= FOOTER ================= -->
+
+  <footer id="about">
+
+    <div class="container">
+
+      <div class="footer-grid">
+
+        <div class="footer-brand">
+
+          <a href="#" class="logo">
+            <div class="logo-icon">G</div>
+            Gyan<span>Bazi</span>
+          </a>
+
+          <p>
+            A smart learning and exam preparation platform for
+            Loksewa, Banking and Competitive Exams.
+          </p>
+
+        </div>
+
+
+        <div class="footer-col">
+
+          <h4>Exams</h4>
+
+          <a href="#">Loksewa</a>
+          <a href="#">Banking</a>
+          <a href="#">Competitive Exams</a>
+          <a href="#">Mock Tests</a>
+
+        </div>
+
+
+        <div class="footer-col">
+
+          <h4>Learn</h4>
+
+          <a href="#">Study Materials</a>
+          <a href="#">Current Affairs</a>
+          <a href="#">Daily Quiz</a>
+          <a href="#">Previous Questions</a>
+
+        </div>
+
+
+        <div class="footer-col">
+
+          <h4>Company</h4>
+
+          <a href="#">About Us</a>
+          <a href="#">Contact</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms & Conditions</a>
+
+        </div>
+
+      </div>
+
+
+      <div class="footer-bottom">
+
+        <span>
+          © 2026 GyanBazi. All rights reserved.
+        </span>
+
+        <span>
+          Made with ❤️ for Nepali learners. Developed by Next Gen Innovations Private Limited.
+        </span>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+
+  <!-- ================= JAVASCRIPT ================= -->
+
+  <script>
+
+    function toggleMenu() {
+      alert("Mobile menu can be connected to your navigation here.");
+    }
+
+    function nextQuestion() {
+      alert("Next question loading...");
+    }
+
+  </script>
+
+</body>
+</html>

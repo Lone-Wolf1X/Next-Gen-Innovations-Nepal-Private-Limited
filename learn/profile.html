@@ -7,6 +7,8 @@
   <meta name="description" content="Your personal exam preparation dashboard — track performance, attempt tests, and improve daily.">
   <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/learn/css/learn-platform.css">
+  <link rel="manifest" href="/learn/manifest.json">
+  <meta name="theme-color" content="#2563eb">
 </head>
 <body>
 
@@ -25,6 +27,13 @@
         <div class="sidebar-name">GyanBazi</div>
         <div class="sidebar-tagline">Exam Preparation</div>
       </div>
+    </div>
+    
+    <div style="padding: 0 24px 12px;">
+      <a href="/learn/homepage.html" class="sidebar-link" style="padding: 8px 12px; background: rgba(79, 70, 229, 0.05); color: var(--primary); border: 1px solid rgba(79, 70, 229, 0.2);">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        Back to Homepage
+      </a>
     </div>
 
     <nav class="sidebar-nav">
@@ -122,63 +131,60 @@
         </div>
       </div>
 
-      <!-- Dashboard Grid -->
-      <div class="dashboard-grid">
+      <!-- Settings Grid -->
+      <div class="dashboard-grid" style="grid-template-columns: 1fr;">
 
-        <!-- Recent Tests -->
+        <!-- Account Details -->
         <div>
           <div class="section-head">
             <div>
-              <div class="section-head-title">Recent Test Results</div>
-              <div class="section-head-sub">Your last 5 test attempts</div>
+              <div class="section-head-title">Account Details</div>
+              <div class="section-head-sub">View and manage your profile information</div>
             </div>
-            <a href="/learn/profile.html" class="btn btn-ghost btn-sm">View All →</a>
           </div>
-          <div class="card">
-            <div id="recentTestsContent">
-              <div style="padding:24px;">
-                <div class="skeleton" style="height:40px;margin-bottom:10px;"></div>
-                <div class="skeleton" style="height:40px;margin-bottom:10px;"></div>
-                <div class="skeleton" style="height:40px;"></div>
+          
+          <div class="card" style="padding: 24px; display: flex; gap: 40px; flex-wrap: wrap;">
+            
+            <div style="flex: 1; min-width: 250px;">
+              <div style="margin-bottom: 20px;">
+                <label style="display:block;font-size:0.875rem;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">Full Name</label>
+                <div style="font-size:1rem;font-weight:600;color:var(--text-primary);" id="detailName">Loading...</div>
+              </div>
+              <div style="margin-bottom: 20px;">
+                <label style="display:block;font-size:0.875rem;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">Nickname</label>
+                <div style="font-size:1rem;font-weight:600;color:var(--text-primary);" id="detailNickname">Loading...</div>
+              </div>
+              <div style="margin-bottom: 20px;">
+                <label style="display:block;font-size:0.875rem;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">Email Address</label>
+                <div style="font-size:1rem;font-weight:600;color:var(--text-primary);" id="detailEmail">Loading...</div>
+              </div>
+              <div style="margin-bottom: 20px;">
+                <label style="display:block;font-size:0.875rem;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">Phone Number</label>
+                <div style="font-size:1rem;font-weight:600;color:var(--text-primary);" id="detailPhone">Loading...</div>
+              </div>
+              <div style="margin-bottom: 20px;">
+                <label style="display:block;font-size:0.875rem;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">Gender</label>
+                <div style="font-size:1rem;font-weight:600;color:var(--text-primary);text-transform:capitalize;" id="detailGender">Loading...</div>
               </div>
             </div>
+
+            <div style="flex: 1; min-width: 250px;">
+              <div class="section-head-title" style="margin-bottom:14px; font-size:1.1rem;">Security</div>
+              <p style="font-size:0.875rem;color:var(--text-muted);margin-bottom:16px;">We recommend updating your password regularly to keep your account secure.</p>
+              <button class="btn btn-outline" id="resetPassBtn" onclick="sendPasswordReset()">Send Password Reset Link</button>
+              <div id="resetMsg" style="font-size:0.85rem;margin-top:10px;font-weight:600;"></div>
+              
+              <div style="margin-top: 40px;">
+                <div class="section-head-title" style="margin-bottom:14px; font-size:1.1rem;">Profile Photo</div>
+                <div style="display:flex;align-items:center;gap:20px;">
+                  <div id="profileAvatarBig" style="width:100px;height:100px;border-radius:50%;background:#e5e7eb;display:grid;place-items:center;font-size:2rem;font-weight:bold;color:white;overflow:hidden;"></div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
-        <!-- Sidebar widgets -->
-        <div class="dashboard-side">
-
-          <!-- Quick Access -->
-          <div class="card card-padded">
-            <div class="section-head-title" style="margin-bottom:14px;">Quick Access</div>
-            <div style="display:flex;flex-direction:column;gap:8px;">
-              <a href="/learn/categories.html" class="btn btn-outline" style="justify-content:flex-start;gap:10px;">
-                <span>📚</span> Browse Categories
-              </a>
-              <a href="/learn/profile.html" class="btn btn-ghost" style="justify-content:flex-start;gap:10px;border:1px solid var(--border);">
-                <span>📈</span> My Progress
-              </a>
-            </div>
-          </div>
-
-          <!-- Recommended Sets -->
-          <div class="card card-padded">
-            <div class="section-head-title" style="margin-bottom:14px;">Recommended for You</div>
-            <div id="recommendedSets">
-              <div class="skeleton" style="height:70px;margin-bottom:10px;border-radius:var(--radius-md);"></div>
-              <div class="skeleton" style="height:70px;border-radius:var(--radius-md);"></div>
-            </div>
-          </div>
-
-          <!-- Tip of the day -->
-          <div class="card card-padded" style="background:var(--primary-light);border-color:var(--primary-border);">
-            <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--primary);margin-bottom:8px;">💡 Preparation Tip</div>
-            <div style="font-size:0.875rem;color:var(--text-secondary);line-height:1.6;" id="dailyTip">
-              Practice at least 2 model sets per week consistently for best results. Focus on understanding explanations, not just memorizing answers.
-            </div>
-          </div>
-
-        </div>
       </div>
 
     </div>
@@ -190,8 +196,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="/learn/js/firebase-config.js"></script>
-<script src="/learn/js/auth.js"></script>
-<script src="/learn/js/db.js"></script>
+<script src="/learn/js/auth.js?v=5"></script>
+<script src="/learn/js/db.js?v=6"></script>
 <script>
 const tips = [
   "Practice at least 2 model sets per week consistently for best results.",
@@ -203,15 +209,16 @@ const tips = [
 ];
 
 async function initDashboard() {
-  const user = await Auth.requireAuth().then(user => {
-      // Keep profile UI
-    });
+  const user = await Auth.requireAuth();
   
   // Set greeting
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-  document.getElementById('pageGreeting').textContent = `${greeting} 👋`;
-  document.getElementById('welcomeName').textContent = user.displayName?.split(' ')[0] || 'there';
+  const greetingEl = document.getElementById('pageGreeting');
+  if (greetingEl) greetingEl.textContent = `${greeting} 👋`;
+  
+  const welcomeNameEl = document.getElementById('welcomeName');
+  if (welcomeNameEl) welcomeNameEl.textContent = user.displayName?.split(' ')[0] || 'there';
 
   // Set avatar
   if (user.photoURL) {
@@ -222,26 +229,26 @@ async function initDashboard() {
   document.getElementById('userName').textContent = user.displayName || 'User';
   document.getElementById('userEmail').textContent = user.email;
 
-  // Load user profile stats
   const profile = await DB.users.getById(user.uid);
   if (profile) {
     document.getElementById('statTests').textContent = profile.totalTestsCompleted || 0;
     document.getElementById('statAvg').textContent = profile.averageScore ? `${profile.averageScore}%` : '—';
     document.getElementById('statBest').textContent = profile.bestScore ? `${profile.bestScore}%` : '—';
     document.getElementById('statAttempted').textContent = profile.totalTestsAttempted || 0;
+
+    document.getElementById('detailName').textContent = profile.name || 'User';
+    document.getElementById('detailNickname').textContent = profile.nickname || 'Not set';
+    document.getElementById('detailEmail').textContent = profile.email || 'Not set';
+    document.getElementById('detailPhone').textContent = profile.phoneNumber || 'Not set';
+    document.getElementById('detailGender').textContent = profile.gender || 'Not set';
+
+    const avatarBig = document.getElementById('profileAvatarBig');
+    if (profile.avatarUrl) {
+      avatarBig.innerHTML = `<img src="${profile.avatarUrl}" alt="" style="width:100%;height:100%;object-fit:cover;">`;
+    } else {
+      avatarBig.textContent = (profile.name || 'U')[0].toUpperCase();
+    }
   }
-
-  // Load recent test results
-  const recentResults = await DB.results.getByUser(user.uid, 5);
-  renderRecentTests(recentResults);
-
-  // Load recommended model sets
-  const allSets = await DB.modelSets.getPublished();
-  renderRecommended(allSets.slice(0, 3));
-
-  // Daily tip
-  const tipIdx = new Date().getDate() % tips.length;
-  document.getElementById('dailyTip').textContent = tips[tipIdx];
 
   // Show app
   document.getElementById('pageLoader').style.display = 'none';
@@ -249,61 +256,25 @@ async function initDashboard() {
   checkMobile();
 }
 
-function renderRecentTests(results) {
-  const container = document.getElementById('recentTestsContent');
-  if (!results || results.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">📝</div>
-        <div class="empty-title">No tests taken yet</div>
-        <div class="empty-desc">Start your first mock test to see your results here.</div>
-        <a href="/learn/categories.html" class="btn btn-primary btn-sm">Browse Tests →</a>
-      </div>`;
-    return;
+async function sendPasswordReset() {
+  const btn = document.getElementById('resetPassBtn');
+  const msg = document.getElementById('resetMsg');
+  btn.disabled = true;
+  btn.textContent = "Sending...";
+  try {
+    const user = auth.currentUser;
+    if(!user || !user.email) throw new Error("Could not find user email.");
+    await auth.sendPasswordResetEmail(user.email);
+    msg.style.color = "var(--success)";
+    msg.textContent = "Reset link sent to your email!";
+  } catch(e) {
+    msg.style.color = "var(--danger)";
+    msg.textContent = e.message;
   }
-
-  const rows = results.map(r => {
-    const scoreColor = r.scorePercentage >= 70 ? 'var(--success)' : r.scorePercentage >= 40 ? 'var(--warning)' : 'var(--danger)';
-    return `
-      <tr>
-        <td style="max-width:200px;">
-          <div style="font-weight:600;font-size:0.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Model Set</div>
-          <div style="font-size:0.775rem;color:var(--text-muted);">${formatDate(r.completedAt)}</div>
-        </td>
-        <td>
-          <span style="font-weight:700;color:${scoreColor};font-family:'JetBrains Mono',monospace;">${r.scorePercentage}%</span>
-        </td>
-        <td><span style="font-size:0.8rem;color:var(--text-secondary);">${r.correctAnswers}/${r.totalQuestions}</span></td>
-        <td>
-          <a href="/learn/result.html?id=${r.id}" class="btn btn-ghost btn-sm">Review</a>
-        </td>
-      </tr>`;
-  }).join('');
-
-  container.innerHTML = `
-    <table class="admin-table">
-      <thead><tr><th>Test</th><th>Score</th><th>Correct</th><th>Action</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>`;
+  btn.disabled = false;
+  btn.textContent = "Send Password Reset Link";
 }
 
-function renderRecommended(sets) {
-  const container = document.getElementById('recommendedSets');
-  if (!sets || sets.length === 0) {
-    container.innerHTML = `<p style="font-size:0.8375rem;color:var(--text-muted);">No model sets available yet. Check back soon!</p>`;
-    return;
-  }
-  container.innerHTML = sets.map(s => `
-    <a href="/learn/modelset-detail.html?id=${s.id}" style="display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:8px;text-decoration:none;transition:all var(--transition);" onmouseover="this.style.borderColor='var(--primary-border)';this.style.background='var(--primary-light)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='white'">
-      <span style="font-size:1.5rem;">${s.icon || '📝'}</span>
-      <div style="flex:1;min-width:0;">
-        <div style="font-size:0.8375rem;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.title}</div>
-        <div style="font-size:0.75rem;color:var(--text-muted);">${s.totalQuestions} Qs · ${s.timeLimitMinutes} min</div>
-      </div>
-      <svg style="width:16px;color:var(--text-muted);flex-shrink:0;" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
-    </a>
-  `).join('');
-}
 
 function checkMobile() {
   const btn = document.getElementById('mobileSidebarBtn');
@@ -320,6 +291,16 @@ async function handleSignOut() {
 
 window.addEventListener('resize', checkMobile);
 initDashboard();
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/learn/sw.js')
+        .then(reg => console.log('SW registered'))
+        .catch(err => console.log('SW fail: ', err));
+    });
+  }
 </script>
 </body>
 </html>

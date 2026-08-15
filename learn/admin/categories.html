@@ -82,6 +82,13 @@
 <div class="app-layout" id="appLayout" style="display:none;">
   <aside class="sidebar">
     <div class="sidebar-brand"><div class="sidebar-logo" style="background:linear-gradient(135deg,#DC2626,#B91C1C);">A</div><div><div class="sidebar-name">Admin Panel</div><div class="sidebar-tagline">GyanBazi</div></div></div>
+    <div style="padding: 0 24px 12px;">
+      <a href="/learn/homepage.html" class="sidebar-link" style="padding: 8px 12px; background: rgba(79, 70, 229, 0.05); color: var(--primary); border: 1px solid rgba(79, 70, 229, 0.2);">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        Back to Homepage
+      </a>
+    </div>
+
     <nav class="sidebar-nav">
       <a href="/learn/admin/index.html" class="sidebar-link"><svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>Dashboard</a>
       <a href="/learn/admin/categories.html" class="sidebar-link active"><svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/></svg>Categories & Subjects</a>
@@ -135,8 +142,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="/learn/js/firebase-config.js"></script>
-<script src="/learn/js/auth.js"></script>
-<script src="/learn/js/db.js"></script>
+<script src="/learn/js/auth.js?v=5"></script>
+<script src="/learn/js/db.js?v=6"></script>
 <script>
 let currentUser, allCats = [], allSubs = [], editingCatId = null, editingSubId = null;
 

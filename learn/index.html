@@ -6,6 +6,9 @@
   <title>Dashboard | GyanBazi</title>
   <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/learn/css/learn-platform.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="manifest" href="/learn/manifest.json">
+  <meta name="theme-color" content="#2563eb">
 </head>
 <body>
 
@@ -23,6 +26,13 @@
         <div class="sidebar-name">GyanBazi</div>
         <div class="sidebar-tagline">Exam Preparation</div>
       </div>
+    </div>
+    
+    <div style="padding: 0 24px 12px;">
+      <a href="/learn/homepage.html" class="sidebar-link" style="padding: 8px 12px; background: rgba(79, 70, 229, 0.05); color: var(--primary); border: 1px solid rgba(79, 70, 229, 0.2);">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        Back to Homepage
+      </a>
     </div>
 
     <nav class="sidebar-nav">
@@ -95,11 +105,11 @@
           </div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon stat-icon-blue">🏆</div>
+          <div class="stat-icon stat-icon-blue">📈</div>
           <div class="stat-content">
-            <div class="stat-label">Total Points</div>
-            <div class="stat-value" id="valPoints">0</div>
-            <div class="stat-sub">Earned via tests</div>
+            <div class="stat-label">Avg. Score</div>
+            <div class="stat-value" id="valPoints">0%</div>
+            <div class="stat-sub">Overall accuracy</div>
           </div>
         </div>
         <div class="stat-card">
@@ -115,9 +125,34 @@
       <!-- Dashboard Grid -->
       <div class="dashboard-grid">
 
-        <!-- Recommended Sets -->
-        <div>
-          <div class="section-head">
+        <div style="display:flex; flex-direction:column; gap:24px;">
+          <!-- Performance Analytics -->
+          <div>
+            <div class="section-head" style="margin-bottom:16px;">
+              <div>
+                <div class="section-head-title">Performance Analytics</div>
+                <div class="section-head-sub">Your learning progress over time</div>
+              </div>
+            </div>
+            <div class="card card-padded" style="margin-bottom:24px;">
+              <canvas id="perfChart" style="width:100%; height:280px;"></canvas>
+            </div>
+            
+            <div class="section-head" style="margin-bottom:16px;">
+              <div>
+                <div class="section-head-title">Study Focus Areas</div>
+              </div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;" id="focusAreas">
+              <!-- Weak/Strong Subjects injected here -->
+              <div class="skeleton" style="height:120px;"></div>
+              <div class="skeleton" style="height:120px;"></div>
+            </div>
+          </div>
+
+          <!-- Recommended Sets -->
+          <div>
+            <div class="section-head" style="margin-bottom:16px;">
             <div>
               <div class="section-head-title">Recommended Practice Sets</div>
               <div class="section-head-sub">Model tests curated for you</div>
@@ -164,8 +199,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="/learn/js/firebase-config.js"></script>
-<script src="/learn/js/auth.js"></script>
-<script src="/learn/js/db.js"></script>
+<script src="/learn/js/auth.js?v=5"></script>
+<script src="/learn/js/db.js?v=6"></script>
 <script>
 async function initDashboard() {
   const user = await Auth.requireAuth();
@@ -184,12 +219,11 @@ async function initDashboard() {
   document.getElementById('userName').textContent = user.displayName || 'User';
   document.getElementById('userEmail').textContent = user.email;
 
-  // Load user stats
+  // Load user stats and analytics
   try {
     const profile = await DB.users.getById(user.uid);
     if (profile) {
       document.getElementById('valStreak').textContent = `${profile.currentStreak || 0} Days`;
-      document.getElementById('valPoints').textContent = profile.totalPoints || 0;
       document.getElementById('valTests').textContent = profile.totalTestsCompleted || 0;
 
       if (profile.subscriptionTier === 'premium') {
@@ -203,6 +237,66 @@ async function initDashboard() {
         }
       }
     }
+
+    const analytics = await DB.users.getAnalytics(user.uid);
+    if (analytics && !analytics.error) {
+      document.getElementById('valPoints').textContent = `${analytics.averageScore || 0}%`;
+      
+      // Render Chart
+      const ctx = document.getElementById('perfChart').getContext('2d');
+      const scores = analytics.recentScores || [];
+      if (scores.length > 0) {
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: scores.map((s, i) => `Test ${i+1}`),
+            datasets: [{
+              label: 'Score %',
+              data: scores.map(s => s.score_percentage),
+              borderColor: '#2563eb',
+              backgroundColor: 'rgba(37,99,235,0.1)',
+              borderWidth: 2,
+              tension: 0.3,
+              fill: true,
+              pointBackgroundColor: '#ffffff',
+              pointBorderColor: '#2563eb',
+              pointRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { min: 0, max: 100 } },
+            plugins: { legend: { display: false } }
+          }
+        });
+      } else {
+        document.getElementById('perfChart').parentElement.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-muted);">Take a test to see your performance trend!</div>';
+      }
+
+      // Render Focus Areas
+      let focusHtml = '';
+      if (analytics.weakSubjects && analytics.weakSubjects.length > 0) {
+        focusHtml += analytics.weakSubjects.map(ws => `
+          <div class="card card-padded" style="border-left:4px solid #ef4444;">
+            <div style="font-size:0.75rem;font-weight:600;color:#ef4444;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Weak Subject</div>
+            <div style="font-weight:600;font-size:0.95rem;color:var(--text-primary);margin-bottom:8px;">${ws.subjectName}</div>
+            <div style="font-size:1.25rem;font-weight:700;color:var(--text-primary);">${ws.accuracy}% <span style="font-size:0.75rem;font-weight:500;color:var(--text-muted);">Accuracy</span></div>
+          </div>
+        `).join('');
+      }
+      if (analytics.strongSubjects && analytics.strongSubjects.length > 0) {
+        focusHtml += analytics.strongSubjects.map(ss => `
+          <div class="card card-padded" style="border-left:4px solid #10b981;">
+            <div style="font-size:0.75rem;font-weight:600;color:#10b981;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Strong Subject</div>
+            <div style="font-weight:600;font-size:0.95rem;color:var(--text-primary);margin-bottom:8px;">${ss.subjectName}</div>
+            <div style="font-size:1.25rem;font-weight:700;color:var(--text-primary);">${ss.accuracy}% <span style="font-size:0.75rem;font-weight:500;color:var(--text-muted);">Accuracy</span></div>
+          </div>
+        `).join('');
+      }
+      document.getElementById('focusAreas').innerHTML = focusHtml || '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:20px;">Complete tests across different subjects to see your focus areas.</div>';
+    }
+
   } catch(e) {
     console.error("Failed to load profile stats", e);
   }
@@ -276,6 +370,16 @@ async function handleSignOut() {
 
 window.addEventListener('resize', checkMobile);
 initDashboard();
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/learn/sw.js')
+        .then(reg => console.log('SW registered'))
+        .catch(err => console.log('SW fail: ', err));
+    });
+  }
 </script>
 </body>
 </html>

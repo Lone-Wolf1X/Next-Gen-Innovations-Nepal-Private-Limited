@@ -1,0 +1,18 @@
+{
+  "name": "GyanBazi LMS",
+  "short_name": "GyanBazi",
+  "description": "Nepal's Premier Exam Preparation Platform",
+  "start_url": "/learn/index.html",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#2563eb",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/logo/logo.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - User Management | GyanBazi</title>
+  <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/learn/css/learn-platform.css">
+</head>
+<body>
+
+<div class="app-layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo">NL</div>
+      <div>
+        <div class="sidebar-name">Admin Panel</div>
+        <div class="sidebar-tagline">GyanBazi LMS</div>
+      </div>
+    </div>
+
+    <div style="padding: 0 24px 12px;">
+      <a href="/learn/homepage.html" class="sidebar-link" style="padding: 8px 12px; background: rgba(79, 70, 229, 0.05); color: var(--primary); border: 1px solid rgba(79, 70, 229, 0.2);">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        Back to Homepage
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Management</div>
+      <a href="/learn/admin/index.html" class="sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+        Dashboard
+      </a>
+      <a href="/learn/admin/questions.html" class="sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg>
+        Question Bank
+      </a>
+      <a href="/learn/admin/modelsets.html" class="sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/></svg>
+        Model Sets
+      </a>
+      <a href="/learn/admin/users.html" class="sidebar-link active">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+        Users & Subscriptions
+      </a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div class="page-topbar">
+      <div>
+        <h2 class="page-title">User Management</h2>
+        <div class="page-subtitle">Manage student accounts and subscription tiers</div>
+      </div>
+    </div>
+
+    <div class="page-body">
+      <div class="card card-padded">
+        <div style="display:flex; gap:12px; margin-bottom:20px;">
+          <input type="text" id="searchUsers" placeholder="Search by name or email..." class="input-field" style="flex:1;" oninput="filterUsers()">
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="data-table" style="width:100%; text-align:left; border-collapse:collapse;">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border);">
+                <th style="padding:12px;color:var(--text-muted);font-weight:600;font-size:0.875rem;">Name</th>
+                <th style="padding:12px;color:var(--text-muted);font-weight:600;font-size:0.875rem;">Email</th>
+                <th style="padding:12px;color:var(--text-muted);font-weight:600;font-size:0.875rem;">Joined</th>
+                <th style="padding:12px;color:var(--text-muted);font-weight:600;font-size:0.875rem;">Tests Taken</th>
+                <th style="padding:12px;color:var(--text-muted);font-weight:600;font-size:0.875rem;">Plan</th>
+                <th style="padding:12px;color:var(--text-muted);font-weight:600;font-size:0.875rem;text-align:right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted);">Loading users...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="/learn/js/firebase-config.js"></script>
+<script src="/learn/js/auth.js?v=5"></script>
+<script src="/learn/js/db.js?v=6"></script>
+<script>
+let allUsers = [];
+
+async function loadUsers() {
+  const user = await Auth.requireAdmin();
+  if (!user) return;
+  
+  try {
+    const res = await DB.users.getAll();
+    if (res && !res.error) {
+      allUsers = res;
+      renderUsers(allUsers);
+    } else {
+      alert(res.error || 'Failed to load users');
+    }
+  } catch(e) {
+    console.error(e);
+    alert('Error loading users');
+  }
+}
+
+function renderUsers(users) {
+  const tbody = document.getElementById('usersTableBody');
+  if (users.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted);">No users found.</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = users.map(u => {
+    const isPremium = u.subscription_tier === 'premium';
+    const planBadge = isPremium 
+      ? '<span class="badge badge-success">Premium</span>' 
+      : '<span class="badge badge-neutral">Free</span>';
+    
+    const actionBtn = isPremium
+      ? `<button class="btn btn-ghost btn-sm" onclick="togglePlan('${u.uid}', 'free')">Downgrade</button>`
+      : `<button class="btn btn-primary btn-sm" onclick="togglePlan('${u.uid}', 'premium')">Make Premium</button>`;
+
+    return `
+      <tr style="border-bottom:1px solid var(--border);">
+        <td style="padding:12px;font-weight:500;">${u.name || 'Unknown'}</td>
+        <td style="padding:12px;color:var(--text-muted);">${u.email}</td>
+        <td style="padding:12px;color:var(--text-muted);">${new Date(u.created_at).toLocaleDateString()}</td>
+        <td style="padding:12px;">${u.total_tests_completed || 0}</td>
+        <td style="padding:12px;">${planBadge}</td>
+        <td style="padding:12px;text-align:right;">${actionBtn}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function filterUsers() {
+  const term = document.getElementById('searchUsers').value.toLowerCase();
+  const filtered = allUsers.filter(u => 
+    (u.name && u.name.toLowerCase().includes(term)) || 
+    (u.email && u.email.toLowerCase().includes(term))
+  );
+  renderUsers(filtered);
+}
+
+async function togglePlan(uid, newTier) {
+  if (!confirm(`Are you sure you want to change this user's plan to ${newTier.toUpperCase()}?`)) return;
+  
+  try {
+    const res = await DB.users.updateSubscription(uid, newTier);
+    if (res && res.success) {
+      // Update local state and re-render
+      const user = allUsers.find(u => u.uid === uid);
+      if (user) {
+        user.subscription_tier = newTier;
+        filterUsers();
+      }
+    } else {
+      alert(res.error || 'Failed to update subscription');
+    }
+  } catch(e) {
+    console.error(e);
+    alert('Error updating subscription');
+  }
+}
+
+loadUsers();
+</script>
+</body>
+</html>

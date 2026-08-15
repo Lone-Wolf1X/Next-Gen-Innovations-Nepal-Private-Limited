@@ -6,6 +6,8 @@
   <title>Exam Categories | GyanBazi</title>
   <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/learn/css/learn-platform.css">
+  <link rel="manifest" href="/learn/manifest.json">
+  <meta name="theme-color" content="#2563eb">
 </head>
 <body>
 <div class="page-loader" id="pageLoader"><div class="logo">NL</div><div class="loading-spinner"></div></div>
@@ -17,6 +19,13 @@
       <div class="sidebar-logo">NL</div>
       <div><div class="sidebar-name">GyanBazi</div><div class="sidebar-tagline">Exam Preparation</div></div>
     </div>
+    <div style="padding: 0 24px 12px;">
+      <a href="/learn/homepage.html" class="sidebar-link" style="padding: 8px 12px; background: rgba(79, 70, 229, 0.05); color: var(--primary); border: 1px solid rgba(79, 70, 229, 0.2);">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+        Back to Homepage
+      </a>
+    </div>
+
     <nav class="sidebar-nav">
       <div class="sidebar-section-title">Main</div>
       <a href="/learn/index.html" class="sidebar-link">
@@ -59,8 +68,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="/learn/js/firebase-config.js"></script>
-<script src="/learn/js/auth.js"></script>
-<script src="/learn/js/db.js"></script>
+<script src="/learn/js/auth.js?v=5"></script>
+<script src="/learn/js/db.js?v=6"></script>
 <script>
 async function init() {
   const user = await Auth.requireAuth();
@@ -102,6 +111,16 @@ async function handleSignOut() {
   if (confirm('Sign out?')) await Auth.signOut();
 }
 init();
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/learn/sw.js')
+        .then(reg => console.log('SW registered'))
+        .catch(err => console.log('SW fail: ', err));
+    });
+  }
 </script>
 </body>
 </html>

@@ -11,6 +11,8 @@
     .test-main { margin-right: 280px; }
     @media(max-width:768px) { .test-main { margin-right: 0; } }
   </style>
+  <link rel="manifest" href="/learn/manifest.json">
+  <meta name="theme-color" content="#2563eb">
 </head>
 <body>
 
@@ -75,8 +77,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="/learn/js/firebase-config.js"></script>
-<script src="/learn/js/auth.js"></script>
-<script src="/learn/js/db.js"></script>
+<script src="/learn/js/auth.js?v=5"></script>
+<script src="/learn/js/db.js?v=6"></script>
 <script src="/learn/js/test-engine.js"></script>
 <script>
 async function initTest() {
@@ -125,17 +127,42 @@ async function initTest() {
 
   } catch (err) {
     console.error(err);
-    document.getElementById('pageLoader').innerHTML = `
-      <div style="text-align:center;padding:40px;">
-        <div style="font-size:2rem;margin-bottom:12px;">⚠️</div>
-        <h3>Failed to load test</h3>
-        <p style="color:var(--text-muted);margin:10px 0 20px;">${err.message}</p>
-        <a href="/learn/categories.html" class="btn btn-primary">← Back to Categories</a>
-      </div>`;
+    
+    // Freemium logic: limit reached
+    if (err.message.includes('Daily limit reached') || err.message.includes('upgrade to Premium')) {
+      document.getElementById('pageLoader').innerHTML = `
+        <div style="text-align:center;padding:40px;background:var(--bg-secondary);border-radius:12px;box-shadow:var(--shadow-lg);max-width:400px;margin:10vh auto;">
+          <div style="font-size:3rem;margin-bottom:16px;">👑</div>
+          <h3 style="margin-bottom:8px;font-size:1.5rem;">Daily Limit Reached</h3>
+          <p style="color:var(--text-muted);margin-bottom:24px;line-height:1.5;">You've used up your 2 free tests for today. Upgrade to Premium to unlock unlimited tests, detailed analytics, and access to all model sets.</p>
+          <button class="btn btn-primary w-full" style="margin-bottom:12px;background:linear-gradient(135deg, #F59E0B, #D97706);border:none;" onclick="alert('Payment Gateway Integration Pending!')">Upgrade to Premium - Rs. 999</button>
+          <a href="/learn/index.html" class="btn btn-ghost w-full">Back to Dashboard</a>
+        </div>
+      `;
+    } else {
+      // General error
+      document.getElementById('pageLoader').innerHTML = `
+        <div style="text-align:center;padding:40px;">
+          <div style="font-size:2rem;margin-bottom:12px;">⚠️</div>
+          <h3>Failed to load test</h3>
+          <p style="color:var(--text-muted);margin:10px 0 20px;">${err.message}</p>
+          <a href="/learn/categories.html" class="btn btn-primary">← Back to Categories</a>
+        </div>`;
+    }
   }
 }
 
 initTest();
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/learn/sw.js')
+        .then(reg => console.log('SW registered'))
+        .catch(err => console.log('SW fail: ', err));
+    });
+  }
 </script>
 </body>
 </html>

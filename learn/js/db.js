@@ -23,11 +23,18 @@ const fetchAPI = async (endpoint, method = 'GET', data = null) => {
 
   try {
     const res = await fetch(`${API_BASE}/${endpoint}`, options);
-    if (!res.ok) throw new Error(`API Error: ${res.status}`);
-    return await res.json();
+    const text = await res.text();
+    let data = null;
+    try { data = JSON.parse(text); } catch (e) {}
+    
+    if (!res.ok) {
+      if (data && data.error) throw new Error(data.error);
+      throw new Error(`API Error: ${res.status}`);
+    }
+    return data;
   } catch (err) {
     console.error('API Fetch failed:', err);
-    return null;
+    throw err; // Re-throw so callers can handle specific errors
   }
 };
 
@@ -164,7 +171,7 @@ const DB = (() => {
       await fetchAPI(`users.php?action=update&uid=${uid}`, 'PUT', data);
     },
     async syncFirebaseUser(user) {
-      await fetchAPI('users.php?action=sync', 'POST', {
+      return await fetchAPI('users.php?action=sync', 'POST', {
         uid: user.uid,
         name: user.displayName,
         email: user.email,
@@ -173,6 +180,19 @@ const DB = (() => {
     },
     async recordLogin(uid) {
       return await fetchAPI('users.php?action=recordLogin', 'POST', { uid });
+    },
+    async getAnalytics(uid) {
+      return await fetchAPI(`users.php?action=getAnalytics&uid=${uid}`);
+    },
+    async completeProfile(nickname, phone, gender, avatarUrl) {
+      return await fetchAPI('users.php?action=completeProfile', 'POST', { nickname, phone, gender, avatarUrl });
+    },
+    // Admin Only
+    async getAll() {
+      return await fetchAPI('users.php?action=getAllUsers');
+    },
+    async updateSubscription(targetUid, tier) {
+      return await fetchAPI('users.php?action=updateSubscription', 'POST', { targetUid, tier });
     }
   };
 

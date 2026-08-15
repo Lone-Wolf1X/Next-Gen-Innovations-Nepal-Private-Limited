@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Email | GyanBazi</title>
+  <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/learn/css/learn-platform.css">
+  <style>
+    body { background: var(--bg); display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .verify-box { background: white; padding: 40px; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); max-width: 480px; width: 100%; text-align: center; }
+    .icon-box { font-size: 3rem; margin-bottom: 16px; }
+  </style>
+</head>
+<body>
+
+<div class="page-loader" id="pageLoader">
+  <div class="logo">NL</div>
+  <div class="loading-spinner"></div>
+</div>
+
+<div class="verify-box">
+  <div class="icon-box">✉️</div>
+  <h1 style="font-size:1.5rem;font-weight:700;margin-bottom:12px;">Verify your email</h1>
+  <p style="color:var(--text-muted);line-height:1.6;margin-bottom:24px;">
+    We've sent a verification link to your email address. Please check your inbox (and spam folder) and click the link to activate your account.
+  </p>
+  
+  <button class="btn btn-primary" style="width:100%;margin-bottom:12px;" onclick="checkVerification()" id="checkBtn">
+    I have verified my email
+  </button>
+  
+  <button class="btn btn-ghost" style="width:100%;" onclick="resendEmail()" id="resendBtn">
+    Resend verification email
+  </button>
+  
+  <div id="msg" style="margin-top:16px;font-size:0.9rem;font-weight:500;"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="/learn/js/firebase-config.js"></script>
+<script>
+  document.getElementById('pageLoader').style.display = 'none';
+
+  auth.onAuthStateChanged((user) => {
+    if (!user) {
+      window.location.href = '/learn/login.html';
+    } else if (user.emailVerified) {
+      window.location.href = '/learn/index.html';
+    }
+  });
+
+  function showMessage(text, isError = false) {
+    const msg = document.getElementById('msg');
+    msg.textContent = text;
+    msg.style.color = isError ? 'var(--danger)' : 'var(--success)';
+  }
+
+  async function checkVerification() {
+    const btn = document.getElementById('checkBtn');
+    btn.disabled = true;
+    btn.textContent = 'Checking...';
+    
+    if (auth.currentUser) {
+      await auth.currentUser.reload();
+      if (auth.currentUser.emailVerified) {
+        showMessage('Email verified! Redirecting...');
+        window.location.href = '/learn/index.html';
+      } else {
+        showMessage('Email is not verified yet.', true);
+        btn.disabled = false;
+        btn.textContent = 'I have verified my email';
+      }
+    }
+  }
+
+  async function resendEmail() {
+    const btn = document.getElementById('resendBtn');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    
+    try {
+      if (auth.currentUser) {
+        await auth.currentUser.sendEmailVerification();
+        showMessage('Verification email sent!');
+      }
+    } catch(e) {
+      showMessage(e.message, true);
+    }
+    
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = 'Resend verification email';
+    }, 3000);
+  }
+</script>
+</body>
+</html>

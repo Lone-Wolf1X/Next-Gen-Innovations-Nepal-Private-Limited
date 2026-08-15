@@ -31,6 +31,8 @@
     .start-btn { display: inline-block; margin-top: 16px; padding: 8px 24px; background: #f0f9ff; color: #0ea5e9; border-radius: 20px; font-weight: 600; text-decoration: none; border: 1px solid #bae6fd; transition: all 0.2s; }
     .start-btn:hover { background: #0ea5e9; color: white; }
   </style>
+  <link rel="manifest" href="/learn/manifest.json">
+  <meta name="theme-color" content="#2563eb">
 </head>
 <body>
 
@@ -56,8 +58,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="/learn/js/firebase-config.js"></script>
-<script src="/learn/js/db.js"></script>
-<script src="/learn/js/auth.js"></script>
+<script src="/learn/js/db.js?v=6"></script>
+<script src="/learn/js/auth.js?v=5"></script>
 
 <script>
   const urlParams = new URLSearchParams(window.location.search);
@@ -118,6 +120,16 @@
     } catch(e) {
       document.getElementById('timelineList').innerHTML = `<div style="color:red; text-align:center;">Error loading syllabus: ${e.message}</div>`;
     }
+  }
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/learn/sw.js')
+        .then(reg => console.log('SW registered'))
+        .catch(err => console.log('SW fail: ', err));
+    });
   }
 </script>
 </body>

@@ -11,10 +11,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
+// Security: Prevent stack trace leaks
+set_exception_handler(function($e) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Internal Server Error']);
+    exit;
+});
+
 // Database Credentials
 define('DB_HOST', 'localhost');
-define('DB_USER', 'next_gen_user');
-define('DB_PASS', 'NextGen123!@#');
+define('DB_USER', 'root');
+define('DB_PASS', '');
 define('DB_NAME', 'next_gen_db');
 
 // Admin Configuration
@@ -22,7 +29,7 @@ define('ADMIN_EMAILS', ['abhi.pwn2020@gmail.com']);
 
 function getDbConnection() {
     try {
-        $dsn = "pgsql:host=" . DB_HOST . ";dbname=" . DB_NAME;
+        $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,

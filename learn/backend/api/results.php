@@ -51,6 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             $questionReview[] = [
                 'questionId' => $q['id'],
+                'categoryId' => $q['categoryId'] ?? null,
+                'subjectId' => $q['subjectId'] ?? null,
                 'questionText' => $q['questionText'],
                 'options' => $q['options'],
                 'correctOption' => $q['correctOption'],

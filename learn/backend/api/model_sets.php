@@ -17,21 +17,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
         $sets = $stmt->fetchAll();
-        // Parse JSON
-        foreach($sets as &$s) { $s['questionIds'] = json_decode($s['question_ids']); }
+        // Parse JSON and map to camelCase
+        foreach($sets as &$s) { 
+            $s['questionIds'] = json_decode($s['question_ids']); 
+            $s['timeLimitMinutes'] = (int)$s['time_limit_minutes'];
+            $s['totalMarks'] = (int)$s['total_marks'];
+            $s['totalQuestions'] = $s['questionIds'] ? count($s['questionIds']) : 0;
+            $s['categoryId'] = $s['category_id'];
+        }
         sendJson($sets);
     } elseif ($action === 'getAll') {
         $stmt = $pdo->prepare("SELECT * FROM model_sets ORDER BY created_at DESC");
         $stmt->execute();
         $sets = $stmt->fetchAll();
-        foreach($sets as &$s) { $s['questionIds'] = json_decode($s['question_ids']); }
+        foreach($sets as &$s) { 
+            $s['questionIds'] = json_decode($s['question_ids']); 
+            $s['timeLimitMinutes'] = (int)$s['time_limit_minutes'];
+            $s['totalMarks'] = (int)$s['total_marks'];
+            $s['totalQuestions'] = $s['questionIds'] ? count($s['questionIds']) : 0;
+            $s['categoryId'] = $s['category_id'];
+        }
         sendJson($sets);
     } elseif ($action === 'getById') {
         $id = $_GET['id'] ?? '';
         $stmt = $pdo->prepare("SELECT * FROM model_sets WHERE id = ?");
         $stmt->execute([$id]);
         $data = $stmt->fetch();
-        if ($data) $data['questionIds'] = json_decode($data['question_ids']);
+        if ($data) {
+            $data['questionIds'] = json_decode($data['question_ids']);
+            $data['timeLimitMinutes'] = (int)$data['time_limit_minutes'];
+            $data['totalMarks'] = (int)$data['total_marks'];
+            $data['totalQuestions'] = $data['questionIds'] ? count($data['questionIds']) : 0;
+            $data['categoryId'] = $data['category_id'];
+        }
         sendJson($data ?: null);
     } elseif ($action === 'getWithQuestions') {
         $id = $_GET['id'] ?? '';
@@ -46,14 +64,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $placeholders = str_repeat('?,', count($qIds) - 1) . '?';
             $qStmt = $pdo->prepare("SELECT * FROM questions WHERE id IN ($placeholders)");
             $qStmt->execute($qIds);
-            $questions = $qStmt->fetchAll();
-            foreach($questions as &$q) {
-                $q['options'] = json_decode($q['options']);
+            $dbQuestions = $qStmt->fetchAll();
+            
+            // Map snake_case to camelCase
+            foreach($dbQuestions as $q) {
+                $questions[] = [
+                    'id' => $q['id'],
+                    'categoryId' => $q['category_id'],
+                    'subjectId' => $q['subject_id'],
+                    'questionText' => $q['question_text'],
+                    'options' => json_decode($q['options'], true),
+                    'correctOption' => $q['correct_option'],
+                    'explanation' => $q['explanation'],
+                    'difficulty' => $q['difficulty'],
+                    'marks' => $q['marks']
+                ];
             }
         }
         
         $set['questionIds'] = $qIds;
         $set['questions'] = $questions;
+        $set['timeLimitMinutes'] = (int)$set['time_limit_minutes'];
+        $set['totalMarks'] = (int)$set['total_marks'];
         sendJson($set);
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {

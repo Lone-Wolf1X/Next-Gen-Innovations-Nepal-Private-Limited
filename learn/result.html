@@ -6,6 +6,8 @@
   <title>Test Result | GyanBazi</title>
   <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/learn/css/learn-platform.css">
+  <link rel="manifest" href="/learn/manifest.json">
+  <meta name="theme-color" content="#2563eb">
 </head>
 <body>
 
@@ -159,8 +161,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="/learn/js/firebase-config.js"></script>
-<script src="/learn/js/auth.js"></script>
-<script src="/learn/js/db.js"></script>
+<script src="/learn/js/auth.js?v=5"></script>
+<script src="/learn/js/db.js?v=6"></script>
 <script>
 const CIRCUMFERENCE = 2 * Math.PI * 68; // r=68
 
@@ -269,6 +271,16 @@ function scrollToReview() {
 }
 
 initResult();
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/learn/sw.js')
+        .then(reg => console.log('SW registered'))
+        .catch(err => console.log('SW fail: ', err));
+    });
+  }
 </script>
 </body>
 </html>
