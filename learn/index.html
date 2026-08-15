@@ -255,9 +255,10 @@ async function initDashboard() {
           document.getElementById('freeLimitText').style.color = '#ef4444';
         }
       }
-    } catch(e) {
-      console.error("Failed to load user stats", e);
     }
+  } catch(e) {
+    console.error("Failed to load user stats", e);
+  }
 
     // Load Enrolled Vacancy Details
     try {
