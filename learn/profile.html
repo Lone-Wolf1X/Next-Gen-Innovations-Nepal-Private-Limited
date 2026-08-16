@@ -68,18 +68,55 @@
 
   <!-- MAIN -->
   <main class="main-content">
-    <div class="page-topbar">
+    <div class="page-topbar" style="display:flex; justify-content:space-between; align-items:center; background:#fff; padding:12px 24px; border-bottom:1px solid var(--border-color); position:sticky; top:0; z-index:10;">
       <div>
-        <h2 class="page-title">My Profile</h2>
+        <h2 class="page-title" style="margin-bottom:2px;">My Profile</h2>
         <div class="page-subtitle">Continue your exam preparation</div>
       </div>
-      <div class="topbar-right">
+      <div class="topbar-right" style="display:flex; align-items:center; gap:16px;">
         <button class="btn btn-ghost btn-sm btn-icon" id="mobileSidebarBtn" style="display:none;" onclick="toggleSidebar()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
         <a href="/learn/categories.html" class="btn btn-primary btn-sm">Practice Now →</a>
+        
+        <!-- User Avatar Dropdown -->
+        <div class="nav-user-dropdown" style="position:relative; margin-left:12px;">
+          <div class="nav-user-trigger" onclick="document.getElementById('navDropdownMenu').classList.toggle('show')" style="display:flex; align-items:center; gap:10px; cursor:pointer; padding:4px 12px 4px 4px; border-radius:50px; background:var(--bg-secondary); border:1px solid var(--border-color); transition:background 0.2s; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+            <div class="avatar-placeholder" id="navAvatar" style="width:36px; height:36px; font-size:16px; margin:0;">U</div>
+            <div style="display:flex; flex-direction:column; align-items:flex-start; margin-right:4px;">
+              <span id="navUserName" style="font-size:14px; font-weight:600; color:var(--text-main);">Loading...</span>
+            </div>
+            <svg style="width:16px; color:var(--text-muted);" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+          </div>
+          
+          <div id="navDropdownMenu" class="dropdown-menu" style="position:absolute; top:100%; right:0; margin-top:8px; background:#fff; border:1px solid var(--border-color); border-radius:8px; box-shadow:0 4px 15px rgba(0,0,0,0.1); width:200px; display:none; flex-direction:column; overflow:hidden;">
+            <a href="/learn/profile.html" style="padding:12px 16px; display:flex; align-items:center; gap:10px; color:var(--text-main); text-decoration:none; font-size:14px; border-bottom:1px solid var(--border-color); transition:background 0.2s;" onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background='transparent'">
+              <svg style="width:16px;" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+              My Profile
+            </a>
+            <div onclick="handleSignOut()" style="padding:12px 16px; display:flex; align-items:center; gap:10px; color:var(--danger); cursor:pointer; font-size:14px; transition:background 0.2s;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'">
+              <svg style="width:16px;" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/></svg>
+              Logout
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+    
+    <style>
+      .nav-user-trigger:hover { background: var(--bg-secondary); }
+      .dropdown-menu.show { display: flex !important; }
+      .form-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); font-family: inherit; font-size: 1rem; }
+    </style>
+    <script>
+      document.addEventListener('click', function(e) {
+        const trigger = document.querySelector('.nav-user-trigger');
+        const menu = document.getElementById('navDropdownMenu');
+        if (trigger && menu && !trigger.contains(e.target) && !menu.contains(e.target)) {
+          menu.classList.remove('show');
+        }
+      });
+    </script>
 
     <div class="page-body">
 
@@ -185,6 +222,24 @@
           </div>
         </div>
 
+        <!-- Invite Friends -->
+        <div style="margin-top: 32px;">
+          <div class="section-head">
+            <div>
+              <div class="section-head-title">Invite Friends</div>
+              <div class="section-head-sub">Share your invite link with friends so they can join GyanBazi!</div>
+            </div>
+          </div>
+          
+          <div class="card" style="padding: 24px;">
+            <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+              <input type="text" id="inviteLinkInput" readonly value="Loading..." class="form-input" style="flex:1; min-width:200px; background:var(--bg-secondary); border-color:var(--border-color); color:var(--text-muted);">
+              <button class="btn btn-primary" onclick="copyInviteLink()">Copy Link</button>
+            </div>
+            <div id="copyMsg" style="font-size:0.85rem; margin-top:8px; color:var(--success); display:none;">Link copied to clipboard!</div>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -222,12 +277,23 @@ async function initDashboard() {
 
   // Set avatar
   if (user.photoURL) {
-    document.getElementById('userAvatar').innerHTML = `<img src="${user.photoURL}" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">`;
+    const navAvatar = document.getElementById('navAvatar');
+    if (navAvatar) navAvatar.innerHTML = `<img src="${user.photoURL}" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">`;
   } else {
-    document.getElementById('userAvatar').textContent = (user.displayName || 'U')[0].toUpperCase();
+    const navAvatar = document.getElementById('navAvatar');
+    if (navAvatar) navAvatar.textContent = (user.displayName || 'U')[0].toUpperCase();
   }
-  document.getElementById('userName').textContent = user.displayName || 'User';
-  document.getElementById('userEmail').textContent = user.email;
+  const navUserName = document.getElementById('navUserName');
+  if (navUserName) navUserName.textContent = user.displayName || 'User';
+
+  // Hide old sidebar footer
+  const sf = document.querySelector('.sidebar-footer');
+  if (sf) sf.style.display = 'none';
+
+  // Populate invite link
+  const inviteLink = window.location.origin + '/learn/login.html?ref=' + user.uid;
+  const inviteInput = document.getElementById('inviteLinkInput');
+  if (inviteInput) inviteInput.value = inviteLink;
 
   const profile = await DB.users.getById(user.uid);
   if (profile) {
@@ -275,6 +341,23 @@ async function sendPasswordReset() {
   btn.textContent = "Send Password Reset Link";
 }
 
+async function copyInviteLink() {
+  const inviteInput = document.getElementById('inviteLinkInput');
+  const msg = document.getElementById('copyMsg');
+  if(inviteInput && inviteInput.value) {
+    try {
+      await navigator.clipboard.writeText(inviteInput.value);
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 3000);
+    } catch(err) {
+      // Fallback
+      inviteInput.select();
+      document.execCommand('copy');
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 3000);
+    }
+  }
+}
 
 function checkMobile() {
   const btn = document.getElementById('mobileSidebarBtn');

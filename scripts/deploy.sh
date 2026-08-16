@@ -4,7 +4,7 @@ REMOTE="ubuntu@161.118.189.212"
 REMOTE_DIR="/var/www/nextgen"
 
 echo "Creating tar archive..."
-tar -czvf update.tar.gz learn/admin/ learn/backend/api/ learn/backend/schema.sql learn/index.html learn/modelset-detail.html learn/course.html learn/js/test-engine.js learn/test.html learn/result.html
+tar -czvf update.tar.gz learn/admin/ learn/backend/api/ learn/backend/schema.sql learn/index.html learn/modelset-detail.html learn/course.html learn/js/test-engine.js learn/test.html learn/result.html learn/profile.html
 
 echo "Uploading tar archive..."
 scp -i "$KEY" -P 2222 -o StrictHostKeyChecking=no update.tar.gz "$REMOTE":/tmp/update.tar.gz
