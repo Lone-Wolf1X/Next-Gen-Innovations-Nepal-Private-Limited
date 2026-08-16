@@ -29,6 +29,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $stmt = $pdo->prepare("SELECT name, photo_url as photoUrl, avatar_url as avatarUrl, daily_points as dailyPoints, current_streak as currentStreak FROM users WHERE points_last_updated = CURDATE() AND daily_points > 0 ORDER BY daily_points DESC LIMIT 10");
         $stmt->execute();
         sendJson($stmt->fetchAll());
+    } elseif ($action === 'adminGetAll') {
+        $uid = requireAuth();
+        // Verify admin
+        $stmt = $pdo->prepare("SELECT email FROM users WHERE uid = ?");
+        $stmt->execute([$uid]);
+        $adminUser = $stmt->fetch();
+        if (!$adminUser || !in_array($adminUser['email'], ADMIN_EMAILS)) {
+            sendJson(["error" => "Unauthorized. Admin only."], 403);
+        }
+
+        $stmt = $pdo->prepare("SELECT uid, name, email, points_last_updated, daily_points, total_points, current_streak, created_at, subscription_tier FROM users ORDER BY created_at DESC");
+        $stmt->execute();
+        $users = $stmt->fetchAll();
+        $mapped = array_map(function($u) {
+            return [
+                'uid' => $u['uid'],
+                'name' => $u['name'],
+                'email' => $u['email'],
+                'dailyPoints' => ($u['points_last_updated'] === date('Y-m-d')) ? (int)$u['daily_points'] : 0,
+                'totalPoints' => (int)$u['total_points'],
+                'currentStreak' => (int)$u['current_streak'],
+                'joinedAt' => $u['created_at'],
+                'subscriptionTier' => $u['subscription_tier']
+            ];
+        }, $users);
+        sendJson($mapped);
     } elseif ($action === 'getAnalytics') {
         $uid = $_GET['uid'] ?? '';
         if (!$uid) sendJson(["error" => "UID required"], 400);

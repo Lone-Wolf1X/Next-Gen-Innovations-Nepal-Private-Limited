@@ -74,16 +74,17 @@ for filename in os.listdir(admin_dir):
         with open(filepath, "r", encoding="utf-8") as f:
             content = f.read()
         
-        # Replace the entire <aside class="sidebar">...</aside> block
-        pattern = re.compile(r'<aside class="sidebar">.*?</aside>', re.DOTALL)
+        # Replace the entire <aside class="sidebar"...>...</aside> block
+        pattern = re.compile(r'<aside class="sidebar"[^>]*>.*?</aside>', re.DOTALL)
         new_content = pattern.sub(SIDEBAR_HTML, content)
         
         # Also need to make the current page active.
-        # find the href that ends with filename and add 'active' class
-        # It looks like: class="sidebar-link admin-sidebar-link"
+        # Find the link for the current filename and add 'active' class
         active_pattern = re.compile(rf'href="/learn/admin/{filename}" class="sidebar-link admin-sidebar-link"')
         new_content = active_pattern.sub(f'href="/learn/admin/{filename}" class="sidebar-link admin-sidebar-link active"', new_content)
 
-        with open(filepath, "w", encoding="utf-8") as f:
-            f.write(new_content)
+        if new_content != content:
+            with open(filepath, "w", encoding="utf-8") as f:
+                f.write(new_content)
+            print(f"Updated {filename}")
 print("Updated all admin sidebars.")
