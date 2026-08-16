@@ -165,6 +165,17 @@ CREATE TABLE IF NOT EXISTS test_results (
     FOREIGN KEY (model_set_id) REFERENCES model_sets(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS daily_sprints (
+    id VARCHAR(36) PRIMARY KEY,
+    model_set_id VARCHAR(36) NOT NULL,
+    sprint_date DATE NOT NULL UNIQUE,
+    start_time DATETIME NOT NULL,
+    end_time DATETIME NOT NULL,
+    status VARCHAR(50) DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (model_set_id) REFERENCES model_sets(id) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS audit_logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     admin_id VARCHAR(128) NOT NULL,

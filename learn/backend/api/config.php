@@ -21,7 +21,7 @@ set_exception_handler(function($e) {
 // Database Credentials
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_PASS', 'Abhii@@123@');
 define('DB_NAME', 'next_gen_db');
 
 // Admin Configuration

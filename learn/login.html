@@ -143,8 +143,8 @@
       <!-- Email Sign In Form -->
       <form id="signInForm" onsubmit="handleEmailSignIn(event)" style="display:flex;flex-direction:column;margin-top:20px;">
         <div class="premium-input-group">
-          <label>Email Address</label>
-          <input type="email" id="si_email" class="premium-input" placeholder="you@example.com" required>
+          <label>Email Address or Staff ID</label>
+          <input type="text" id="si_email" class="premium-input" placeholder="you@example.com or staff id" required>
         </div>
         <div class="premium-input-group">
           <label>Password</label>
@@ -326,7 +326,7 @@
       btn.disabled = false;
       btn.innerHTML = 'Sign In';
     } else {
-      checkPostLogin();
+      checkPostLogin(res.user);
     }
   }
 
@@ -342,7 +342,7 @@
       btn.disabled = false;
       btn.innerHTML = 'Create Account';
     } else {
-      checkPostLogin();
+      checkPostLogin(res.user);
     }
   }
 
@@ -357,14 +357,30 @@
       btn.disabled = false;
       btn.innerHTML = 'Continue with Google';
     } else {
-      checkPostLogin();
+      checkPostLogin(res.user);
     }
   }
 
-  function checkPostLogin() {
+  async function checkPostLogin(user) {
     const params = new URLSearchParams(window.location.search);
     const next = params.get('next');
-    window.location.href = next ? decodeURIComponent(next) : '/learn/index.html';
+    
+    // Check if admin
+    let isAdmin = false;
+    if (user && user.uid) {
+        try {
+            const dbUser = await DB.users.getById(user.uid);
+            if (dbUser && dbUser.role === 'admin') {
+                isAdmin = true;
+            }
+        } catch(e) {}
+    }
+    
+    if (isAdmin) {
+        window.location.href = next ? decodeURIComponent(next) : '/learn/admin/index.html';
+    } else {
+        window.location.href = next ? decodeURIComponent(next) : '/learn/index.html';
+    }
   }
 </script>
 

@@ -43,8 +43,14 @@
       </a>
       <a href="/learn/categories.html" class="sidebar-link">
         <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/></svg>
-        Exam Categories
+        Browse Courses
       </a>
+
+      <div class="sidebar-section-title">Enrolled Courses</div>
+      <div id="enrolledCoursesList">
+        <!-- Dynamically populated -->
+        <div class="sidebar-link" style="opacity:0.5;">Loading...</div>
+      </div>
 
       <div class="sidebar-section-title">My Learning</div>
       <a href="/learn/profile.html" class="sidebar-link">
@@ -134,19 +140,16 @@
       <div class="dashboard-grid">
 
         <div style="display:flex; flex-direction:column; gap:24px; flex:1;">
-          <!-- Vacancy Timeline Tracker -->
-          <div class="card card-padded" id="vacancyTracker" style="background: white;">
-            <div class="skeleton" style="height:150px;"></div>
-          </div>
-          
-          <!-- Study Roadmap -->
-          <div class="card card-padded" id="studyRoadmap" style="background: white;">
-            <div class="skeleton" style="height:200px;"></div>
-          </div>
-
-          <!-- Practice Actions -->
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;" id="practiceActions">
-             <!-- Rendered dynamically -->
+          <!-- Feeds and Updates -->
+          <div class="card card-padded" style="background: white;">
+            <h3 style="font-size:1.25rem; font-weight:700; color:var(--text-primary); margin-bottom:16px;">Daily Updates & Feeds</h3>
+            <div id="feedsContainer">
+              <div style="padding:16px; border:1px solid var(--border-color); border-radius:8px; margin-bottom:12px;">
+                <h4 style="font-weight:600; color:var(--primary); margin-bottom:4px;">Welcome to the new Multi-Course Dashboard! 🎉</h4>
+                <p style="font-size:0.9rem; color:var(--text-muted);">You can now enroll in multiple courses from the "Browse Courses" tab. Navigate to your enrolled courses using the sidebar.</p>
+              </div>
+              <div id="dynamicFeeds"></div>
+            </div>
           </div>
         </div>
 
@@ -266,66 +269,41 @@ async function initDashboard() {
         headers: { 'Authorization': `Bearer ${user.uid}` }
       }).then(r=>r.json());
       
+      const enrolledContainer = document.getElementById('enrolledCoursesList');
       if(enrollments && enrollments.length > 0) {
-        const v = enrollments[0]; // Active vacancy
-        document.getElementById('pageGreeting').textContent = `Target: ${v.title} 🎯`;
+        // Populate sidebar
+        enrolledContainer.innerHTML = '';
+        enrollments.forEach(enroll => {
+          const courseTitle = enroll.title || 'Course';
+          enrolledContainer.innerHTML += `
+            <a href="/learn/course.html?id=${enroll.id}" class="sidebar-link">
+              <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/></svg>
+              ${courseTitle}
+            </a>
+          `;
+        });
         
-        // Timeline HTML
-        const timelineHtml = `
-          <div class="section-head-title" style="margin-bottom: 16px;">Vacancy Timeline</div>
-          <div style="display:flex; justify-content: space-between; position: relative;">
-             <div style="position:absolute; top: 10px; left: 20px; right: 20px; height: 4px; background: #e5e7eb; z-index: 0;"></div>
-             <div style="text-align: center; z-index: 1; background: white; padding: 0 10px;">
-               <div style="width:24px; height:24px; border-radius:50%; background:var(--primary); color:white; display:flex; align-items:center; justify-content:center; margin:0 auto 8px; font-size:12px;">✓</div>
-               <div style="font-size:0.8rem; font-weight:600;">Open</div>
-               <div style="font-size:0.7rem; color:var(--text-muted);">${v.application_open_date}</div>
-             </div>
-             <div style="text-align: center; z-index: 1; background: white; padding: 0 10px;">
-               <div style="width:24px; height:24px; border-radius:50%; background:var(--primary); color:white; display:flex; align-items:center; justify-content:center; margin:0 auto 8px; font-size:12px;">✓</div>
-               <div style="font-size:0.8rem; font-weight:600;">Close</div>
-               <div style="font-size:0.7rem; color:var(--text-muted);">${v.application_close_date}</div>
-             </div>
-             <div style="text-align: center; z-index: 1; background: white; padding: 0 10px;">
-               <div style="width:24px; height:24px; border-radius:50%; background:#e5e7eb; color:#6b7280; display:flex; align-items:center; justify-content:center; margin:0 auto 8px; font-size:12px;">⏳</div>
-               <div style="font-size:0.8rem; font-weight:600;">Exam</div>
-               <div style="font-size:0.7rem; color:var(--text-muted);">${v.exam_date || 'TBA'}</div>
-             </div>
+        // Add dynamic feeds based on enrolled courses
+        const dynamicFeeds = document.getElementById('dynamicFeeds');
+        dynamicFeeds.innerHTML = '';
+        enrollments.forEach(enroll => {
+          dynamicFeeds.innerHTML += `
+            <div style="padding:16px; border:1px solid var(--border-color); border-radius:8px; margin-bottom:12px; background:#f8fafc;">
+              <h4 style="font-weight:600; color:var(--text-primary); margin-bottom:4px;">Continue your progress in ${enroll.title}</h4>
+              <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:12px;">Head over to the course page to practice MCQs and review subjective questions.</p>
+              <a href="/learn/course.html?id=${enroll.id}" class="btn btn-outline btn-sm">Go to Course</a>
+            </div>
+          `;
+        });
+      } else {
+        enrolledContainer.innerHTML = `
+          <div style="padding: 12px 24px; font-size: 0.85rem; color: var(--text-muted);">
+            No courses enrolled yet.
           </div>
         `;
-        document.getElementById('vacancyTracker').innerHTML = timelineHtml;
-
-        // Roadmap HTML
-        document.getElementById('studyRoadmap').innerHTML = `
-          <div class="section-head-title" style="margin-bottom: 16px;">Study Roadmap</div>
-          <div style="font-size:0.95rem; line-height: 1.6; color: var(--text-primary);">
-            ${v.roadmap_html || '<p>No roadmap available for this vacancy yet.</p>'}
-          </div>
-        `;
-
-        // Practice Actions
-        let actionsHtml = '';
-        if(v.has_objective) {
-           actionsHtml += `
-             <div class="card card-padded" style="text-align:center; cursor:pointer; transition:0.2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'" onclick="window.location.href='/learn/categories.html'">
-                <div style="font-size:2rem; margin-bottom:12px;">📝</div>
-                <div style="font-weight:700; font-size:1.1rem; color:var(--primary-dark);">Objective Practice</div>
-                <p style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;">MCQs & Mock Tests</p>
-             </div>
-           `;
-        }
-        if(v.has_subjective) {
-           actionsHtml += `
-             <div class="card card-padded" style="text-align:center; cursor:pointer; transition:0.2s;" onmouseover="this.style.borderColor='#f97316'" onmouseout="this.style.borderColor='var(--border)'" onclick="window.location.href='/learn/subjective.html?vacancy=${v.id}'">
-                <div style="font-size:2rem; margin-bottom:12px;">✍️</div>
-                <div style="font-weight:700; font-size:1.1rem; color:#c2410c;">Subjective Strategy</div>
-                <p style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;">Writing Guides & Answers</p>
-             </div>
-           `;
-        }
-        document.getElementById('practiceActions').innerHTML = actionsHtml;
       }
     } catch(e) {
-      console.error("Failed to load enrollments", e);
+      console.error("Failed to load enrolled courses", e);
     }
 
   // Show app

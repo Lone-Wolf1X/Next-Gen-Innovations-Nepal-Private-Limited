@@ -19,8 +19,25 @@ const Auth = (() => {
   }
 
   // ─── Email Sign-In / Sign-Up ──────────────────────────────
-  async function signInWithEmail(email, password) {
+  async function signInWithEmail(identifier, password) {
     try {
+      let email = identifier;
+      
+      // If no '@' is present, assume it's a Staff ID
+      if (!identifier.includes('@')) {
+        const response = await fetch('/learn/backend/api/auth_helper.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ staffId: identifier })
+        });
+        
+        const data = await response.json();
+        if (!data.success) {
+          return { success: false, error: data.error };
+        }
+        email = data.email;
+      }
+      
       const result = await auth.signInWithEmailAndPassword(email, password);
       return { success: true, user: result.user };
     } catch (err) {
@@ -84,24 +101,33 @@ const Auth = (() => {
             window.location.href = '/learn/complete-profile.html';
           }
         } else {
-          // If profile is completed, check enrollments
-          try {
-            const enrollments = await fetch('/learn/backend/api/vacancies.php?action=myEnrollments', {
-              headers: { 'Authorization': `Bearer ${user.uid}` }
-            }).then(r => r.json());
-
-            if (Array.isArray(enrollments) && enrollments.length === 0) {
-              if (!window.location.pathname.includes('courses.html')) {
-                window.location.href = '/learn/courses.html';
-              }
-            } else {
-              // If profile is completed and enrolled, push to dashboard from wizard pages
-              if (window.location.pathname.includes('complete-profile.html') || window.location.pathname.includes('verify-email.html') || window.location.pathname.includes('courses.html')) {
-                window.location.href = '/learn/index.html';
-              }
+          // Check if admin
+          const dbUser = await DB.users.getById(user.uid);
+          if (dbUser && dbUser.role === 'admin') {
+            if (!window.location.pathname.includes('/admin/')) {
+               window.location.href = '/learn/admin/index.html';
+               return;
             }
-          } catch (e) {
-            console.error("Enrollment check failed", e);
+          } else {
+            // If profile is completed, check enrollments
+            try {
+              const enrollments = await fetch('/learn/backend/api/vacancies.php?action=myEnrollments', {
+                headers: { 'Authorization': `Bearer ${user.uid}` }
+              }).then(r => r.json());
+
+              if (Array.isArray(enrollments) && enrollments.length === 0) {
+                if (!window.location.pathname.includes('categories.html')) {
+                  window.location.href = '/learn/categories.html';
+                }
+              } else {
+                // If profile is completed and enrolled, push to dashboard from wizard pages
+                if (window.location.pathname.includes('complete-profile.html') || window.location.pathname.includes('verify-email.html') || window.location.pathname.includes('categories.html') || window.location.pathname.includes('courses.html')) {
+                  window.location.href = '/learn/index.html';
+                }
+              }
+            } catch (e) {
+              console.error("Enrollment check failed", e);
+            }
           }
         }
         resolve(user);
@@ -150,6 +176,12 @@ const Auth = (() => {
         const syncRes = await syncBackend(user);
         if (syncRes && !syncRes.profileCompleted) {
           window.location.href = '/learn/complete-profile.html';
+          return;
+        }
+
+        const dbUser = await DB.users.getById(user.uid);
+        if (dbUser && dbUser.role === 'admin') {
+          window.location.href = '/learn/admin/index.html';
           return;
         }
 

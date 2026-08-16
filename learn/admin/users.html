@@ -70,13 +70,14 @@
                 <th style="padding:12px;color:var(--text-muted);font-weight:600;font-size:0.875rem;">Name</th>
                 <th style="padding:12px;color:var(--text-muted);font-weight:600;font-size:0.875rem;">Email</th>
                 <th style="padding:12px;color:var(--text-muted);font-weight:600;font-size:0.875rem;">Joined</th>
-                <th style="padding:12px;color:var(--text-muted);font-weight:600;font-size:0.875rem;">Tests Taken</th>
+                <th style="padding:12px;color:var(--text-muted);font-weight:600;font-size:0.875rem;">Points</th>
+                <th style="padding:12px;color:var(--text-muted);font-weight:600;font-size:0.875rem;">Streak</th>
                 <th style="padding:12px;color:var(--text-muted);font-weight:600;font-size:0.875rem;">Plan</th>
                 <th style="padding:12px;color:var(--text-muted);font-weight:600;font-size:0.875rem;text-align:right;">Actions</th>
               </tr>
             </thead>
             <tbody id="usersTableBody">
-              <tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted);">Loading users...</td></tr>
+              <tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text-muted);">Loading users...</td></tr>
             </tbody>
           </table>
         </div>
@@ -85,20 +86,32 @@
   </main>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="/learn/js/firebase-config.js"></script>
-<script src="/learn/js/auth.js?v=5"></script>
-<script src="/learn/js/db.js?v=6"></script>
-<script>
+<script type="module">
+import { Auth } from '../js/auth.js';
+window.Auth = Auth;
+
 let allUsers = [];
+let currentUser = null;
+
+window.onload = async () => {
+    Auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+            window.location.href = '/learn/login.html';
+            return;
+        }
+        document.getElementById('adminName').textContent = user.displayName || 'Admin';
+        document.getElementById('adminEmail').textContent = user.email;
+        currentUser = user;
+        loadUsers();
+    });
+};
 
 async function loadUsers() {
-  const user = await Auth.requireAdmin();
-  if (!user) return;
-  
   try {
-    const res = await DB.users.getAll();
+    const res = await fetch('/learn/backend/api/admin.php?action=getUsers', {
+      headers: { 'Authorization': `Bearer ${currentUser.uid}` }
+    }).then(r=>r.json());
+    
     if (res && !res.error) {
       allUsers = res;
       renderUsers(allUsers);
@@ -114,7 +127,7 @@ async function loadUsers() {
 function renderUsers(users) {
   const tbody = document.getElementById('usersTableBody');
   if (users.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted);">No users found.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text-muted);">No users found.</td></tr>';
     return;
   }
   
@@ -133,7 +146,8 @@ function renderUsers(users) {
         <td style="padding:12px;font-weight:500;">${u.name || 'Unknown'}</td>
         <td style="padding:12px;color:var(--text-muted);">${u.email}</td>
         <td style="padding:12px;color:var(--text-muted);">${new Date(u.created_at).toLocaleDateString()}</td>
-        <td style="padding:12px;">${u.total_tests_completed || 0}</td>
+        <td style="padding:12px;font-weight:600;color:var(--primary);">${u.total_points || 0}</td>
+        <td style="padding:12px;">${u.current_streak || 0} 🔥</td>
         <td style="padding:12px;">${planBadge}</td>
         <td style="padding:12px;text-align:right;">${actionBtn}</td>
       </tr>
@@ -141,7 +155,7 @@ function renderUsers(users) {
   }).join('');
 }
 
-function filterUsers() {
+window.filterUsers = function() {
   const term = document.getElementById('searchUsers').value.toLowerCase();
   const filtered = allUsers.filter(u => 
     (u.name && u.name.toLowerCase().includes(term)) || 
@@ -150,13 +164,17 @@ function filterUsers() {
   renderUsers(filtered);
 }
 
-async function togglePlan(uid, newTier) {
+window.togglePlan = async function(uid, newTier) {
   if (!confirm(`Are you sure you want to change this user's plan to ${newTier.toUpperCase()}?`)) return;
   
   try {
-    const res = await DB.users.updateSubscription(uid, newTier);
+    const res = await fetch('/learn/backend/api/users.php?action=updateSubscription', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${currentUser.uid}` },
+        body: JSON.stringify({ targetUid: uid, tier: newTier })
+    }).then(r=>r.json());
+    
     if (res && res.success) {
-      // Update local state and re-render
       const user = allUsers.find(u => u.uid === uid);
       if (user) {
         user.subscription_tier = newTier;
@@ -170,8 +188,6 @@ async function togglePlan(uid, newTier) {
     alert('Error updating subscription');
   }
 }
-
-loadUsers();
 </script>
 </body>
 </html>

@@ -34,8 +34,15 @@
       </a>
       <a href="/learn/categories.html" class="sidebar-link active">
         <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/></svg>
-        Exam Categories
+        Browse Courses
       </a>
+      
+      <div class="sidebar-section-title">Enrolled Courses</div>
+      <div id="enrolledCoursesList">
+        <!-- Dynamically populated -->
+        <div class="sidebar-link" style="opacity:0.5;">Loading...</div>
+      </div>
+
       <div class="sidebar-section-title">My Learning</div>
       <a href="/learn/profile.html" class="sidebar-link">
         <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
@@ -55,10 +62,10 @@
       <div><div class="page-title">Exam Categories</div><div class="page-subtitle">Choose your target exam to begin</div></div>
     </div>
     <div class="page-body">
-      <div class="category-grid" id="categoriesGrid">
-        <div class="skeleton" style="height:180px;border-radius:var(--radius-lg);"></div>
-        <div class="skeleton" style="height:180px;border-radius:var(--radius-lg);"></div>
-        <div class="skeleton" style="height:180px;border-radius:var(--radius-lg);"></div>
+      <div class="category-grid" id="coursesGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;">
+        <div class="skeleton" style="height:200px;border-radius:var(--radius-lg);"></div>
+        <div class="skeleton" style="height:200px;border-radius:var(--radius-lg);"></div>
+        <div class="skeleton" style="height:200px;border-radius:var(--radius-lg);"></div>
       </div>
     </div>
   </main>
@@ -74,39 +81,112 @@
 async function init() {
   const user = await Auth.requireAuth();
   setUserUI(user);
-  const cats = await DB.categories.getAll();
-  renderCategories(cats);
+  
+  try {
+    // Fetch all courses
+    const allCourses = await fetch('/learn/backend/api/vacancies.php?action=list').then(r => r.json());
+    // Fetch user enrollments
+    const enrollments = await fetch('/learn/backend/api/vacancies.php?action=myEnrollments', {
+      headers: { 'Authorization': `Bearer ${user.uid}` }
+    }).then(r => r.json());
+    
+    renderCourses(allCourses, enrollments || [], user.uid);
+  } catch(e) {
+    console.error(e);
+    document.getElementById('coursesGrid').innerHTML = '<p>Error loading courses.</p>';
+  }
+
   document.getElementById('pageLoader').style.display = 'none';
   document.getElementById('appLayout').style.display = 'flex';
 }
+
 function setUserUI(user) {
   if (user.photoURL) document.getElementById('userAvatar').innerHTML = `<img src="${user.photoURL}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">`;
-  else document.getElementById('userAvatar').textContent = (user.displayName||'U')[0];
+  else document.getElementById('userAvatar').textContent = (user.displayName||'U')[0].toUpperCase();
   document.getElementById('userName').textContent = user.displayName || 'User';
   document.getElementById('userEmail').textContent = user.email;
 }
-function renderCategories(cats) {
-  const container = document.getElementById('categoriesGrid');
-  if (!cats || cats.length === 0) {
+
+function renderCourses(courses, enrollments, uid) {
+  const container = document.getElementById('coursesGrid');
+  if (!courses || courses.length === 0) {
     container.innerHTML = `
       <div class="empty-state" style="grid-column:1/-1;">
         <div class="empty-icon">📚</div>
-        <div class="empty-title">No categories yet</div>
-        <div class="empty-desc">The admin is setting up exam categories. Please check back soon.</div>
+        <div class="empty-title">No courses available</div>
+        <div class="empty-desc">The admin is setting up courses. Please check back soon.</div>
       </div>`;
     return;
   }
-  container.innerHTML = cats.map(c => `
-    <div class="category-card">
-      <div class="category-icon-wrap">${c.icon || '📚'}</div>
-      <div class="category-name">${c.name}</div>
-      <div class="category-desc">${c.description || ''}</div>
-      <div style="display:flex; gap:12px; margin-top:24px;">
-        <a href="/learn/roadmap.html?cat=${c.id}" class="btn btn-outline btn-sm" style="flex:1; text-align:center;">Syllabus</a>
-        <a href="/learn/modelsets.html?cat=${c.id}" class="btn btn-primary btn-sm" style="flex:1; text-align:center;">Mock Tests</a>
+  
+  const enrolledIds = enrollments.map(e => e.id);
+  
+  // Populate sidebar
+  const enrolledContainer = document.getElementById('enrolledCoursesList');
+  if (enrollments && enrollments.length > 0) {
+    enrolledContainer.innerHTML = '';
+    enrollments.forEach(enroll => {
+      const courseTitle = enroll.title || 'Course';
+      enrolledContainer.innerHTML += `
+        <a href="/learn/course.html?id=${enroll.id}" class="sidebar-link">
+          <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/></svg>
+          ${courseTitle}
+        </a>
+      `;
+    });
+  } else {
+    enrolledContainer.innerHTML = `
+      <div style="padding: 12px 24px; font-size: 0.85rem; color: var(--text-muted);">
+        No courses enrolled yet.
       </div>
-    </div>`).join('');
+    `;
+  }
+
+  container.innerHTML = courses.map(c => {
+    const isEnrolled = enrolledIds.includes(c.id);
+    return `
+      <div class="card card-padded" style="display:flex; flex-direction:column; justify-content:space-between; height: 100%;">
+        <div>
+          <div style="font-size:0.8rem; font-weight:600; color:var(--primary); margin-bottom:8px; text-transform:uppercase; letter-spacing:1px;">${c.category_name}</div>
+          <h3 style="font-size:1.1rem; font-weight:700; color:var(--text-primary); margin-bottom:12px; line-height:1.4;">${c.title}</h3>
+          <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:16px; line-height:1.6;">${c.description || 'Join this course to start your preparation.'}</p>
+        </div>
+        <div>
+          ${isEnrolled 
+            ? `<a href="/learn/course.html?id=${c.id}" class="btn btn-outline" style="width:100%;">Go to Course</a>`
+            : `<button class="btn btn-primary" style="width:100%;" onclick="enrollCourse('${c.id}', '${uid}')">Enroll Now</button>`
+          }
+        </div>
+      </div>
+    `;
+  }).join('');
 }
+
+async function enrollCourse(vacancyId, uid) {
+  if (!confirm("Do you want to enroll in this course?")) return;
+  
+  try {
+    const res = await fetch('/learn/backend/api/vacancies.php?action=enroll', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${uid}`
+      },
+      body: JSON.stringify({ vacancyId })
+    }).then(r => r.json());
+    
+    if (res.success) {
+      alert("Enrolled successfully!");
+      window.location.href = `/learn/course.html?id=${vacancyId}`;
+    } else {
+      alert("Error: " + (res.error || "Could not enroll"));
+    }
+  } catch(e) {
+    alert("Network error occurred.");
+    console.error(e);
+  }
+}
+
 async function handleSignOut() {
   if (confirm('Sign out?')) await Auth.signOut();
 }
