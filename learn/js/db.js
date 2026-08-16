@@ -110,6 +110,12 @@ const DB = (() => {
       const res = await fetchAPI('model_sets.php?action=create', 'POST', { ...data, adminId });
       return res?.id;
     },
+    async update(id, data, adminId) {
+      await fetchAPI(`model_sets.php?action=update&id=${id}`, 'PUT', { ...data, adminId });
+    },
+    async delete(id, adminId) {
+      await fetchAPI(`model_sets.php?action=delete&id=${id}`, 'DELETE', { adminId });
+    }
   };
 
   // ─── TEST ATTEMPTS ───────────────────────────────────────

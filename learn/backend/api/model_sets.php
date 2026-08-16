@@ -189,6 +189,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             sendJson(["error" => "Import failed: " . $e->getMessage()], 500);
         }
     }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    if ($action === 'delete') {
+        $id = $_GET['id'] ?? '';
+        if (!$id) sendJson(["error" => "ID required"], 400);
+
+        // Fetch question IDs to delete them as well if they belong to this set exclusively?
+        // Let's just delete the model_set for now; questions are deleted automatically if ON DELETE CASCADE,
+        // but here they are just json arrays. If we want to clean up questions, we'd need to parse json.
+        // For now, just delete the model set.
+        $stmt = $pdo->prepare("DELETE FROM model_sets WHERE id = ?");
+        if ($stmt->execute([$id])) {
+            sendJson(["success" => true]);
+        } else {
+            sendJson(["error" => "Failed to delete"], 500);
+        }
+    }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    if ($action === 'update') {
+        $id = $_GET['id'] ?? '';
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (!$id || !$data) sendJson(["error" => "ID and data required"], 400);
+
+        $stmt = $pdo->prepare("UPDATE model_sets SET title = ?, description = ?, time_limit_minutes = ?, total_marks = ?, status = ?, is_daily_live = ?, live_start_time = ?, live_end_time = ?, vacancy_id = ? WHERE id = ?");
+        if ($stmt->execute([
+            $data['title'],
+            $data['description'] ?? '',
+            $data['timeLimitMinutes'] ?? 60,
+            $data['totalMarks'] ?? 100,
+            $data['status'] ?? 'published',
+            isset($data['isDailyLive']) ? (int)$data['isDailyLive'] : 0,
+            $data['liveStartTime'] ?? null,
+            $data['liveEndTime'] ?? null,
+            $data['vacancyId'] ?? null,
+            $id
+        ])) {
+            sendJson(["success" => true]);
+        } else {
+            sendJson(["error" => "Failed to update"], 500);
+        }
+    }
 }
 
 sendJson(["error" => "Invalid action"], 400);
