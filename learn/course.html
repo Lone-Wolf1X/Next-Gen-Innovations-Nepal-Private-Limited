@@ -241,7 +241,7 @@ async function fetchModelSets() {
           <h4 style="font-weight:600; font-size:1.1rem; color:var(--text-primary); margin-bottom:4px;">${s.title}</h4>
           <p style="font-size:0.85rem; color:var(--text-muted);">${s.totalQuestions || 0} Questions • ${s.timeLimitMinutes || 60} mins • ${s.totalMarks || 100} Marks</p>
         </div>
-        <a href="/learn/exam-instruction.html?id=${s.id}" class="btn btn-outline btn-sm">Start Test</a>
+        <a href="/learn/modelset-detail.html?id=${s.id}" class="btn btn-outline btn-sm">Start Test</a>
       </div>
     `).join('');
   } catch(e) {

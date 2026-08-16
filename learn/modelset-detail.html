@@ -115,17 +115,8 @@ async function init() {
     document.getElementById('negMarkInstr').textContent = `Negative marking: ${set.negativeMarkValue || 0.25} marks will be deducted for each wrong answer.`;
   }
 
-  // Check existing in-progress attempt
-  const existing = await db.collection('testAttempts')
-    .where('userId', '==', user.uid)
-    .where('modelSetId', '==', modelSetId)
-    .where('status', '==', 'in_progress')
-    .limit(1).get();
-
-  if (!existing.empty) {
-    document.getElementById('prevAttemptNote').style.display = 'block';
-    document.getElementById('startBtn').textContent = 'Resume Test →';
-  }
+  // Removed Firebase check for in-progress attempts.
+  // The PHP backend automatically resumes in test.html if an attempt is active.
 
   if (set.categoryId) {
     const cat = await DB.categories.getById(set.categoryId);

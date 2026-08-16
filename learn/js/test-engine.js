@@ -29,6 +29,31 @@ const TestEngine = (() => {
     const setData = await DB.modelSets.getWithQuestions(modelSetId);
     if (!setData) throw new Error('Model set not found');
 
+    // Normalize questions (Array -> Object)
+    setData.questions.forEach(q => {
+      if (typeof q.options === 'string') {
+        try { q.options = JSON.parse(q.options); } catch(e){}
+      }
+      if (Array.isArray(q.options)) {
+        const obj = {};
+        const keys = ['a', 'b', 'c', 'd'];
+        q.options.forEach((opt, i) => {
+          if (i < 4) obj[keys[i]] = opt;
+        });
+        
+        if (q.correctOption && q.correctOption.length > 1) {
+          const idx = q.options.findIndex(o => o === q.correctOption);
+          if (idx !== -1 && idx < 4) {
+            q.correctOption = keys[idx];
+          } else {
+            const firstChar = q.correctOption.charAt(0).toLowerCase();
+            if (keys.includes(firstChar)) q.correctOption = firstChar;
+          }
+        }
+        q.options = obj;
+      }
+    });
+
     state.modelSet = setData;
     state.questions = setData.questions;
 
@@ -111,6 +136,7 @@ const TestEngine = (() => {
   // ─── ANSWER SELECTION ────────────────────────────────────
   async function selectAnswer(questionId, option) {
     state.answers[questionId] = option;
+    renderQuestion();
     updateNavigator();
 
     // Save to Firestore

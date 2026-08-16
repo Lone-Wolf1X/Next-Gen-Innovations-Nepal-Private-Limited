@@ -10,6 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $stmt->execute();
         $vacancies = $stmt->fetchAll();
         sendJson($vacancies);
+    } elseif ($action === 'getAllAdmin') {
+        $stmt = $pdo->prepare("SELECT v.*, c.name as category_name FROM vacancies v LEFT JOIN exam_categories c ON v.category_id = c.id ORDER BY v.created_at DESC");
+        $stmt->execute();
+        $vacancies = $stmt->fetchAll();
+        sendJson($vacancies);
     } elseif ($action === 'myEnrollments') {
         $uid = requireAuth();
         $stmt = $pdo->prepare("

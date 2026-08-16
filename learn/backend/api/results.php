@@ -19,6 +19,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $r['modelSetId'] = $r['model_set_id'];
         }
         sendJson($results);
+    } elseif ($action === 'getById') {
+        $id = $_GET['id'] ?? '';
+        $stmt = $pdo->prepare("SELECT * FROM test_results WHERE id = ?");
+        $stmt->execute([$id]);
+        $r = $stmt->fetch();
+        if ($r) {
+            $r['questionReview'] = json_decode($r['question_review']);
+            $r['scorePercentage'] = (float)$r['score_percentage'];
+            $r['modelSetId'] = $r['model_set_id'];
+            $r['timeTakenSeconds'] = (int)$r['time_taken_seconds'];
+            $r['totalMarks'] = (float)$r['total_marks'];
+            $r['finalScore'] = (float)$r['final_score'];
+            $r['accuracy'] = (float)$r['accuracy'];
+            $r['correctAnswers'] = (int)$r['correct_answers'];
+            $r['incorrectAnswers'] = (int)$r['incorrect_answers'];
+            $r['unattemptedQuestions'] = (int)$r['unattempted_questions'];
+            $r['negativeMarks'] = (float)$r['negative_marks'];
+            $r['isPersonalBest'] = $r['is_personal_best'] ? true : false;
+            sendJson($r);
+        } else {
+            sendJson(["error" => "Result not found"], 404);
+        }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'submit') {
@@ -90,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // Insert Result
         $id = uniqid();
         $pdo->prepare("INSERT INTO test_results (id, attempt_id, user_id, model_set_id, total_questions, correct_answers, incorrect_answers, unattempted_questions, marks_obtained, negative_marks, final_score, total_marks, score_percentage, accuracy, time_taken_seconds, is_personal_best, question_review) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
-            ->execute([$id, $attemptId, $userId, $modelSetId, count($questionList), $correct, $incorrect, $unattempted, $marksObtained, $negativeMarks, $finalScore, $totalMarks, $scorePercentage, $accuracy, $timeTaken, $isPersonalBest ? 'true' : 'false', json_encode($questionReview)]);
+            ->execute([$id, $attemptId, $userId, $modelSetId, count($questionList), $correct, $incorrect, $unattempted, $marksObtained, $negativeMarks, $finalScore, $totalMarks, $scorePercentage, $accuracy, $timeTaken, $isPersonalBest ? 1 : 0, json_encode($questionReview)]);
 
         // Update Attempt
         $pdo->prepare("UPDATE test_attempts SET status = 'completed', submitted_at = CURRENT_TIMESTAMP WHERE id = ?")->execute([$attemptId]);

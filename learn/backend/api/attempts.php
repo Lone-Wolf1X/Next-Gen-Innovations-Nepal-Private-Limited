@@ -16,8 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $today = date('Y-m-d');
             $testsTaken = $user['last_test_date'] === $today ? (int)$user['tests_taken_today'] : 0;
             
-            // Freemium Limit Logic: 2 free tests per day
-            if ($user['subscription_tier'] === 'free' && $testsTaken >= 2) {
+            // Freemium Limit Logic: 10 free tests per day
+            if ($user['subscription_tier'] === 'free' && $testsTaken >= 10) {
                 sendJson(["error" => "Daily limit reached. Please upgrade to Premium.", "limitReached" => true], 403);
             }
 
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $upUser = $pdo->prepare("UPDATE users SET tests_taken_today = ?, last_test_date = ? WHERE uid = ?");
             $upUser->execute([$testsTaken + 1, $today, $data['userId']]);
 
-            sendJson(["id" => $id, "resumed" => false]);
+            sendJson(["id" => $id, "resumed" => false, "timeRemainingSeconds" => $data['timeLimitMinutes'] * 60]);
         }
         sendJson(["error" => "User not found"], 404);
     } elseif ($action === 'saveAnswer') {

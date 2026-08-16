@@ -169,12 +169,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             // Insert Model Set
-            $stmt = $pdo->prepare("INSERT INTO model_sets (id, title, description, category_id, question_ids, time_limit_minutes, total_marks, status, published_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)");
+            $stmt = $pdo->prepare("INSERT INTO model_sets (id, title, description, category_id, vacancy_id, question_ids, time_limit_minutes, total_marks, status, published_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)");
             $stmt->execute([
                 $id,
                 $data['title'],
                 $data['description'] ?? '',
                 $data['categoryId'],
+                $data['vacancyId'] ?? null,
                 json_encode($qIds),
                 $data['timeLimitMinutes'] ?? 45, // default 45 mins
                 count($qIds), // Assumes 1 mark per question for simplicity

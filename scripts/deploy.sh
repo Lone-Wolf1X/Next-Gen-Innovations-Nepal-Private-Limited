@@ -4,12 +4,12 @@ REMOTE="ubuntu@161.118.189.212"
 REMOTE_DIR="/var/www/nextgen"
 
 echo "Creating tar archive..."
-tar -czvf update.tar.gz learn/admin/ learn/backend/api/ learn/backend/schema.sql
+tar -czvf update.tar.gz learn/admin/ learn/backend/api/ learn/backend/schema.sql learn/index.html learn/modelset-detail.html learn/course.html learn/js/test-engine.js learn/test.html learn/result.html
 
 echo "Uploading tar archive..."
-scp -i "$KEY" -o StrictHostKeyChecking=no update.tar.gz "$REMOTE":/tmp/update.tar.gz
+scp -i "$KEY" -P 2222 -o StrictHostKeyChecking=no update.tar.gz "$REMOTE":/tmp/update.tar.gz
 
 echo "Extracting and applying database changes on remote server..."
-ssh -i "$KEY" -o StrictHostKeyChecking=no "$REMOTE" "cd '$REMOTE_DIR' && sudo tar -xzvf /tmp/update.tar.gz && sudo chown -R ubuntu:ubuntu learn/ && sudo chmod -R 755 learn/ && mysql -u root -p'Admin@9876@' next_gen_db < learn/backend/schema.sql"
+ssh -i "$KEY" -p 2222 -o StrictHostKeyChecking=no "$REMOTE" "cd '$REMOTE_DIR' && sudo tar -xzvf /tmp/update.tar.gz && sudo chown -R ubuntu:ubuntu learn/ && sudo chmod -R 755 learn/"
 
 echo "Done!"

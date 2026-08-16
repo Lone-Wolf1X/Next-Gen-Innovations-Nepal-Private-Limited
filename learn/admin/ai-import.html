@@ -112,9 +112,14 @@ Copy and paste this prompt to ChatGPT:
       </div>
     </details>
 
-    <label style="font-weight:600;display:block;margin-bottom:8px;">Select Category:</label>
+    <label style="font-weight:600;display:block;margin-bottom:8px;">Select Course (Vacancy):</label>
+    <select id="vacancySelect" class="input-field" style="margin-bottom:24px;">
+      <option value="">Loading courses...</option>
+    </select>
+
+    <label style="font-weight:600;display:block;margin-bottom:8px;">Select Subject (Category):</label>
     <select id="categorySelect" class="input-field" style="margin-bottom:24px;">
-      <option value="">Loading categories...</option>
+      <option value="">Loading subjects...</option>
     </select>
 
     <label style="font-weight:600;display:block;margin-bottom:8px;">Model Set Title (e.g. Set 1, Mock Test 2):</label>
@@ -152,41 +157,84 @@ window.onload = async () => {
         if (sidebarName) sidebarName.textContent = currentUser.displayName || 'Admin';
         if (sidebarEmail) sidebarEmail.textContent = currentUser.email;
 
+        loadVacancies();
         loadCategories();
     } catch(e) {
         console.error("Auth error", e);
     }
 };
 
-async function loadCategories() {
-    const select = document.getElementById('categorySelect');
+async function loadVacancies() {
     try {
-      const cats = await DB.categories.getAll();
-      select.innerHTML = '<option value="">-- Select Exam Category --</option>' + 
-        cats.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        const res = await fetch('/learn/backend/api/vacancies.php?action=getAllAdmin').then(r=>r.json());
+        const sel = document.getElementById('vacancySelect');
+        sel.innerHTML = '<option value="">-- Select Course --</option>' + 
+            res.map(v => `<option value="${v.id}">${v.title}</option>`).join('');
     } catch(e) {
-      select.innerHTML = '<option value="">Error loading categories</option>';
+        console.error(e);
+        document.getElementById('vacancySelect').innerHTML = '<option value="">Error loading courses</option>';
+    }
+}
+
+async function loadCategories() {
+    try {
+        const res = await fetch('/learn/backend/api/categories.php?action=getAllAdmin').then(r=>r.json());
+        const sel = document.getElementById('categorySelect');
+        sel.innerHTML = '<option value="">-- Select Subject --</option>' + 
+            res.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    } catch(e) {
+        console.error(e);
+        document.getElementById('categorySelect').innerHTML = '<option value="">Error loading subjects</option>';
     }
 }
 
 document.getElementById('importBtn').addEventListener('click', async () => {
-    const catId = document.getElementById('categorySelect').value;
-    const titleVal = document.getElementById('setTitle').value.trim();
-    const jsonStr = document.getElementById('jsonInput').value;
-    const msg = document.getElementById('statusMsg');
+    const vacancyId = document.getElementById('vacancySelect').value;
+    const categoryId = document.getElementById('categorySelect').value;
+    const title = document.getElementById('setTitle').value.trim();
+    const jsonStr = document.getElementById('jsonInput').value.trim();
+    const statusMsg = document.getElementById('statusMsg');
 
-    if (!catId) { msg.style.color = 'red'; msg.textContent = 'Please select a category!'; return; }
-    if (!titleVal) { msg.style.color = 'red'; msg.textContent = 'Please enter a Model Set Title!'; return; }
-    if (!jsonStr) { msg.style.color = 'red'; msg.textContent = 'Please paste JSON!'; return; }
+    if (!vacancyId) {
+        alert("Please select a Course (Vacancy).");
+        return;
+    }
+    if (!categoryId) {
+        alert("Please select a Subject (Category).");
+        return;
+    }
+    if (!title) {
+        alert("Please enter a title.");
+        return;
+    }
+    if (!jsonStr) {
+        alert("Please paste the JSON.");
+        return;
+    }
+
+    let parsed;
+    try {
+        parsed = JSON.parse(jsonStr);
+        if (!parsed.questions || !Array.isArray(parsed.questions)) {
+            throw new Error("JSON must have a 'questions' array.");
+        }
+    } catch(e) {
+        alert("Invalid JSON format: " + e.message);
+        return;
+    }
+
+    statusMsg.style.color = "var(--primary)";
+    statusMsg.textContent = "Importing and publishing to database...";
 
     try {
-      msg.style.color = '#0ea5e9';
-      msg.textContent = 'Parsing JSON and importing...';
-      
-      const payload = JSON.parse(jsonStr);
-      payload.categoryId = catId; 
-      payload.title = titleVal; // Override JSON title with the input field
-      payload.timeLimitMinutes = 45; // Force default time to 45 mins as requested
+      const payload = {
+        title: title,
+        description: parsed.description || "",
+        categoryId: categoryId,
+        vacancyId: vacancyId,
+        timeLimitMinutes: parsed.timeLimitMinutes || 45,
+        questions: parsed.questions
+      };
 
       const res = await fetch('/learn/backend/api/model_sets.php?action=importJson', {
         method: 'POST',
@@ -196,15 +244,15 @@ document.getElementById('importBtn').addEventListener('click', async () => {
       
       const result = await res.json();
       if(result.success) {
-        msg.style.color = '#10b981';
-        msg.textContent = `✅ Success! Imported ${result.totalQuestions} questions. Set is now live!`;
+        statusMsg.style.color = '#10b981';
+        statusMsg.textContent = `✅ Success! Imported ${result.totalQuestions} questions. Set is now live!`;
         document.getElementById('jsonInput').value = '';
       } else {
         throw new Error(result.error);
       }
     } catch (e) {
-      msg.style.color = '#ef4444';
-      msg.textContent = '❌ Error: ' + e.message;
+      statusMsg.style.color = '#ef4444';
+      statusMsg.textContent = '❌ Error: ' + e.message;
     }
 });
 </script>

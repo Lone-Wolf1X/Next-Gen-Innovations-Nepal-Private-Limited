@@ -1,5 +1,7 @@
 <?php
 // backend/api/config.php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 // CORS Headers
 header("Access-Control-Allow-Origin: *");
@@ -14,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Security: Prevent stack trace leaks
 set_exception_handler(function($e) {
     http_response_code(500);
-    echo json_encode(['error' => 'Internal Server Error']);
+    echo json_encode(['error' => $e->getMessage()]);
     exit;
 });
 
