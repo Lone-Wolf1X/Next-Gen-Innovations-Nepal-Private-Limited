@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Sprint Challenge | GyanBazi</title>
+  <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/learn/css/learn-platform.css">
+  <style>
+    body { background: #f8fafd; font-family: 'Outfit', sans-serif; }
+    .sprint-container { max-width: 600px; margin: 60px auto; padding: 32px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
+    .sprint-icon { font-size: 64px; margin-bottom: 20px; }
+    .sprint-title { font-size: 1.8rem; font-weight: 700; color: #0f172a; margin-bottom: 12px; }
+    .sprint-desc { color: #64748b; font-size: 1rem; margin-bottom: 32px; line-height: 1.6; }
+    .progress-bar-container { background: #e2e8f0; height: 12px; border-radius: 6px; overflow: hidden; margin-bottom: 12px; }
+    .progress-bar-fill { background: linear-gradient(90deg, var(--primary), #818cf8); height: 100%; transition: width 0.5s ease-out; }
+    .status-text { font-weight: 600; color: #475569; margin-bottom: 32px; }
+    .btn-gamified { width: 100%; background: linear-gradient(135deg, #10b981, #059669); color: white; border-radius: 12px; padding: 16px; font-size: 1.1rem; font-weight: 700; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+    .btn-gamified:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2); }
+    .btn-gamified:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none; }
+    .upsell-box { background: #fffbeb; border: 1px solid #fde68a; padding: 16px; border-radius: 12px; margin-top: 32px; text-align: left; }
+    
+    .leaderboard-table { width: 100%; text-align: left; border-collapse: collapse; margin-top: 24px; }
+    .leaderboard-table th, .leaderboard-table td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
+    .leaderboard-table th { color: #64748b; font-size: 0.85rem; text-transform: uppercase; }
+    .medal { font-size: 1.2rem; margin-right: 8px; }
+  </style>
+</head>
+<body>
+
+<div class="page-loader" id="pageLoader"><div class="logo">NL</div><div class="loading-spinner"></div></div>
+
+<div class="app-layout" id="appLayout" style="display:none; justify-content:center; padding: 20px;">
+  
+  <div class="sprint-container" id="sprintView">
+    <div class="sprint-icon">🔥</div>
+    <div class="sprint-title" id="spTitle">Loading Sprint...</div>
+    <div class="sprint-desc">
+      Welcome to the Daily Sprint Challenge! Compete against others to win prizes. 
+      <br><br>
+      <strong>Scoring Rule:</strong> (Correct × 10) - (Wrong × 2) + Speed Bonus.
+    </div>
+
+    <!-- Gamification Unlock UI -->
+    <div style="text-align:left; margin-bottom:8px; font-weight:600; color:#334155; display:flex; justify-content:space-between;">
+      <span id="unlockLabel">Unlock Progress</span>
+      <span id="unlockCount">0/10</span>
+    </div>
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" id="unlockProgress" style="width: 0%;"></div>
+    </div>
+    <div class="status-text" id="statusText">Waiting for more participants...</div>
+
+    <button class="btn-gamified" id="actionBtn" onclick="handleAction()" style="display:none;">Loading...</button>
+
+    <div class="upsell-box">
+      <h4 style="margin-bottom:8px; color:#b45309; display:flex; align-items:center; gap:8px;">💡 Want to practice more?</h4>
+      <p style="color:#92400e; font-size:0.9rem; margin-bottom:12px;">This is just a single sprint. Unlock unlimited mock tests and topic-wise practice by enrolling in our full premium courses.</p>
+      <a href="/learn/categories.html" class="btn" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; width:100%;">Explore Full Courses</a>
+    </div>
+
+    <div id="leaderboardSection" style="display:none; margin-top:40px;">
+      <h3 style="text-align:center; color:#0f172a; margin-bottom:8px;">🏆 Top Scorers</h3>
+      <p style="font-size:0.85rem; color:#64748b;">The top 3 winners will receive a special prize!</p>
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Name</th>
+            <th>Score</th>
+            <th>Accuracy</th>
+          </tr>
+        </thead>
+        <tbody id="lbBody"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="/learn/js/firebase-config.js"></script>
+<script src="/learn/js/auth.js?v=6"></script>
+
+<script>
+let currentUser = null;
+let sprintData = null;
+const urlParams = new URLSearchParams(window.location.search);
+const inviteCode = urlParams.get('invite');
+const sprintId = urlParams.get('sprint_id');
+
+window.onload = async () => {
+    document.getElementById('pageLoader').style.display = 'none';
+    
+    // We don't force login yet. We fetch status first.
+    Auth.onAuthStateChanged(user => {
+        currentUser = user;
+        loadSprintDetails();
+    });
+};
+
+async function loadSprintDetails() {
+    if (!inviteCode && !sprintId) {
+        document.getElementById('spTitle').textContent = "Invalid Link";
+        document.getElementById('sprintView').innerHTML = "<h3>Error: No invite code or sprint ID provided.</h3>";
+        document.getElementById('appLayout').style.display = 'flex';
+        return;
+    }
+
+    try {
+        const query = inviteCode ? `invite=${inviteCode}` : `sprint_id=${sprintId}`;
+        const res = await fetch(`/learn/backend/api/sprints.php?action=getStatus&${query}`, {
+            headers: currentUser ? { 'Authorization': `Bearer ${currentUser.uid}` } : {}
+        });
+        const data = await res.json();
+        
+        if(data.error) throw new Error(data.error);
+        
+        sprintData = data;
+        renderSprintUI();
+        document.getElementById('appLayout').style.display = 'flex';
+        
+    } catch(e) {
+        document.getElementById('sprintView').innerHTML = `<h3>Error: ${e.message}</h3>`;
+        document.getElementById('appLayout').style.display = 'flex';
+    }
+}
+
+function renderSprintUI() {
+    document.getElementById('spTitle').textContent = sprintData.title;
+    
+    const count = sprintData.participants;
+    const threshold = sprintData.threshold;
+    const pct = Math.min(100, (count / threshold) * 100);
+    
+    document.getElementById('unlockCount').textContent = `${count}/${threshold}`;
+    document.getElementById('unlockProgress').style.width = `${pct}%`;
+    
+    const btn = document.getElementById('actionBtn');
+    const status = document.getElementById('statusText');
+    btn.style.display = 'block';
+
+    if (!currentUser) {
+        status.textContent = sprintData.isUnlocked ? "Sprint is Unlocked!" : `Needs ${Math.max(0, threshold - count)} more players to unlock!`;
+        status.style.color = sprintData.isUnlocked ? "#10b981" : "#f59e0b";
+        btn.textContent = "Login to Join Sprint";
+        btn.disabled = false;
+        return;
+    }
+
+    if (!sprintData.isEnrolled) {
+        status.textContent = "You have not joined this sprint yet.";
+        btn.textContent = "Join Sprint Now";
+        btn.disabled = false;
+        return;
+    }
+
+    // User is enrolled
+    if (sprintData.isUnlocked) {
+        status.textContent = "🔓 Sprint is Unlocked! Good Luck!";
+        status.style.color = "#10b981";
+        btn.textContent = "Start Sprint Exam";
+        btn.disabled = false;
+        loadLeaderboard();
+    } else {
+        status.textContent = `🔒 Locked! Waiting for ${threshold - count} more players.`;
+        status.style.color = "#ef4444";
+        btn.textContent = "Invite Friends to Unlock";
+        btn.disabled = false;
+    }
+}
+
+async function handleAction() {
+    if (!currentUser) {
+        window.location.href = `/learn/login.html?invite=${inviteCode || sprintData.invite_code}`;
+        return;
+    }
+
+    if (!sprintData.isEnrolled) {
+        // Join Sprint API call
+        const btn = document.getElementById('actionBtn');
+        btn.disabled = true;
+        btn.textContent = "Joining...";
+        
+        try {
+            const res = await fetch('/learn/backend/api/sprints.php?action=joinSprint', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${currentUser.uid}` 
+                },
+                body: JSON.stringify({ invite: inviteCode || sprintData.invite_code })
+            }).then(r => r.json());
+            
+            if(res.success) {
+                // Reload status
+                loadSprintDetails();
+            } else {
+                alert(res.error);
+                btn.disabled = false;
+            }
+        } catch(e) {
+            alert("Network error");
+            btn.disabled = false;
+        }
+        return;
+    }
+
+    if (sprintData.isUnlocked) {
+        // Start Exam! Redirect to the test engine
+        window.location.href = `/learn/test.html?model_set_id=${sprintData.modelSetId}&sprint_id=${sprintData.sprintId}`;
+    } else {
+        // Invite friends
+        const inviteUrl = `${window.location.origin}/learn/login.html?invite=${inviteCode || sprintData.invite_code}`;
+        navigator.clipboard.writeText(inviteUrl);
+        alert('Invite Link Copied! Send it to your friends to unlock the sprint faster.');
+    }
+}
+
+async function loadLeaderboard() {
+    try {
+        const res = await fetch(`/learn/backend/api/sprints.php?action=getLeaderboard&sprint_id=${sprintData.sprintId}`);
+        const lb = await res.json();
+        
+        if (lb.length > 0) {
+            document.getElementById('leaderboardSection').style.display = 'block';
+            let html = '';
+            lb.forEach((user, index) => {
+                let medal = '';
+                if(index === 0) medal = '🥇';
+                else if(index === 1) medal = '🥈';
+                else if(index === 2) medal = '🥉';
+                
+                html += `
+                  <tr>
+                    <td><span class="medal">${medal}</span>${index + 1}</td>
+                    <td style="font-weight:600;">${user.name}</td>
+                    <td style="color:var(--primary); font-weight:700;">${user.sprint_score}</td>
+                    <td>${user.accuracy}%</td>
+                  </tr>
+                `;
+            });
+            document.getElementById('lbBody').innerHTML = html;
+        }
+    } catch(e) {}
+}
+</script>
+</body>
+</html>

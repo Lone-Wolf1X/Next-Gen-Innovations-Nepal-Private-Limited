@@ -219,9 +219,15 @@
 <script src="/learn/js/db.js?v=6"></script>
 <script>
   document.getElementById('pageLoader').style.display = 'none';
-  Auth.redirectIfLoggedIn('/learn/homepage.html');
+  
+  const urlParams = new URLSearchParams(window.location.search);
+  const inviteCode = urlParams.get('invite');
+  const targetUrl = inviteCode ? `/learn/sprint.html?invite=${inviteCode}` : '/learn/homepage.html';
+  
+  Auth.redirectIfLoggedIn(targetUrl);
 
-  // Show correct form on load if hash is #signup
+  // Overwrite Auth.js default redirects so login/signup flows use targetUrl
+  window.redirectAfterAuth = () => window.location.href = targetUrl;
   
   let mode = 'signin';
   
@@ -364,6 +370,7 @@
   async function checkPostLogin(user) {
     const params = new URLSearchParams(window.location.search);
     const next = params.get('next');
+    const invite = params.get('invite');
     
     // Check if admin
     let isAdmin = false;
@@ -378,7 +385,11 @@
     if (isAdmin) {
         window.location.href = '/learn/admin/index.html';
     } else {
-        window.location.href = next ? decodeURIComponent(next) : '/learn/index.html';
+        if (invite) {
+            window.location.href = `/learn/sprint.html?invite=${invite}`;
+        } else {
+            window.location.href = next ? decodeURIComponent(next) : '/learn/homepage.html';
+        }
     }
   }
 </script>

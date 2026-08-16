@@ -176,19 +176,42 @@ async function loadSprints() {
         let html = '<div style="display:grid; gap:16px;">';
         res.forEach(s => {
             const isActive = s.status === 'active';
+            const inviteUrl = `${window.location.origin}/learn/login.html?invite=${s.invite_code}`;
+            const unlockStatus = s.is_unlocked == 1 ? '<span style="color:green;">🔓 Unlocked</span>' : '<span style="color:orange;">🔒 Locked</span>';
+            const progressPct = Math.min(100, (s.participant_count / s.unlock_threshold) * 100);
+            
             html += `
-              <div class="card card-padded" style="display:flex; justify-content:space-between; align-items:center; border-left: 4px solid ${isActive ? 'var(--primary)' : 'var(--border)'}">
-                 <div>
-                    <h3 style="margin-bottom:4px; color:var(--primary-dark);">${s.model_set_title}</h3>
-                    <div style="font-size:0.85rem; color:var(--text-muted);">
-                      Date: <strong>${s.sprint_date}</strong> | Status: ${s.status.toUpperCase()}
-                    </div>
-                    <div style="font-size:0.75rem; color:#888; margin-top:4px;">
-                      From: ${new Date(s.start_time).toLocaleString()} <br>
-                      To: ${new Date(s.end_time).toLocaleString()}
-                    </div>
+              <div class="card card-padded" style="display:flex; flex-direction:column; gap:12px; border-left: 4px solid ${isActive ? 'var(--primary)' : 'var(--border)'}">
+                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                     <div>
+                        <h3 style="margin-bottom:4px; color:var(--primary-dark);">${s.model_set_title}</h3>
+                        <div style="font-size:0.85rem; color:var(--text-muted);">
+                          Date: <strong>${s.sprint_date}</strong> | Status: ${s.status.toUpperCase()}
+                        </div>
+                        <div style="font-size:0.75rem; color:#888; margin-top:4px;">
+                          From: ${new Date(s.start_time).toLocaleString()} <br>
+                          To: ${new Date(s.end_time).toLocaleString()}
+                        </div>
+                     </div>
+                     <div style="text-align:right;">
+                         <button class="btn" onclick="editSprint('${s.id}')" style="background:#e5e7eb; margin-bottom:8px;">Edit</button><br>
+                         <button class="btn btn-outline" onclick="navigator.clipboard.writeText('${inviteUrl}'); alert('Invite Link Copied!')">Copy Invite Link</button>
+                     </div>
                  </div>
-                 <button class="btn" onclick="editSprint('${s.id}')" style="background:#e5e7eb;">Edit</button>
+                 
+                 <!-- Gamification Stats -->
+                 <div style="background:#f8fafd; padding:12px; border-radius:8px; border:1px solid #e2e8f0; font-size:0.85rem;">
+                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                         <strong>Invite Code: </strong> <span>${s.invite_code || 'N/A'}</span>
+                     </div>
+                     <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                         <strong>Participants: </strong> 
+                         <span>${s.participant_count || 0} / ${s.unlock_threshold} ${unlockStatus}</span>
+                     </div>
+                     <div style="background:#e2e8f0; height:6px; border-radius:3px; overflow:hidden;">
+                         <div style="background:var(--primary); height:100%; width:${progressPct}%;"></div>
+                     </div>
+                 </div>
               </div>
             `;
         });

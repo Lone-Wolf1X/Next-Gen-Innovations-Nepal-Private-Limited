@@ -43,7 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         sendJson($stmt->fetchAll());
     }
     elseif ($action === 'getDailySprints') {
-        $stmt = $pdo->query("SELECT ds.*, ms.title as model_set_title FROM daily_sprints ds JOIN model_sets ms ON ds.model_set_id = ms.id ORDER BY ds.sprint_date DESC");
+        $stmt = $pdo->query("SELECT ds.*, ms.title as model_set_title, 
+            (SELECT COUNT(*) FROM sprint_participants sp WHERE sp.sprint_id = ds.id) as participant_count 
+            FROM daily_sprints ds JOIN model_sets ms ON ds.model_set_id = ms.id ORDER BY ds.sprint_date DESC");
         sendJson($stmt->fetchAll());
     }
     elseif ($action === 'getSubjectiveTopics') {
@@ -101,8 +103,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id = $data['id'] ?? uniqid('spr-');
         $isNew = empty($data['id']);
         
+        $inviteCode = $isNew ? substr(md5(uniqid()), 0, 8) : ($data['invite_code'] ?? null);
+        
         $sql = $isNew
-            ? "INSERT INTO daily_sprints (id, model_set_id, sprint_date, start_time, end_time, status) VALUES (?, ?, ?, ?, ?, ?)"
+            ? "INSERT INTO daily_sprints (id, model_set_id, sprint_date, start_time, end_time, status, invite_code) VALUES (?, ?, ?, ?, ?, ?, ?)"
             : "UPDATE daily_sprints SET model_set_id=?, sprint_date=?, start_time=?, end_time=?, status=? WHERE id=?";
             
         $params = [
@@ -113,8 +117,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $data['status'] ?? 'active'
         ];
         
-        if ($isNew) array_unshift($params, $id);
-        else $params[] = $data['id'];
+        if ($isNew) {
+            array_unshift($params, $id);
+            $params[] = $inviteCode;
+        } else {
+            $params[] = $data['id'];
+        }
         
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
