@@ -153,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // Insert Questions
             foreach($data['questions'] as $q) {
                 $qId = uniqid();
-                $qStmt = $pdo->prepare("INSERT INTO questions (id, category_id, subject_id, question_text, options, correct_option, explanation, marks) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                $qStmt = $pdo->prepare("INSERT INTO questions (id, category_id, subject_id, question_text, options, correct_option, explanation, marks, negative_marks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 $qStmt->execute([
                     $qId,
                     $data['categoryId'],
@@ -162,7 +162,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     json_encode($q['options']),
                     $q['correctOption'],
                     $q['explanation'] ?? '',
-                    $q['marks'] ?? 1
+                    $q['marks'] ?? 1.00,
+                    0.20 // 20% negative marks default for imported questions
                 ]);
                 $qIds[] = $qId;
             }
@@ -175,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $data['description'] ?? '',
                 $data['categoryId'],
                 json_encode($qIds),
-                $data['timeLimitMinutes'] ?? 60,
+                $data['timeLimitMinutes'] ?? 45, // default 45 mins
                 count($qIds), // Assumes 1 mark per question for simplicity
                 'published' // Auto publish AI imports
             ]);

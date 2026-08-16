@@ -186,6 +186,7 @@ document.getElementById('importBtn').addEventListener('click', async () => {
       const payload = JSON.parse(jsonStr);
       payload.categoryId = catId; 
       payload.title = titleVal; // Override JSON title with the input field
+      payload.timeLimitMinutes = 45; // Force default time to 45 mins as requested
 
       const res = await fetch('/learn/backend/api/model_sets.php?action=importJson', {
         method: 'POST',
