@@ -286,15 +286,44 @@ async function initDashboard() {
         // Add dynamic feeds based on enrolled courses
         const dynamicFeeds = document.getElementById('dynamicFeeds');
         dynamicFeeds.innerHTML = '';
-        enrollments.forEach(enroll => {
+        for (const enroll of enrollments) {
+          const courseContainerId = `feed-course-${enroll.id}`;
           dynamicFeeds.innerHTML += `
             <div style="padding:16px; border:1px solid var(--border-color); border-radius:8px; margin-bottom:12px; background:#f8fafc;">
-              <h4 style="font-weight:600; color:var(--text-primary); margin-bottom:4px;">Continue your progress in ${enroll.title}</h4>
-              <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:12px;">Head over to the course page to practice MCQs and review subjective questions.</p>
-              <a href="/learn/course.html?id=${enroll.id}" class="btn btn-outline btn-sm">Go to Course</a>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h4 style="font-weight:600; color:var(--text-primary); margin:0;">${enroll.title}</h4>
+                <a href="/learn/course.html?id=${enroll.id}" class="btn btn-outline btn-sm">Go to Course</a>
+              </div>
+              <div id="${courseContainerId}">
+                <div class="skeleton" style="height:60px;"></div>
+              </div>
             </div>
           `;
-        });
+          
+          fetch(`/learn/backend/api/model_sets.php?action=getPublished&vacancyId=${enroll.id}`)
+            .then(r => r.json())
+            .then(sets => {
+              const listContainer = document.getElementById(courseContainerId);
+              if (!sets || sets.length === 0) {
+                listContainer.innerHTML = '<p style="font-size:0.9rem; color:var(--text-muted); margin:0;">No mock tests available yet.</p>';
+                return;
+              }
+              
+              listContainer.innerHTML = sets.map(s => `
+                <div style="background:white; border: 1px solid var(--border-color); border-radius:6px; padding: 12px; margin-bottom: 8px; display:flex; justify-content:space-between; align-items:center;">
+                  <div>
+                    <strong style="color:var(--text-primary); display:block; margin-bottom:2px;">${s.title}</strong>
+                    <span style="font-size:0.8rem; color:var(--text-muted);">${s.totalQuestions || 0} Qs • ${s.timeLimitMinutes || 60} mins</span>
+                  </div>
+                  <a href="/learn/exam-instruction.html?id=${s.id}" class="btn btn-primary btn-sm" style="padding:4px 12px; font-size:0.8rem;">Start</a>
+                </div>
+              `).join('');
+            })
+            .catch(e => {
+              console.error(e);
+              document.getElementById(courseContainerId).innerHTML = '<p style="font-size:0.9rem; color:var(--text-muted); margin:0;">Error loading mock tests.</p>';
+            });
+        }
       } else {
         enrolledContainer.innerHTML = `
           <div style="padding: 12px 24px; font-size: 0.85rem; color: var(--text-muted);">
