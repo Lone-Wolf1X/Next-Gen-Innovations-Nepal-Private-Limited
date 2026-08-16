@@ -32,10 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif ($action === 'adminGetAll') {
         $uid = requireAuth();
         // Verify admin
-        $stmt = $pdo->prepare("SELECT email FROM users WHERE uid = ?");
+        $stmt = $pdo->prepare("SELECT email, role FROM users WHERE uid = ?");
         $stmt->execute([$uid]);
         $adminUser = $stmt->fetch();
-        if (!$adminUser || !in_array($adminUser['email'], ADMIN_EMAILS)) {
+        if (!$adminUser || ($adminUser['role'] !== 'admin' && !in_array($adminUser['email'], ADMIN_EMAILS))) {
             sendJson(["error" => "Unauthorized. Admin only."], 403);
         }
 
@@ -234,10 +234,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         sendJson(["success" => true, "dailyPoints" => $dailyPoints, "totalPoints" => $totalPoints]);
     } elseif ($action === 'updateSubscription') {
         $uid = requireAuth();
-        $uStmt = $pdo->prepare("SELECT email FROM users WHERE uid = ?");
+        $uStmt = $pdo->prepare("SELECT email, role FROM users WHERE uid = ?");
         $uStmt->execute([$uid]);
         $adminUser = $uStmt->fetch();
-        if (!$adminUser || !in_array($adminUser['email'], ADMIN_EMAILS)) {
+        if (!$adminUser || ($adminUser['role'] !== 'admin' && !in_array($adminUser['email'], ADMIN_EMAILS))) {
             sendJson(["error" => "Unauthorized. Admin only."], 403);
         }
 
