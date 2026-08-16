@@ -4,26 +4,95 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI JSON Importer | GyanBazi Admin</title>
+  <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/learn/css/learn-platform.css">
   <style>
-    body { background: #f8fafd; font-family: 'Outfit', sans-serif; padding: 24px; }
-    .import-container { max-width: 800px; margin: 0 auto; background: white; padding: 32px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-    h1 { margin-bottom: 8px; color: #0f172a; }
-    p { color: #64748b; margin-bottom: 24px; line-height: 1.6; }
+    .admin-sidebar-link { color: var(--text-secondary); }
+    .admin-sidebar-link.active { color: var(--primary); background: var(--primary-light); }
+    .import-container { background: white; padding: 32px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
     .prompt-box { background: #f1f5f9; padding: 16px; border-radius: 12px; font-family: monospace; font-size: 0.9rem; color: #334155; margin-bottom: 24px; white-space: pre-wrap; border: 1px solid #e2e8f0; }
     textarea { width: 100%; height: 300px; padding: 16px; border: 1px solid #cbd5e1; border-radius: 12px; font-family: monospace; margin-bottom: 24px; resize: vertical; }
-    select { padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 24px; width: 100%; }
   </style>
 </head>
 <body>
+<div class="page-loader" id="pageLoader"><div class="logo">NL</div><div class="loading-spinner"></div></div>
+<div class="app-layout" id="appLayout" style="display:none;">
+<aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo" style="background:linear-gradient(135deg,#DC2626,#B91C1C);">A</div>
+      <div><div class="sidebar-name">Admin Panel</div><div class="sidebar-tagline">GyanBazi</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-title">Overview</div>
+      <a href="/learn/admin/index.html" class="sidebar-link admin-sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+        Dashboard
+      </a>
+      <a href="/learn/admin/vacancies.html" class="sidebar-link admin-sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
+        Vacancies
+      </a>
+      <a href="/learn/admin/live-exam.html" class="sidebar-link admin-sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+        Daily Sprint
+      </a>
 
-<div class="import-container">
-  <h1>🤖 AI Model Set Importer</h1>
-  <p>Paste the JSON output from ChatGPT or Claude to instantly create a published Model Set with all questions.</p>
+      <div class="sidebar-section-title">Content</div>
+      <a href="/learn/admin/categories.html" class="sidebar-link admin-sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"/></svg>
+        Categories & Subjects
+      </a>
+      <a href="/learn/admin/objective-topics.html" class="sidebar-link admin-sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3.293 1.293a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L7.586 10 5.293 7.707a1 1 0 010-1.414zM11 12a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg>
+        Objective Topics
+      </a>
+      <a href="/learn/admin/questions.html" class="sidebar-link admin-sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
+        Questions
+      </a>
+      <a href="/learn/admin/modelsets.html" class="sidebar-link admin-sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg>
+        Model Sets
+      </a>
+      <a href="/learn/admin/subjective-bank.html" class="sidebar-link admin-sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/></svg>
+        Subjective Bank
+      </a>
+      <a href="/learn/admin/ai-import.html" class="sidebar-link admin-sidebar-link active">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/></svg>
+        AI JSON Importer
+      </a>
 
-  <details style="margin-bottom:24px;">
-    <summary style="font-weight:600; cursor:pointer; color:#0ea5e9;">Show ChatGPT Prompt Template</summary>
-    <div class="prompt-box">
+      <div class="sidebar-section-title">Users</div>
+      <a href="/learn/admin/users.html" class="sidebar-link admin-sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>
+        Users
+      </a>
+
+      <div class="sidebar-section-title">System</div>
+      <a href="/learn/index.html" class="sidebar-link admin-sidebar-link">
+        <svg class="icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/></svg>
+        Back to Platform
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user" onclick="Auth.signOut()">
+        <div class="sidebar-avatar" id="adminAvatar">A</div>
+        <div class="sidebar-user-info"><div class="sidebar-user-name" id="adminName">Admin</div><div class="sidebar-user-email" id="adminEmail">...</div></div>
+      </div>
+    </div>
+  </aside>
+<main class="main-content">
+
+<div class="page-topbar">
+  <div><div class="page-title">AI JSON Importer</div><div class="page-subtitle">Instantly create Model Sets from ChatGPT/Claude JSON.</div></div>
+</div>
+
+<div class="page-body">
+  <div class="import-container">
+    <details style="margin-bottom:24px;">
+      <summary style="font-weight:600; cursor:pointer; color:var(--primary);">Show ChatGPT Prompt Template</summary>
+      <div class="prompt-box">
 Copy and paste this prompt to ChatGPT:
 
 "Generate a mock exam for [Exam Name] with [Number] questions. Output ONLY a raw JSON object (no markdown, no backticks) with this exact structure:
@@ -40,34 +109,53 @@ Copy and paste this prompt to ChatGPT:
     }
   ]
 }"
-    </div>
-  </details>
+      </div>
+    </details>
 
-  <label style="font-weight:600;display:block;margin-bottom:8px;">Select Category:</label>
-  <select id="categorySelect">
-    <option value="">Loading categories...</option>
-  </select>
+    <label style="font-weight:600;display:block;margin-bottom:8px;">Select Category:</label>
+    <select id="categorySelect" class="input-field" style="margin-bottom:24px;">
+      <option value="">Loading categories...</option>
+    </select>
 
-  <label style="font-weight:600;display:block;margin-bottom:8px;">Paste AI JSON Here:</label>
-  <textarea id="jsonInput" placeholder='{\n  "title": "...",\n  "questions": [\n    ...\n  ]\n}'></textarea>
+    <label style="font-weight:600;display:block;margin-bottom:8px;">Paste AI JSON Here:</label>
+    <textarea id="jsonInput" placeholder='{\n  "title": "...",\n  "questions": [\n    ...\n  ]\n}'></textarea>
 
-  <button class="btn btn-primary btn-xl" id="importBtn" style="width:100%;">Create & Publish Model Set</button>
-  <div id="statusMsg" style="margin-top:16px; text-align:center; font-weight:600;"></div>
+    <button class="btn btn-primary btn-xl" id="importBtn" style="width:100%;">Create & Publish Model Set</button>
+    <div id="statusMsg" style="margin-top:16px; text-align:center; font-weight:600;"></div>
+  </div>
+</div>
+
+</main>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="/learn/js/firebase-config.js"></script>
+<script src="/learn/js/auth.js?v=6"></script>
 <script src="/learn/js/db.js?v=6"></script>
-<script src="/learn/js/auth.js?v=5"></script>
 <script>
-  // Simple Admin check
-  Auth.requireAuth().then(async user => {
-    // Note: In production, check Admin role on PHP side
-    loadCategories();
-  });
+let currentUser = null;
 
-  async function loadCategories() {
+window.onload = async () => {
+    try {
+        currentUser = await Auth.requireAdmin();
+        document.getElementById('pageLoader').style.display = 'none';
+        document.getElementById('appLayout').style.display = 'flex';
+        
+        const sidebarAvatar = document.getElementById('adminAvatar');
+        const sidebarName = document.getElementById('adminName');
+        const sidebarEmail = document.getElementById('adminEmail');
+        if (sidebarAvatar) sidebarAvatar.textContent = (currentUser.displayName||'A')[0];
+        if (sidebarName) sidebarName.textContent = currentUser.displayName || 'Admin';
+        if (sidebarEmail) sidebarEmail.textContent = currentUser.email;
+
+        loadCategories();
+    } catch(e) {
+        console.error("Auth error", e);
+    }
+};
+
+async function loadCategories() {
     const select = document.getElementById('categorySelect');
     try {
       const cats = await DB.categories.getAll();
@@ -76,9 +164,9 @@ Copy and paste this prompt to ChatGPT:
     } catch(e) {
       select.innerHTML = '<option value="">Error loading categories</option>';
     }
-  }
+}
 
-  document.getElementById('importBtn').addEventListener('click', async () => {
+document.getElementById('importBtn').addEventListener('click', async () => {
     const catId = document.getElementById('categorySelect').value;
     const jsonStr = document.getElementById('jsonInput').value;
     const msg = document.getElementById('statusMsg');
@@ -91,7 +179,7 @@ Copy and paste this prompt to ChatGPT:
       msg.textContent = 'Parsing JSON and importing...';
       
       const payload = JSON.parse(jsonStr);
-      payload.categoryId = catId; // Attach selected category
+      payload.categoryId = catId; 
 
       const res = await fetch('/learn/backend/api/model_sets.php?action=importJson', {
         method: 'POST',
@@ -111,7 +199,7 @@ Copy and paste this prompt to ChatGPT:
       msg.style.color = '#ef4444';
       msg.textContent = '❌ Error: ' + e.message;
     }
-  });
+});
 </script>
 </body>
 </html>
