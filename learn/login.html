@@ -215,8 +215,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="/learn/js/firebase-config.js?v=3"></script>
-<script src="/learn/js/db.js?v=3"></script>
-<script src="/learn/js/auth.js?v=3"></script>
+<script src="/learn/js/auth.js?v=6"></script>
+<script src="/learn/js/db.js?v=6"></script>
 <script>
   document.getElementById('pageLoader').style.display = 'none';
   Auth.redirectIfLoggedIn('/learn/homepage.html');
@@ -375,9 +375,8 @@
             }
         } catch(e) {}
     }
-    
     if (isAdmin) {
-        window.location.href = next ? decodeURIComponent(next) : '/learn/admin/index.html';
+        window.location.href = '/learn/admin/index.html';
     } else {
         window.location.href = next ? decodeURIComponent(next) : '/learn/index.html';
     }
