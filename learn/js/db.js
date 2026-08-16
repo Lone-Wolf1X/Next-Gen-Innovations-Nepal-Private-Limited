@@ -79,7 +79,7 @@ const DB = (() => {
   // ─── QUESTIONS ───────────────────────────────────────────
   const questions = {
     async getByCategory(categoryId, limit = 100) {
-      return await fetchAPI(`questions.php?action=getByCategory&categoryId=${categoryId}&limit=${limit}`);
+      return await fetchAPI(`questions.php?action=getAll&categoryId=${categoryId}&limit=${limit}`);
     },
     async getByIds(ids) {
       if (!ids || ids.length === 0) return [];
