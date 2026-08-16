@@ -117,8 +117,11 @@ Copy and paste this prompt to ChatGPT:
       <option value="">Loading categories...</option>
     </select>
 
+    <label style="font-weight:600;display:block;margin-bottom:8px;">Model Set Title (e.g. Set 1, Mock Test 2):</label>
+    <input type="text" id="setTitle" class="input-field" placeholder="Enter model set title" style="margin-bottom:24px;" required>
+
     <label style="font-weight:600;display:block;margin-bottom:8px;">Paste AI JSON Here:</label>
-    <textarea id="jsonInput" placeholder='{\n  "title": "...",\n  "questions": [\n    ...\n  ]\n}'></textarea>
+    <textarea id="jsonInput" placeholder='{\n  "questions": [\n    ...\n  ]\n}'></textarea>
 
     <button class="btn btn-primary btn-xl" id="importBtn" style="width:100%;">Create & Publish Model Set</button>
     <div id="statusMsg" style="margin-top:16px; text-align:center; font-weight:600;"></div>
@@ -168,10 +171,12 @@ async function loadCategories() {
 
 document.getElementById('importBtn').addEventListener('click', async () => {
     const catId = document.getElementById('categorySelect').value;
+    const titleVal = document.getElementById('setTitle').value.trim();
     const jsonStr = document.getElementById('jsonInput').value;
     const msg = document.getElementById('statusMsg');
 
     if (!catId) { msg.style.color = 'red'; msg.textContent = 'Please select a category!'; return; }
+    if (!titleVal) { msg.style.color = 'red'; msg.textContent = 'Please enter a Model Set Title!'; return; }
     if (!jsonStr) { msg.style.color = 'red'; msg.textContent = 'Please paste JSON!'; return; }
 
     try {
@@ -180,6 +185,7 @@ document.getElementById('importBtn').addEventListener('click', async () => {
       
       const payload = JSON.parse(jsonStr);
       payload.categoryId = catId; 
+      payload.title = titleVal; // Override JSON title with the input field
 
       const res = await fetch('/learn/backend/api/model_sets.php?action=importJson', {
         method: 'POST',
