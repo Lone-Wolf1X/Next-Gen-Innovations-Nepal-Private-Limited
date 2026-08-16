@@ -260,24 +260,24 @@ async function saveVacancy(e) {
 
 </main>
 
-</div>
-<script type="module">
-import { Auth } from '../js/auth.js';
-window.Auth = Auth;
-
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="/learn/js/firebase-config.js"></script>
+<script src="/learn/js/auth.js?v=6"></script>
+<script src="/learn/js/db.js?v=6"></script>
+<script>
 window.onload = async () => {
-    document.getElementById('pageLoader').style.display = 'none';
-    document.getElementById('appLayout').style.display = 'flex';
-    
-    Auth.onAuthStateChanged(async (user) => {
-        if (!user) {
-            window.location.href = '/learn/login.html';
-            return;
-        }
+    try {
+        const user = await Auth.requireAdmin();
+        document.getElementById('pageLoader').style.display = 'none';
+        document.getElementById('appLayout').style.display = 'flex';
+        
         document.getElementById('adminName').textContent = user.displayName || 'Admin';
         document.getElementById('adminEmail').textContent = user.email;
         if(window.initPage) window.initPage(user);
-    });
+    } catch(e) {
+        console.error("Auth error", e);
+    }
 };
 </script>
 </body>
