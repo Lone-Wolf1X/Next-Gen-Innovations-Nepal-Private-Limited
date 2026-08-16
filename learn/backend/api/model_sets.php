@@ -111,7 +111,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     'options' => json_decode($q['options'], true),
                     'correctOption' => $q['correct_option'],
                     'explanation' => $q['explanation'],
-                    'difficulty' => $q['difficulty'],
                     'marks' => $q['marks']
                 ];
             }
@@ -154,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // Insert Questions
             foreach($data['questions'] as $q) {
                 $qId = uniqid();
-                $qStmt = $pdo->prepare("INSERT INTO questions (id, category_id, subject_id, question_text, options, correct_option, explanation, difficulty, marks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $qStmt = $pdo->prepare("INSERT INTO questions (id, category_id, subject_id, question_text, options, correct_option, explanation, marks) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
                 $qStmt->execute([
                     $qId,
                     $data['categoryId'],
@@ -163,7 +162,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     json_encode($q['options']),
                     $q['correctOption'],
                     $q['explanation'] ?? '',
-                    $q['difficulty'] ?? 'medium',
                     $q['marks'] ?? 1
                 ]);
                 $qIds[] = $qId;
