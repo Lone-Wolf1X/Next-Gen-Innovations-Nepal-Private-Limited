@@ -7,6 +7,7 @@ import 'screens/splash_screen.dart';
 import 'config/firebase_options.dart';
 import 'providers/auth_provider.dart';
 import 'providers/user_provider.dart';
+import 'providers/exam_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
