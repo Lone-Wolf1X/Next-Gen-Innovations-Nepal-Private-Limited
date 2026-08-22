@@ -1,0 +1,132 @@
+{
+  "exam_name": "RBB Level 5 Cash and Admin",
+  "organization": "Rastriya Banijya Bank",
+  "total_phases": 2,
+  "phases": [
+    {
+      "phase_name": "First Phase: Written Examination",
+      "papers": [
+        {
+          "paper_name": "First Paper (Common to Admin & Cash)",
+          "subject": "Economics, Banking, and General Knowledge",
+          "full_marks": 100,
+          "pass_marks": 40,
+          "duration_minutes": 120,
+          "question_format": "Both (Objective MCQ & Subjective Short Answer)",
+          "sections": [
+            {
+              "section_name": "Section A (Economics, Financial Markets & Financial Institutions)",
+              "marks_weightage": 50,
+              "number_of_questions": 25,
+              "marks_per_question": 1,
+              "topics": [
+                "Unit 1: Basic Economics - Scarcity and Choice, Allocation of Resources; Demand and Supply; Cost-Benefit Analysis & Opportunity Cost; Market Structure; Growth and Development; Nepalese Economy Status, Prospects & Challenges; Monetary & Fiscal Policy",
+                "Unit 2: Financial Market - Role & functions of financial market; Capital Market of Nepal; Money Market; Repo & Reverse Repo; Open Market Operations; Statutory Liquidity Ratio (SLR); Cash Reserve Ratio (CRR); Over-the-Counter (OTC) Market",
+                "Unit 3: Financial Institutions in Nepal: Role, Contribution, and Status - Banking Institutions (Commercial, Development, Finance, Microfinance, Infrastructure Development Bank); Non-bank Financial Institutions (Insurance Companies, Employees Provident Fund - EPF, Citizen Investment Trust/Fund - CIT, Social Security Fund - SSF)"
+              ]
+            },
+            {
+              "section_name": "Section B (Digital Banking, Terminology & General Knowledge)",
+              "marks_weightage": 50,
+              "number_of_questions": 25,
+              "marks_per_question": 1,
+              "topics": [
+                "Unit 4: Digital / Electronic Payment Systems - Electronic Cheque Clearing (ECC); IPS, ConnectIPS, RTGS, SWIFT; Internet & Mobile Banking, QR, NFC; Payment Cards; Digital Wallets; Central Bank Digital Currency (CBDC)",
+                "Unit 5: Key Basic Banking Terminology - Capital Fund; Loan Loss Provision; Credit-Deposit (CD) Ratio; Letter of Credit, Bank Guarantee; Refinancing, Rescheduling, Restructuring; Base Rate; Credit Information and Blacklisting; Credit Ratings; KYC; Audit and Internal Control",
+                "Unit 6: General Knowledge - Global Countries, Locations, Currencies; Top Economies; Major Trade/Sea Routes; Major Tradeable Items; Of and About Nepal: History, Geography, Demography, Agriculture, Industry, Imports/Exports & Values, Tourist Destinations"
+              ]
+            }
+          ]
+        },
+        {
+          "paper_name": "Second Paper (Senior Assistant - Admin)",
+          "subject": "Governance and Office Management",
+          "full_marks": 100,
+          "pass_marks": 40,
+          "duration_minutes": 150,
+          "question_format": "Subjective (Short & Long Answers)",
+          "sections": [
+            {
+              "section_name": "Section A (Banking Laws, Other Regulations & Organizational Behavior)",
+              "marks_weightage": 50,
+              "number_of_questions": 6,
+              "marks_per_question": 5,
+              "topics": [
+                "Unit 1: Banking Related Laws - Nepal Rastra Bank Act 2058; Bank and Financial Institution Act (BAFIA) 2073; Payment and Settlement Act 2075; Money Laundering Prevention Act 2064; Banking Offence & Punishment Act 2064; Negotiable Instruments Act 2034; Electronic Transaction Act 2063; NRB Government Transaction Directive 2076",
+                "Unit 2: Other Related Laws - Companies Act 2063; Labour Act 2074; Public Procurement Act 2063; Right to Information Act 2064; Rastriya Banijya Bank Employee Service Regulation 2070; NRB Unified Directives & Circulars",
+                "Unit 3: Organizational Behavior - Job Description, ToR & Responsibilities; Motivation & Performance; Communication Skills & Approaches; Team Building & Workmanship; Customer Satisfaction; Grievance Handling"
+              ]
+            },
+            {
+              "section_name": "Section B (Organizational Role, Office Supports & Mathematics)",
+              "marks_weightage": 50,
+              "number_of_questions": 6,
+              "marks_per_question": 5,
+              "topics": [
+                "Unit 4: Organizational Role - Customer Service Division (CSD); Customer Satisfaction & Service Delivery; Reception Desk; Secretariat Desk; Document Verification; Account Opening & Statements; Correspondences (Darta/Chalani); Record Keeping, Filing & Digitization",
+                "Unit 5: Office Supports - Office Layout & Logistics; Event Organizing; Time Keeping; Communication Skills; Grievance Handling; Safety & Security Standards; Clean & Healthy Office Environment",
+                "Unit 6: Basic Mathematics - Interest Calculation; Discount & Commission; Percentage & Ratios; Unitary Method; Profit & Loss; Sampling & Probabilities; Simple & Weighted Averages"
+              ]
+            }
+          ]
+        },
+        {
+          "paper_name": "Second Paper (Senior Assistant - Cash)",
+          "subject": "Governance, Cash and Vault Management",
+          "full_marks": 100,
+          "pass_marks": 40,
+          "duration_minutes": 150,
+          "question_format": "Subjective (Short & Long Answers)",
+          "sections": [
+            {
+              "section_name": "Section A (Cash Handling, Customer Service & Banking Laws)",
+              "marks_weightage": 50,
+              "number_of_questions": 6,
+              "marks_per_question": 5,
+              "topics": [
+                "Unit 1: Daily Cash Handling - Opening/Closing cash transactions; Security measures; Precautions on receipts/payments; Currency note security features; Counting, tagging, bundling; Toda Chalan (Cash Transport/Remittance Management); Clean Note Policy; Soiled Note management; Cash handling",
+                "Unit 2: Customer Service - Customer Satisfaction & Service; Signature & ID Verification; Front Desk role; Payment processing; Grievance handling; Currency exchange; Financial Literacy",
+                "Unit 3: Banking Related Laws and Directives - Nepal Rastra Bank Act 2058; Bank and Financial Institution Act (BAFIA) 2073; Payment and Settlement Act 2075; Money Laundering Prevention Act 2064; Banking Offence & Punishment Act 2064; Negotiable Instruments Act 2034; Electronic Transaction Act 2063; NRB Government Transaction Directive 2076"
+              ]
+            },
+            {
+              "section_name": "Section B (Gold/Silver Loans, Vault Accounting & Other Laws)",
+              "marks_weightage": 50,
+              "number_of_questions": 6,
+              "marks_per_question": 5,
+              "topics": [
+                "Unit 4: Gold/Silver Loan Transactions - Jewellery/Bullion/Bars/Coins identification; Purity testing & Assaying; Spot Price & Appraised Value; Loan-to-Value (LTV) Ratio; Margin Calls; Loan Guarantee Commission; Insurance coverage",
+                "Unit 5: Accounting and Vault Management - Vault keys & safety, handover/takeover, security; Vault opening/closing procedures; CCTV/monitoring; Fire/disaster protection; Cash journals, ledgers, control ledgers; Day-end reporting; Vault registers; Note-chest / Note Kosh transactions",
+                "Unit 6: Other Related Laws, Policies - Companies Act 2063; Labour Act 2074; Public Procurement Act 2063; Right to Information Act 2064; Rastriya Banijya Bank Employee Service Regulation 2070; NRB Unified Directives & Circulars"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "phase_name": "Second Phase: Oral Interview",
+      "papers": [
+        {
+          "paper_name": "Interview",
+          "subject": "Personality & Knowledge Evaluation",
+          "full_marks": 30,
+          "pass_marks": 12,
+          "duration_minutes": 20,
+          "question_format": "Oral Interview",
+          "sections": [
+            {
+              "section_name": "Interview Panel",
+              "marks_weightage": 30,
+              "number_of_questions": 1,
+              "marks_per_question": 30,
+              "topics": [
+                "Evaluation of candidate's knowledge, confidence, and suitability for the Senior Assistant (Admin/Cash) position."
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
