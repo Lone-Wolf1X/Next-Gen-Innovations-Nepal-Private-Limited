@@ -66,6 +66,16 @@ const DB = (() => {
     }
   };
 
+  // ─── VACANCIES ────────────────────────────────────────────
+  const vacancies = {
+    async getAllAdmin() {
+      return await fetchAPI('vacancies.php?action=getAllAdmin');
+    },
+    async getAll() {
+      return await fetchAPI('vacancies.php?action=getAllAdmin');
+    }
+  };
+
   // ─── SUBJECTS ────────────────────────────────────────────
   const subjects = {
     async getByCategory(categoryId) {
@@ -219,6 +229,7 @@ const DB = (() => {
     auditLog: AuditLog,
     users,
     adminStats,
+    vacancies
   };
 })();
 
