@@ -20,7 +20,7 @@ $action = isset($_GET['action']) ? $_GET['action'] : '';
 
 switch ($action) {
     case 'getCategories':
-        $sql = "SELECT * FROM categories WHERE status = 'active'";
+        $sql = "SELECT * FROM gb_categories WHERE status = 'active'";
         $result = $conn->query($sql);
         $data = [];
         if ($result && $result->num_rows > 0) {
@@ -33,7 +33,7 @@ switch ($action) {
 
     case 'getExams':
         $categoryId = isset($_GET['category_id']) ? (int)$_GET['category_id'] : 0;
-        $sql = "SELECT * FROM exams WHERE status = 'active'";
+        $sql = "SELECT * FROM gb_exams WHERE status = 'active'";
         if ($categoryId > 0) {
             $sql .= " AND category_id = $categoryId";
         }
@@ -56,14 +56,14 @@ switch ($action) {
         }
 
         // Get the latest published set for this exam
-        $setSql = "SELECT id, title, time_limit_minutes FROM mcq_sets WHERE exam_id = $examId AND status = 'PUBLISHED' ORDER BY set_date DESC LIMIT 1";
+        $setSql = "SELECT id, title, time_limit_minutes FROM gb_mcq_sets WHERE exam_id = $examId AND status = 'PUBLISHED' ORDER BY set_date DESC LIMIT 1";
         $setResult = $conn->query($setSql);
         
         if ($setResult && $setResult->num_rows > 0) {
             $set = $setResult->fetch_assoc();
             $setId = $set['id'];
             
-            $qSql = "SELECT * FROM questions WHERE set_id = $setId";
+            $qSql = "SELECT * FROM gb_questions WHERE set_id = $setId";
             $qResult = $conn->query($qSql);
             $questions = [];
             if ($qResult && $qResult->num_rows > 0) {
