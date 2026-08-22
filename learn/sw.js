@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gyanbazi-v1';
+const CACHE_NAME = 'gyanbazi-v2';
 const STATIC_ASSETS = [
   '/learn/index.html',
   '/learn/categories.html',
