@@ -79,9 +79,9 @@ class _ExamScreenState extends State<ExamScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        backgroundColor: AppTheme.background,
+        backgroundColor: AppTheme.backgroundColor,
         appBar: AppBar(
-          backgroundColor: AppTheme.primary,
+          backgroundColor: AppTheme.primaryColor,
           title: Text(widget.vacancyTitle),
         ),
         body: const Center(child: CircularProgressIndicator()),
@@ -90,9 +90,9 @@ class _ExamScreenState extends State<ExamScreen> {
 
     if (_error != null || _questions.isEmpty) {
       return Scaffold(
-        backgroundColor: AppTheme.background,
+        backgroundColor: AppTheme.backgroundColor,
         appBar: AppBar(
-          backgroundColor: AppTheme.primary,
+          backgroundColor: AppTheme.primaryColor,
           title: Text(widget.vacancyTitle),
         ),
         body: Center(
@@ -132,7 +132,7 @@ class _ExamScreenState extends State<ExamScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('${_setInfo?['title'] ?? widget.vacancyTitle} • ${_currentIndex + 1}/${_questions.length}', style: const TextStyle(fontSize: 16)),
-        backgroundColor: AppTheme.primary,
+        backgroundColor: AppTheme.primaryColor,
         elevation: 0,
         centerTitle: false,
         leading: IconButton(
@@ -171,22 +171,22 @@ class _ExamScreenState extends State<ExamScreen> {
                     
                     Color borderColor = Colors.grey.shade300;
                     Color bgColor = Colors.white;
-                    Color textColor = AppTheme.textDark;
+                    Color textColor = AppTheme.textColor;
                     
                     if (isChecked) {
                       if (isThisCorrect) {
-                        borderColor = AppTheme.success;
-                        bgColor = AppTheme.success.withOpacity(0.05);
-                        textColor = AppTheme.success;
+                        borderColor = AppTheme.successColor;
+                        bgColor = AppTheme.successColor.withOpacity(0.05);
+                        textColor = AppTheme.successColor;
                       } else if (isSelected && !isThisCorrect) {
                         borderColor = Colors.redAccent;
                         bgColor = Colors.redAccent.withOpacity(0.05);
                         textColor = Colors.redAccent;
                       }
                     } else if (isSelected) {
-                      borderColor = AppTheme.primary;
-                      bgColor = AppTheme.primary.withOpacity(0.05);
-                      textColor = AppTheme.primary;
+                      borderColor = AppTheme.primaryColor;
+                      bgColor = AppTheme.primaryColor.withOpacity(0.05);
+                      textColor = AppTheme.primaryColor;
                     }
 
                     return InkWell(
@@ -212,9 +212,9 @@ class _ExamScreenState extends State<ExamScreen> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border: Border.all(color: isChecked && (isThisCorrect || isSelected) ? Colors.transparent : borderColor),
-                                color: isChecked && isThisCorrect ? AppTheme.success : 
+                                color: isChecked && isThisCorrect ? AppTheme.successColor : 
                                        isChecked && isSelected ? Colors.redAccent :
-                                       isSelected ? AppTheme.primary : Colors.transparent,
+                                       isSelected ? AppTheme.primaryColor : Colors.transparent,
                               ),
                               child: isChecked && isThisCorrect
                                   ? const Icon(Icons.check_rounded, color: Colors.white, size: 18)
@@ -249,9 +249,9 @@ class _ExamScreenState extends State<ExamScreen> {
                     if (isCorrect) ...[
                       const Row(
                         children: [
-                          Icon(Icons.check_circle_rounded, color: AppTheme.success),
+                          Icon(Icons.check_circle_rounded, color: AppTheme.successColor),
                           SizedBox(width: 8),
-                          Text('Correct Answer!', style: TextStyle(color: AppTheme.success, fontWeight: FontWeight.bold, fontSize: 18)),
+                          Text('Correct Answer!', style: TextStyle(color: AppTheme.successColor, fontWeight: FontWeight.bold, fontSize: 18)),
                         ],
                       ),
                     ] else ...[
@@ -296,18 +296,18 @@ class _ExamScreenState extends State<ExamScreen> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: AppTheme.primary.withOpacity(0.05),
+                          color: AppTheme.primaryColor.withOpacity(0.05),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: AppTheme.primary.withOpacity(0.2)),
+                          border: Border.all(color: AppTheme.primaryColor.withOpacity(0.2)),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Row(
                               children: [
-                                Icon(Icons.local_fire_department_rounded, color: AppTheme.secondary),
+                                Icon(Icons.local_fire_department_rounded, color: AppTheme.secondaryColor),
                                 SizedBox(width: 8),
-                                Text('Exam Tip', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.secondary)),
+                                Text('Exam Tip', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.secondaryColor)),
                               ],
                             ),
                             const SizedBox(height: 8),
@@ -349,7 +349,7 @@ class _ExamScreenState extends State<ExamScreen> {
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  backgroundColor: isChecked ? AppTheme.textDark : AppTheme.primary,
+                  backgroundColor: isChecked ? AppTheme.textColor : AppTheme.primaryColor,
                 ),
                 child: Text(
                   !isChecked ? 'Check Answer' : (_currentIndex < _questions.length - 1 ? 'Next Question →' : 'Finish Practice'),
