@@ -4,10 +4,10 @@ header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, POST");
 
 // Database configuration
-$servername = "localhost"; // Update this with your cPanel details
-$username = "your_db_user";
-$password = "your_db_password";
-$dbname = "your_db_name";
+$servername = "localhost";
+$username = "root";
+$password = "Abhii@@123@";
+$dbname = "next_gen_db";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 $conn->set_charset("utf8mb4");
