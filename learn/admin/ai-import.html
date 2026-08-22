@@ -125,7 +125,10 @@ Copy and paste this prompt to ChatGPT:
     <label style="font-weight:600;display:block;margin-bottom:8px;">Model Set Title (e.g. Set 1, Mock Test 2):</label>
     <input type="text" id="setTitle" class="input-field" placeholder="Enter model set title" style="margin-bottom:24px;" required>
 
-    <label style="font-weight:600;display:block;margin-bottom:8px;">Paste AI JSON Here:</label>
+    <label style="font-weight:600;display:block;margin-bottom:8px;">Upload JSON File (Optional):</label>
+    <input type="file" id="jsonFile" accept=".json" class="input-field" style="margin-bottom:24px;">
+
+    <label style="font-weight:600;display:block;margin-bottom:8px;">Or Paste AI JSON Here:</label>
     <textarea id="jsonInput" placeholder='{\n  "questions": [\n    ...\n  ]\n}'></textarea>
 
     <button class="btn btn-primary btn-xl" id="importBtn" style="width:100%;">Create & Publish Model Set</button>
@@ -187,6 +190,16 @@ async function loadCategories() {
         document.getElementById('categorySelect').innerHTML = '<option value="">Error loading subjects</option>';
     }
 }
+
+document.getElementById('jsonFile').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        document.getElementById('jsonInput').value = event.target.result;
+    };
+    reader.readAsText(file);
+});
 
 document.getElementById('importBtn').addEventListener('click', async () => {
     const vacancyId = document.getElementById('vacancySelect').value;
