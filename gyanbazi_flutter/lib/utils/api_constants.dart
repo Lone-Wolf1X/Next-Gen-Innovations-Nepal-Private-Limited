@@ -8,4 +8,7 @@ class ApiConstants {
 
   // Other endpoints (to be added as we build them)
   static const String getVacancies = '$baseUrl/vacancies.php?action=getAllAdmin';
+
+  // GyanBazi MCQ API
+  static const String mcqApi = '$baseUrl/mcq_api.php';
 }

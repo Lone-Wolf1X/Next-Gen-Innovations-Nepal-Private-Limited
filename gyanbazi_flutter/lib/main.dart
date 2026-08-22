@@ -25,6 +25,7 @@ class GyanbaziApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => ExamProvider()),
       ],
       child: MaterialApp(
         title: 'Gyanbazi',

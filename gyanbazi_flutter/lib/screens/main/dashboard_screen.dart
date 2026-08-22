@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../providers/exam_provider.dart';
 import '../../utils/app_theme.dart';
 import 'home_screen.dart';
 import 'courses_screen.dart';
@@ -15,6 +17,17 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch live data on startup
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final examProvider = Provider.of<ExamProvider>(context, listen: false);
+      examProvider.fetchCategories();
+      examProvider.fetchExams();
+    });
+  }
 
   final List<Widget> _pages = const [
     HomeScreen(),
