@@ -6,6 +6,15 @@
   <title>Model Sets | Admin | GyanBazi</title>
   <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/learn/css/learn-platform.css">
+  <style>
+    .folder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+    .folder-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+    .folder-card:hover { transform: translateY(-4px); box-shadow: 0 12px 20px rgba(0,0,0,0.08); border-color: var(--primary); }
+    .folder-icon { font-size: 3rem; margin-bottom: 12px; }
+    .folder-title { font-weight: 700; font-size: 1.1rem; color: var(--text); margin-bottom: 4px; }
+    .folder-subtitle { font-size: 0.85rem; color: var(--text-muted); }
+    .view-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  </style>
 </head>
 <body>
 <div class="page-loader" id="pageLoader"><div class="logo">NL</div><div class="loading-spinner"></div></div>
@@ -27,6 +36,12 @@
           <label class="form-label">Category *</label>
           <select class="form-select" id="sCategory" required onchange="loadQuestionsForSet()">
             <option value="">Select Category</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Course (Vacancy)</label>
+          <select class="form-select" id="sVacancy">
+            <option value="">Select Course (Optional)</option>
           </select>
         </div>
         <div class="form-group">
@@ -193,14 +208,17 @@
 <script src="/learn/js/auth.js?v=5"></script>
 <script src="/learn/js/db.js?v=7"></script>
 <script>
-let currentUser, allCategories = [], allModelSets = [], availableQs = [], selectedQIds = new Set(), editingSetId = null;
+let currentUser, allCategories = [], allModelSets = [], allVacancies = [], availableQs = [], selectedQIds = new Set(), editingSetId = null;
+let currentFolderVacancyId = null;
 
 async function init() {
   currentUser = await Auth.requireAdmin();
   document.getElementById('adminAvatar').textContent = (currentUser.displayName||'A')[0];
   document.getElementById('adminName').textContent = currentUser.displayName || 'Admin';
   allCategories = await DB.categories.getAllAdmin();
+  allVacancies = await DB.vacancies.getAllAdmin();
   populateCatSelect();
+  populateVacSelect();
   await loadSets();
   document.getElementById('pageLoader').style.display = 'none';
   document.getElementById('appLayout').style.display = 'flex';
@@ -211,19 +229,95 @@ function populateCatSelect() {
   document.getElementById('sCategory').innerHTML = `<option value="">Select Category</option>${allCategories.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}`;
 }
 
-async function loadSets() {
-  allModelSets = await DB.modelSets.getAll();
-  renderSetsTable();
+function populateVacSelect() {
+  document.getElementById('sVacancy').innerHTML = `<option value="">Select Course (Optional)</option>${allVacancies.map(v=>`<option value="${v.id}">${v.title}</option>`).join('')}`;
 }
 
-function renderSetsTable() {
+async function loadSets() {
+  allModelSets = await DB.modelSets.getAll();
+  renderView();
+}
+
+function renderView() {
+  if (currentFolderVacancyId !== null) {
+    renderSetsTable(currentFolderVacancyId);
+  } else {
+    renderFolders();
+  }
+}
+
+function renderFolders() {
   const wrap = document.getElementById('setsTableWrap');
-  if (!allModelSets.length) {
-    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">No model sets yet</div><div class="empty-desc">Create your first model set to start serving tests to users.</div></div>`;
+  
+  const grouped = {};
+  allVacancies.forEach(v => grouped[v.id] = 0);
+  let otherCount = 0;
+  
+  allModelSets.forEach(s => {
+    if (s.vacancyId && grouped[s.vacancyId] !== undefined) {
+      grouped[s.vacancyId]++;
+    } else {
+      otherCount++;
+    }
+  });
+
+  const cards = allVacancies.map(v => `
+    <div class="folder-card" onclick="openFolder('${v.id}')">
+      <div class="folder-icon">📁</div>
+      <div class="folder-title">${v.title}</div>
+      <div class="folder-subtitle">${grouped[v.id]} Model Sets</div>
+    </div>
+  `).join('');
+
+  const otherCard = `
+    <div class="folder-card" onclick="openFolder('other')">
+      <div class="folder-icon">🗂️</div>
+      <div class="folder-title">Other / Unassigned</div>
+      <div class="folder-subtitle">${otherCount} Model Sets</div>
+    </div>
+  `;
+
+  wrap.innerHTML = `<div class="folder-grid" style="padding:24px;">${cards}${otherCard}</div>`;
+}
+
+function openFolder(id) {
+  currentFolderVacancyId = id;
+  renderView();
+}
+
+function closeFolder() {
+  currentFolderVacancyId = null;
+  renderView();
+}
+
+function renderSetsTable(vacancyId) {
+  const wrap = document.getElementById('setsTableWrap');
+  
+  let filteredSets = [];
+  let titleStr = "";
+  if (vacancyId === 'other') {
+    filteredSets = allModelSets.filter(s => !s.vacancyId || !allVacancies.find(v=>v.id===s.vacancyId));
+    titleStr = "Other / Unassigned Sets";
+  } else {
+    filteredSets = allModelSets.filter(s => s.vacancyId === vacancyId);
+    const vac = allVacancies.find(v=>v.id===vacancyId);
+    titleStr = vac ? vac.title : "Sets";
+  }
+
+  const header = `
+    <div class="view-header" style="padding: 24px 24px 16px 24px;">
+      <button class="btn btn-ghost btn-icon" onclick="closeFolder()" style="font-size:1.2rem;">⬅</button>
+      <h2 style="margin:0;font-size:1.25rem;">${titleStr}</h2>
+    </div>
+  `;
+
+  if (!filteredSets.length) {
+    wrap.innerHTML = `${header}<div class="empty-state" style="padding-bottom:40px;"><div class="empty-icon">📋</div><div class="empty-title">No model sets here</div><div class="empty-desc">Create a model set and assign it to this course.</div></div>`;
     return;
   }
+  
   const catMap = Object.fromEntries(allCategories.map(c=>[c.id,c.name]));
-  const rows = allModelSets.map(s => `
+  const rows = filteredSets.map(s => `
     <tr>
       <td><div style="font-weight:600;">${s.icon||''} ${s.title}</div></td>
       <td><span class="badge badge-neutral">${catMap[s.categoryId]||'—'}</span></td>
@@ -239,7 +333,7 @@ function renderSetsTable() {
         </div>
       </td>
     </tr>`).join('');
-  wrap.innerHTML = `<table class="admin-table"><thead><tr><th>Title</th><th>Category</th><th>Details</th><th>Status</th><th style="text-align:right;">Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
+  wrap.innerHTML = `${header}<div style="padding:0 24px 24px 24px;"><table class="admin-table"><thead><tr><th>Title</th><th>Category</th><th>Details</th><th>Status</th><th style="text-align:right;">Actions</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 async function loadQuestionsForSet() {
@@ -286,6 +380,7 @@ function openSetModal(setData = null) {
   document.getElementById('setModalTitle').textContent = editingSetId ? 'Edit Model Set' : 'Create Model Set';
   document.getElementById('sTitle').value = setData?.title || '';
   document.getElementById('sCategory').value = setData?.categoryId || '';
+  document.getElementById('sVacancy').value = setData?.vacancyId || (currentFolderVacancyId === 'other' ? '' : (currentFolderVacancyId || ''));
   document.getElementById('sIcon').value = setData?.icon || '';
   document.getElementById('sDesc').value = setData?.description || '';
   document.getElementById('sTime').value = setData?.timeLimitMinutes || 120;
@@ -313,6 +408,7 @@ async function saveModelSet() {
   const data = {
     title: document.getElementById('sTitle').value.trim(),
     categoryId: document.getElementById('sCategory').value,
+    vacancyId: document.getElementById('sVacancy').value || null,
     icon: document.getElementById('sIcon').value || '📝',
     description: document.getElementById('sDesc').value.trim(),
     timeLimitMinutes: parseInt(document.getElementById('sTime').value),
