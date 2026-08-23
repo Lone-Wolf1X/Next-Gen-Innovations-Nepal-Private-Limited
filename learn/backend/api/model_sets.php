@@ -188,6 +188,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pdo->rollBack();
             sendJson(["error" => "Import failed: " . $e->getMessage()], 500);
         }
+    } elseif ($action === 'updateFromJson') {
+        $id = $data['id'] ?? '';
+        if (!$id) sendJson(["error" => "Set ID required"], 400);
+        $qIds = [];
+        
+        try {
+            $pdo->beginTransaction();
+            // Insert Questions
+            foreach($data['questions'] as $q) {
+                $qId = uniqid();
+                $qStmt = $pdo->prepare("INSERT INTO questions (id, category_id, subject_id, question_text, options, correct_option, explanation, marks, negative_marks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $qStmt->execute([
+                    $qId,
+                    $data['categoryId'],
+                    $q['subjectId'] ?? null,
+                    $q['questionText'],
+                    json_encode($q['options']),
+                    $q['correctOption'],
+                    $q['explanation'] ?? '',
+                    $q['marks'] ?? 1.00,
+                    0.20
+                ]);
+                $qIds[] = $qId;
+            }
+
+            // Update Model Set
+            $stmt = $pdo->prepare("UPDATE model_sets SET question_ids = ?, total_marks = ? WHERE id = ?");
+            $stmt->execute([
+                json_encode($qIds),
+                count($qIds),
+                $id
+            ]);
+
+            $pdo->commit();
+            sendJson(["success" => true, "totalQuestions" => count($qIds), "questionIds" => $qIds]);
+        } catch (Exception $e) {
+            $pdo->rollBack();
+            sendJson(["error" => "Update from JSON failed: " . $e->getMessage()], 500);
+        }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
     if ($action === 'delete') {
@@ -211,19 +250,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $data = json_decode(file_get_contents('php://input'), true);
         if (!$id || !$data) sendJson(["error" => "ID and data required"], 400);
 
-        $stmt = $pdo->prepare("UPDATE model_sets SET title = ?, description = ?, time_limit_minutes = ?, total_marks = ?, status = ?, is_daily_live = ?, live_start_time = ?, live_end_time = ?, vacancy_id = ? WHERE id = ?");
-        if ($stmt->execute([
-            $data['title'],
-            $data['description'] ?? '',
-            $data['timeLimitMinutes'] ?? 60,
-            $data['totalMarks'] ?? 100,
-            $data['status'] ?? 'published',
-            isset($data['isDailyLive']) ? (int)$data['isDailyLive'] : 0,
-            $data['liveStartTime'] ?? null,
-            $data['liveEndTime'] ?? null,
-            $data['vacancyId'] ?? null,
-            $id
-        ])) {
+        if (isset($data['questionIds'])) {
+            $stmt = $pdo->prepare("UPDATE model_sets SET title = ?, description = ?, time_limit_minutes = ?, total_marks = ?, status = ?, is_daily_live = ?, live_start_time = ?, live_end_time = ?, vacancy_id = ?, question_ids = ? WHERE id = ?");
+            $success = $stmt->execute([
+                $data['title'],
+                $data['description'] ?? '',
+                $data['timeLimitMinutes'] ?? 60,
+                $data['totalMarks'] ?? 100,
+                $data['status'] ?? 'published',
+                isset($data['isDailyLive']) ? (int)$data['isDailyLive'] : 0,
+                $data['liveStartTime'] ?? null,
+                $data['liveEndTime'] ?? null,
+                $data['vacancyId'] ?? null,
+                json_encode($data['questionIds']),
+                $id
+            ]);
+        } else {
+            $stmt = $pdo->prepare("UPDATE model_sets SET title = ?, description = ?, time_limit_minutes = ?, total_marks = ?, status = ?, is_daily_live = ?, live_start_time = ?, live_end_time = ?, vacancy_id = ? WHERE id = ?");
+            $success = $stmt->execute([
+                $data['title'],
+                $data['description'] ?? '',
+                $data['timeLimitMinutes'] ?? 60,
+                $data['totalMarks'] ?? 100,
+                $data['status'] ?? 'published',
+                isset($data['isDailyLive']) ? (int)$data['isDailyLive'] : 0,
+                $data['liveStartTime'] ?? null,
+                $data['liveEndTime'] ?? null,
+                $data['vacancyId'] ?? null,
+                $id
+            ]);
+        }
+        
+        if ($success) {
             sendJson(["success" => true]);
         } else {
             sendJson(["error" => "Failed to update"], 500);

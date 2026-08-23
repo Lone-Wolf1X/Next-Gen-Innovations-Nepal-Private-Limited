@@ -93,22 +93,50 @@
       </div>
 
       <!-- Question Selection -->
+      <!-- Tabs -->
       <div style="border-top:1px solid var(--border);padding-top:16px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
-          <h3 style="margin:0;font-size:0.95rem;font-weight:600;">Questions (<span id="selectedQCount">0 selected</span>)</h3>
-          <div style="display: flex; gap: 8px;">
-            <button type="button" class="btn btn-sm btn-ghost" onclick="selectAllFiltered()">Select All</button>
-            <button type="button" class="btn btn-sm btn-ghost" onclick="deselectAllFiltered()">Deselect All</button>
+        <div style="display:flex; gap:8px; margin-bottom:16px;">
+          <button type="button" class="btn btn-sm" id="tabBtnVisual" onclick="switchTab('visual')" style="background:var(--primary);color:white;">Visual List</button>
+          <button type="button" class="btn btn-sm btn-ghost" id="tabBtnBank" onclick="switchTab('bank')">Question Bank</button>
+          <button type="button" class="btn btn-sm btn-ghost" id="tabBtnJson" onclick="switchTab('json')">Paste JSON</button>
+        </div>
+
+        <!-- Visual List Tab -->
+        <div id="tabVisual" style="display:block;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+            <h3 style="margin:0;font-size:0.95rem;font-weight:600;">Questions (<span id="selectedQCount">0 selected</span>)</h3>
+          </div>
+          <div id="visualQList" style="max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius-md);padding:8px;background:var(--bg-card);">
+            <!-- Render visual list here -->
           </div>
         </div>
-        <div style="display:flex; gap:10px; margin-bottom:12px;">
-          <input type="text" id="qSearchModal" class="input" placeholder="Search questions..." oninput="filterModalQs()" style="flex:1;">
-          <label style="display:flex; align-items:center; gap:5px; font-size:0.875rem; cursor:pointer; background:var(--bg-card); padding:0 10px; border:1px solid var(--border); border-radius:6px;">
-            <input type="checkbox" id="qShowSelectedOnly" onchange="filterModalQs()"> Selected Only
-          </label>
+
+        <!-- Question Bank Tab -->
+        <div id="tabBank" style="display:none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+            <h3 style="margin:0;font-size:0.95rem;font-weight:600;">Select from Bank</h3>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn btn-sm btn-ghost" onclick="selectAllFiltered()">Select All</button>
+              <button type="button" class="btn btn-sm btn-ghost" onclick="deselectAllFiltered()">Deselect All</button>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; margin-bottom:12px;">
+            <input type="text" id="qSearchModal" class="input" placeholder="Search questions..." oninput="filterModalQs()" style="flex:1;">
+          </div>
+          <div id="questionPickerList" style="max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius-md);">
+            <div class="empty-state"><div class="empty-icon">📂</div><div class="empty-desc">Select a category first to see questions.</div></div>
+          </div>
         </div>
-        <div id="questionPickerList" style="max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius-md);">
-          <div class="empty-state"><div class="empty-icon">📂</div><div class="empty-desc">Select a category first to see questions.</div></div>
+
+        <!-- JSON Tab -->
+        <div id="tabJson" style="display:none;">
+          <h3 style="margin:0 0 8px 0;font-size:0.95rem;font-weight:600;">Update from JSON</h3>
+          <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:12px;">Paste AI-generated JSON here to completely replace this set's questions. (Will create new questions and overwrite the set).</p>
+          <textarea id="jsonUpdateInput" style="width:100%; height:180px; padding:12px; border:1px solid var(--border); border-radius:8px; font-family:monospace; resize:vertical; box-sizing:border-box;" placeholder='{\n  "questions": [\n    ...\n  ]\n}'></textarea>
+          <div style="margin-top:12px; text-align:right;">
+            <button type="button" class="btn btn-primary" onclick="saveJsonUpdate()" id="btnSaveJson">Import JSON</button>
+          </div>
+          <div id="jsonStatusMsg" style="margin-top:8px; font-size:0.85rem; font-weight:600; text-align:right;"></div>
         </div>
       </div>
     </div>
@@ -411,6 +439,103 @@ function updateSelCount() {
   document.getElementById('selectedQCount').textContent = `${selectedQIds.size} selected`;
 }
 
+function switchTab(tab) {
+  document.getElementById('tabVisual').style.display = tab === 'visual' ? 'block' : 'none';
+  document.getElementById('tabBank').style.display = tab === 'bank' ? 'block' : 'none';
+  document.getElementById('tabJson').style.display = tab === 'json' ? 'block' : 'none';
+  
+  const vBtn = document.getElementById('tabBtnVisual');
+  const bBtn = document.getElementById('tabBtnBank');
+  const jBtn = document.getElementById('tabBtnJson');
+
+  vBtn.className = 'btn btn-sm ' + (tab === 'visual' ? '' : 'btn-ghost');
+  vBtn.style.background = tab === 'visual' ? 'var(--primary)' : '';
+  vBtn.style.color = tab === 'visual' ? 'white' : '';
+
+  bBtn.className = 'btn btn-sm ' + (tab === 'bank' ? '' : 'btn-ghost');
+  bBtn.style.background = tab === 'bank' ? 'var(--primary)' : '';
+  bBtn.style.color = tab === 'bank' ? 'white' : '';
+
+  jBtn.className = 'btn btn-sm ' + (tab === 'json' ? '' : 'btn-ghost');
+  jBtn.style.background = tab === 'json' ? 'var(--primary)' : '';
+  jBtn.style.color = tab === 'json' ? 'white' : '';
+
+  if(tab === 'visual') renderVisualList();
+}
+
+function renderVisualList() {
+  const list = document.getElementById('visualQList');
+  const selectedQs = availableQs.filter(q => selectedQIds.has(q.id));
+  
+  if(!selectedQs.length) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">📂</div><div class="empty-desc" style="font-size:0.85rem;">No questions selected.<br>Select from Question Bank or Paste JSON.</div></div>`;
+    return;
+  }
+  
+  list.innerHTML = selectedQs.map((q, i) => `
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; padding:10px; border-bottom:1px solid var(--border);">
+      <div style="font-size:0.875rem; line-height:1.4; padding-right:12px;"><strong>Q${i+1}.</strong> ${q.questionText}</div>
+      <button type="button" class="btn btn-ghost btn-sm btn-icon" onclick="removeVisualQ('${q.id}')" style="color:var(--danger);" title="Remove">✕</button>
+    </div>
+  `).join('');
+}
+
+function removeVisualQ(id) {
+  selectedQIds.delete(id);
+  updateSelCount();
+  renderVisualList();
+  filterModalQs(); // update checkboxes
+}
+
+async function saveJsonUpdate() {
+  if(!editingSetId) {
+    showToast("You must Save the Model Set first before importing JSON to it.", "error");
+    return;
+  }
+  const jsonStr = document.getElementById('jsonUpdateInput').value.trim();
+  if(!jsonStr) { showToast("Please paste JSON.", "error"); return; }
+  let parsed;
+  try {
+    parsed = JSON.parse(jsonStr);
+    if (!parsed.questions || !Array.isArray(parsed.questions)) throw new Error("Missing 'questions' array.");
+  } catch(e) {
+    showToast("Invalid JSON: " + e.message, "error"); return;
+  }
+  
+  const catId = document.getElementById('sCategory').value;
+  if(!catId) { showToast("Select a Category first.", "error"); return; }
+
+  const btn = document.getElementById('btnSaveJson');
+  const msg = document.getElementById('jsonStatusMsg');
+  btn.disabled = true; btn.textContent = "Importing...";
+  msg.textContent = "";
+
+  try {
+    const payload = {
+      id: editingSetId,
+      categoryId: catId,
+      questions: parsed.questions
+    };
+    const res = await DB.modelSets.updateFromJson(payload, currentUser.uid);
+    if(res.success) {
+      msg.style.color = '#10b981';
+      msg.textContent = `✅ Successfully imported ${res.totalQuestions} questions!`;
+      document.getElementById('jsonUpdateInput').value = '';
+      
+      await loadQuestionsForSet();
+      selectedQIds = new Set(res.questionIds);
+      updateSelCount();
+      switchTab('visual');
+      showToast("JSON imported successfully!", "success");
+      await loadSets(); // update table
+    }
+  } catch(e) {
+    msg.style.color = 'var(--danger)';
+    msg.textContent = "❌ Error: " + e.message;
+  }
+  btn.disabled = false; btn.textContent = "Import JSON";
+}
+
 function openSetModal(setData = null) {
   editingSetId = setData?.id || null;
   selectedQIds = new Set(setData?.questionIds || []);
@@ -428,7 +553,9 @@ function openSetModal(setData = null) {
   document.getElementById('sNegVal').value = setData?.negativeMarkValue || 0.25;
   document.getElementById('sStatus').value = setData?.status || 'draft';
   document.getElementById('qSearchModal').value = '';
-  document.getElementById('qShowSelectedOnly').checked = false;
+  document.getElementById('jsonUpdateInput').value = '';
+  document.getElementById('jsonStatusMsg').textContent = '';
+  switchTab('visual');
   if (setData?.categoryId) loadQuestionsForSet();
   else { availableQs = []; renderQuestionPicker(); }
   document.getElementById('setModal').classList.add('open');

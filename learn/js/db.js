@@ -123,6 +123,9 @@ const DB = (() => {
     async update(id, data, adminId) {
       await fetchAPI(`model_sets.php?action=update&id=${id}`, 'PUT', { ...data, adminId });
     },
+    async updateFromJson(data, adminId) {
+      return await fetchAPI(`model_sets.php?action=updateFromJson`, 'POST', { ...data, adminId });
+    },
     async delete(id, adminId) {
       await fetchAPI(`model_sets.php?action=delete&id=${id}`, 'DELETE', { adminId });
     }
