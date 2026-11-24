@@ -100,7 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.classList.add('active');
       const cat = btn.dataset.cat;
       portfolioCards.forEach(card => {
-        if (cat === 'all' || card.dataset.cat === cat) {
+        const cardCats = (card.dataset.cat || '').split(' ');
+        if (cat === 'all' || cardCats.includes(cat) || card.dataset.cat === cat) {
           card.style.display = 'block';
           card.style.animation = 'scaleIn 0.4s ease both';
         } else {

@@ -1,0 +1,110 @@
+.dashboard-container {
+  padding: 24px;
+}
+
+.premium-banner {
+  background: var(--primary-light);
+  border-color: rgba(79, 70, 229, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.premium-banner h3 {
+  font-size: 1.25rem;
+  color: var(--primary-dark);
+  margin-bottom: 4px;
+}
+
+.premium-banner p {
+  font-size: 0.875rem;
+  color: var(--primary);
+}
+
+.premium-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.free-limit {
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+.premium-btn {
+  background: linear-gradient(45deg, #f59e0b, #ef4444);
+  border: none;
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+}
+
+.main-feed {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.feed-item {
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  background: var(--bg-main);
+}
+
+.feed-item h4 {
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.feed-item p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.sidebar-widgets {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.widget-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.checkin-card {
+  background: #f8fafd;
+  text-align: center;
+}
+
+.checkin-card p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 4px 0 12px;
+}
+
+.live-exam-card {
+  background: linear-gradient(135deg, var(--primary), #7c3aed);
+  color: white;
+  text-align: center;
+  border: none;
+  box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+}
+
+.live-exam-card strong {
+  font-size: 1.1rem;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.live-exam-card p {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  margin-bottom: 16px;
+}

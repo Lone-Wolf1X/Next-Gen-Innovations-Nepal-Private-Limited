@@ -1,0 +1,162 @@
+{
+  "exam_name": "Public Service Commission Pre-Qualifying Examination (Level 5)",
+  "organization": "Lok Sewa Aayog (for all Organized Institutions/Public Enterprises)",
+  "total_phases": 2,
+  "phases": [
+    {
+      "phase_name": "Phase I: Pre-Qualifying Examination (पूर्वयोग्यता परीक्षा)",
+      "papers": [
+        {
+          "paper_name": "First Paper",
+          "subject": "General Studies, Public Management and Basic Competency Test (सामान्य अध्ययन, सार्वजनिक व्यवस्थापन तथा आधारभूत सक्षमता परीक्षण)",
+          "full_marks": 100,
+          "pass_marks": 45,
+          "duration_minutes": 45,
+          "question_format": "Objective (Multiple Choice Questions - MCQs)",
+          "sections": [
+            {
+              "section_name": "1. Geography, Population and Environment (भूगोल, जनसङ्ख्या र वातावरण)",
+              "marks_weightage": 10,
+              "number_of_questions": 5,
+              "marks_per_question": 2,
+              "topics": [
+                "World geography: physical, social and economic geography (विश्वको भूगोल: भौतिक, सामाजिक र आर्थिक भूगोल)",
+                "Geography of Nepal: physiographic regions, climates and natural resources (नेपालको भूगोल: धरातलीय स्वरूप, हावापानी र प्राकृतिक स्रोत)",
+                "Population and settlement: population, migration, urbanization and demographic dividend (जनसङ्ख्या र बसोबास: जनसङ्ख्या, बसाइसराइ, सहरीकरण र जनसाङ्ख्यिक लाभांश)",
+                "Biodiversity, sustainable development, climate change and environmental management (जैविक विविधता, दिगो विकास, जलवायु परिवर्तन र वातावरणीय व्यवस्थापन)"
+              ]
+            },
+            {
+              "section_name": "2. History, Culture and Social System (इतिहास, संस्कृति र सामाजिक व्यवस्था)",
+              "marks_weightage": 10,
+              "number_of_questions": 5,
+              "marks_per_question": 2,
+              "topics": [
+                "Major historical developments of the world (विश्वका प्रमुख ऐतिहासिक घटना)",
+                "History of Nepal: socio-economic, political and administrative developments from ancient to modern period (नेपालको इतिहास: प्राचीन कालदेखि आधुनिक कालसम्मको सामाजिक-आर्थिक, राजनीतिक र प्रशासनिक विकासक्रम)",
+                "Socio-cultural diversity of Nepal: ethnicity, language, religion, customs, traditions, arts, literature and national identity (नेपालको सामाजिक-सांस्कृतिक विविधता: जातजाति, भाषा, धर्म, रीतिरिवाज, परम्परा, कला, साहित्य र राष्ट्रिय पहिचान)"
+              ]
+            },
+            {
+              "section_name": "3. Economic Development of Nepal (नेपालको आर्थिक विकास)",
+              "marks_weightage": 10,
+              "number_of_questions": 5,
+              "marks_per_question": 2,
+              "topics": [
+                "General information on gross domestic product (GDP), national income, inflation, balance of payments (BOP), remittance, foreign investment and foreign aid (कुल गार्हस्थ्य उत्पादन (GDP), राष्ट्रिय आय, मुद्रास्फीति, शोधनान्तर स्थिति (BOP), विप्रेषण (Remittance), वैदेशिक लगानी र वैदेशिक सहायता सम्बन्धी सामान्य जानकारी)",
+                "Planned development: vision, goals, strategies and monitoring mechanisms of current periodic plan (योजनाबद्ध विकास: वर्तमान आवधिक योजनाको सोच, लक्ष्य, रणनीति र अनुगमन संयन्त्र)",
+                "Sectoral development: agriculture, industry, trade, tourism, transport, energy, education, health and ICT (क्षेत्रगत विकास: कृषि, उद्योग, व्यापार, पर्यटन, यातायात, ऊर्जा, शिक्षा, स्वास्थ्य र सूचना तथा सञ्चार प्रविधि)",
+                "Basic understanding of fiscal and monetary policy (वित्तीय र मौद्रिक नीतिको आधारभूत जानकारी)",
+                "Role of cooperatives in economic development (आर्थिक विकासमा सहकारीको भूमिका)"
+              ]
+            },
+            {
+              "section_name": "4. Constitution and Governance (संविधान र शासन व्यवस्था)",
+              "marks_weightage": 10,
+              "number_of_questions": 5,
+              "marks_per_question": 2,
+              "topics": [
+                "Meaning, sources and importance of law (कानूनको अर्थ, स्रोत र महत्त्व)",
+                "Constitutional development of Nepal (नेपालको संवैधानिक विकासक्रम)",
+                "Constitution of Nepal: salient features, part 1 to 5, constitutional bodies and schedules (नेपालको संविधान: मौलिक विशेषता, भाग १ देखि ५ सम्म, संवैधानिक निकाय र अनुसूची)",
+                "Federal governance system: roles of federal, provincial and local governments (सङ्घीय शासन प्रणाली: सङ्घ, प्रदेश र स्थानीय सरकारको भूमिका)",
+                "Democracy, rule of law, human rights, electoral system, adult franchise and public accountability (लोकतन्त्र, कानूनको शासन, मानव अधिकार, निर्वाचन प्रणाली, बालिग मताधिकार र सार्वजनिक जवाफदेहिता)"
+              ]
+            },
+            {
+              "section_name": "5. International Affairs and International Organizations (अन्तर्राष्ट्रिय मामला र अन्तर्राष्ट्रिय संघ-संस्थाहरू)",
+              "marks_weightage": 10,
+              "number_of_questions": 5,
+              "marks_per_question": 2,
+              "topics": [
+                "Nepal's bilateral relations: SAARC countries, China, USA, UK, Russia, France, and Japan (नेपालको द्विपक्षीय सम्बन्ध: सार्क (SAARC) मुलुक, चीन, अमेरिका, बेलायत, रुस, फ्रान्स र जापान)",
+                "United Nations: objectives, organs, specialized agencies and Nepal’s participation (संयुक्त राष्ट्र संघ: उद्देश्य, अङ्ग, विशिष्टीकृत निकाय र नेपालको सहभागिता)",
+                "Regional organizations: SAARC, BIMSTEC, ASEAN, EU (क्षेत्रीय सङ्गठन: सार्क (SAARC), बिमस्टेक (BIMSTEC), आसियान (ASEAN), युरोपेली संघ (EU))",
+                "International financial institutions: World Bank, IMF, ADB, AIIB (अन्तर्राष्ट्रिय वित्तीय संस्था: विश्व बैंक, अन्तर्राष्ट्रिय मुद्रा कोष (IMF), एसियाली विकास बैंक (ADB), एसियाली पूर्वाधार लगानी बैंक (AIIB))",
+                "Regional and global trade arrangements: WTO and SAFTA (क्षेत्रीय र विश्वव्यापी व्यापारिक व्यवस्था: विश्व व्यापार सङ्गठन (WTO) र साफ्टा (SAFTA))"
+              ]
+            },
+            {
+              "section_name": "6. Science, Technology, Public Health and Current Affairs (विज्ञान, प्रविधि, जनस्वास्थ्य र समसामयिक विषय)",
+              "marks_weightage": 10,
+              "number_of_questions": 5,
+              "marks_per_question": 2,
+              "topics": [
+                "Measurement systems and units and their practical applications (नापका प्रणाली र एकाइ तथा तिनको व्यावहारिक प्रयोग)",
+                "Scientific inventions and technological advancements affecting daily life (दैनिक जीवनमा प्रभाव पार्ने वैज्ञानिक आविष्कार र प्राविधिक विकास)",
+                "Computer applications, ICT, digital services, basic cybersecurity awareness, data privacy, artificial intelligence (AI) and social media ethics (कम्प्युटर एप्लिकेसन, सूचना तथा सञ्चार प्रविधि (ICT), डिजिटल सेवा, आधारभूत साइबर सुरक्षा सचेतना, डाटा गोपनीयता (Data Privacy), कृत्रिम बुद्धिमत्ता (AI) र सामाजिक सञ्जाल नैतिकता)",
+                "Public health: diseases, nutrition, sanitation, vaccination and health (जनस्वास्थ्य: रोग, पोषण, सरसफाइ, खोप र स्वास्थ्य)",
+                "Contemporary national and international events of public importance (सार्वजनिक महत्त्वका समसामयिक राष्ट्रिय तथा अन्तर्राष्ट्रिय घटना)"
+              ]
+            },
+            {
+              "section_name": "7. Office and Public Management (कार्यालय र सार्वजनिक व्यवस्थापन)",
+              "marks_weightage": 10,
+              "number_of_questions": 5,
+              "marks_per_question": 2,
+              "topics": [
+                "Office's functions and layout (कार्यालयको कार्य र लेआउट)",
+                "Office procedures: circulars, orders, official correspondence, Tippani/memos, reports, registration, dispatch; filing and record managements (कार्यालय कार्यविधि: परिपत्र, आदेश, पत्रव्यवहार, टिप्पणी, प्रतिवेदन, दर्ता, चलानी, फाइलिङ र अभिलेख व्यवस्थापन)",
+                "Importance of communication in the office; introduction to e-governance and digital office systems (कार्यालयमा सञ्चारको महत्त्व, ई-गभर्नेन्स र डिजिटल कार्यालय प्रणालीको परिचय)",
+                "Principles of management: planning, organizing, staffing, directing, coordination and control (व्यवस्थापनका सिद्धान्त: योजना, सङ्गठन, जनशक्ति व्यवस्थापन, निर्देशन, समन्वय र नियन्त्रण)",
+                "General introduction to decision-making, supervision, motivation and leadership (निर्णय प्रक्रिया, सुपरीवेक्षण, उत्प्रेरणा र नेतृत्वको सामान्य परिचय)",
+                "Public service delivery mechanisms, citizen charter and grievance handling (सार्वजनिक सेवा प्रवाहका संयन्त्र, नागरिक बडापत्र र गुनासो व्यवस्थापन)",
+                "Professional duties, discipline, ethics and service-oriented behavior (व्यावसायिक कर्तव्य, अनुशासन, नैतिकता र सेवामुखी व्यवहार)"
+              ]
+            },
+            {
+              "section_name": "8. Knowledge about Public Institutions (सार्वजनिक संस्था सम्बन्धी ज्ञान)",
+              "marks_weightage": 10,
+              "number_of_questions": 5,
+              "marks_per_question": 2,
+              "topics": [
+                "Public institutions/enterprises: concept, evolution, objectives, importance and their role in national economy and service delivery (सार्वजनिक संस्था: अवधारणा, विकासक्रम, उद्देश्य, महत्त्व र राष्ट्रिय अर्थतन्त्र एवं सेवा प्रवाहमा यसको भूमिका)",
+                "Classification and sectoral distribution, current status of public enterprises in Nepal (नेपालमा सार्वजनिक संस्थानहरूको वर्गीकरण र वर्तमान अवस्था)",
+                "Corporate governance, transparency and corporate social responsibility (CSR) (संस्थागत सुशासन (Corporate Governance), पारदर्शिता र संस्थागत सामाजिक उत्तरदायित्व (CSR))",
+                "Privatization, public-private partnership (PPP) and globalization (निजीकरण, सार्वजनिक-निजी साझेदारी (PPP) र विश्वव्यापीकरण)",
+                "Human resource management: basics of recruitment and performance appraisal (मानव संसाधन व्यवस्थापन: भर्ना र कार्यसम्पादन मूल्याङ्कनका आधार)",
+                "Financial management: corporate budgeting, accounting and auditing systems (वित्तीय व्यवस्थापन: संस्थागत बजेट, लेखा र लेखापरीक्षण प्रणाली)",
+                "Basic concepts of public procurement and financial discipline (सार्वजनिक खरीदको आधारभूत अवधारणा र वित्तीय अनुशासन)"
+              ]
+            },
+            {
+              "section_name": "9. Applied Mathematics (व्यावहारिक गणित)",
+              "marks_weightage": 10,
+              "number_of_questions": 5,
+              "marks_per_question": 2,
+              "topics": [
+                "Arithmetic operations, fractions, decimals, percentage, ratio and proportion (गणितका आधारभूत क्रिया, भिन्न, दशमलव, प्रतिशत, अनुपात र समानुपात)",
+                "Unitary method, profit & loss, tax & commission, simple & compound interest (ऐकिक नियम, नाफा र नोक्सान, कर र कमिसन, साधारण र चक्रीय ब्याज)",
+                "Average/mean, median, mode, probability and data interpretation (औसत/मध्यक (Average/Mean), मध्यिका (Median), बहुलक/रित (Mode), सम्भाव्यता (Probability) र तथ्याङ्क (Data) विश्लेषण)"
+              ]
+            },
+            {
+              "section_name": "10. Language Competence Test (Language Competence Test (English & Nepali)) (भाषा सक्षमता परीक्षण (अंग्रेजी र नेपाली))",
+              "marks_weightage": 10,
+              "number_of_questions": 5,
+              "marks_per_question": 2,
+              "topics": [
+                "10.1 English Grammar and Vocabulary (5 Marks): Parts of speech (nouns, pronouns, adjectives, verbs, adverbs, prepositions, conjunctions, interjections); sentence structure, clauses, tense, voice, subject-verb agreement; vocabulary: word meanings, synonyms, antonyms and derivatives",
+                "10.2 Nepali Grammar and Vocabulary (नेपाली व्याकरण र शब्दभण्डार) (5 Marks): शुद्ध लेखन (वर्णविन्यास), पदसङ्गति, पदवर्ग, धातु, क्रिया, काल र पक्ष, कारक, विभक्ति, वाच्य, वाक्य संरचना, शब्दनिर्माण, पर्यायवाची/विपरीतार्थक शब्द, उखान/टुक्का"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "phase_name": "Phase II: Main Written Examination (मूल लिखित परीक्षा)",
+      "papers": [
+        {
+          "paper_name": "Main Exam Papers",
+          "subject": "Detailed core subjects specific to the organized institution's vacant post requirements (Note: This is the subsequent stage for which candidates are qualified after passing the Pre-Qualifying Phase).",
+          "full_marks": 200,
+          "pass_marks": 80,
+          "duration_minutes": 300,
+          "question_format": "Subjective (Short and Long Answers)",
+          "sections": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeQuest — Learn to Code Free | GyanBazi</title>
+  <meta name="description" content="Learn HTML, CSS and JavaScript for free with GyanBazi CodeQuest. Step-by-step gamified coding lessons for beginners." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --secondary: #f97316;
+      --dark: #111827;
+      --text: #4b5563;
+      --muted: #6b7280;
+      --light: #f8fafc;
+      --white: #ffffff;
+      --border: #e5e7eb;
+      --green: #10b981;
+      --shadow: 0 15px 40px rgba(15,23,42,0.08);
+      --radius: 20px;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: "Inter", sans-serif; color: var(--dark); background: var(--white); }
+    a { text-decoration: none; color: inherit; }
+
+    /* NAV */
+    header { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.92); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(229,231,235,0.7); }
+    .navbar { height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 5%; }
+    .logo { display: flex; align-items: center; gap: 10px; font-family: "Poppins"; font-size: 22px; font-weight: 800; color: var(--dark); }
+    .logo-icon { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; color: white; background: linear-gradient(135deg, var(--primary), #7c3aed); font-weight: 800; font-size: 18px; }
+    .logo span { color: var(--primary); }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-badge { background: #ecfdf5; color: var(--green); font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 50px; border: 1px solid #d1fae5; }
+    #nav-user-info { font-size: 13px; color: var(--muted); }
+    .btn { border: none; border-radius: 10px; padding: 10px 20px; font-size: 14px; font-weight: 700; font-family: "Inter"; cursor: pointer; transition: 0.2s ease; display: inline-flex; align-items: center; gap: 6px; }
+    .back-link { font-size: 14px; color: var(--muted); display: flex; align-items: center; gap: 5px; transition: color 0.2s; }
+    .back-link:hover { color: var(--primary); }
+
+    /* HERO */
+    .hero { padding: 70px 5% 50px; background: radial-gradient(circle at 10% 20%, rgba(99,102,241,0.1), transparent 30%), radial-gradient(circle at 90% 10%, rgba(249,115,22,0.08), transparent 28%), linear-gradient(180deg, #f8faff 0%, #fff 100%); text-align: center; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: #eef2ff; color: var(--primary); border: 1px solid #e0e7ff; padding: 6px 14px; border-radius: 50px; font-size: 12px; font-weight: 700; margin-bottom: 20px; }
+    .hero h1 { font-family: "Poppins"; font-size: clamp(32px, 5vw, 56px); line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 16px; }
+    .hero h1 span { color: var(--primary); }
+    .hero-sub { color: var(--text); font-size: 17px; max-width: 550px; margin: 0 auto 16px; }
+    .free-tag { display: inline-flex; align-items: center; gap: 6px; background: #ecfdf5; color: var(--green); border: 1px solid #d1fae5; padding: 6px 14px; border-radius: 50px; font-size: 13px; font-weight: 700; margin-bottom: 50px; }
+
+    /* STATS BAR */
+    .stats-bar { display: flex; justify-content: center; gap: 40px; margin-bottom: 60px; flex-wrap: wrap; }
+    .stat-item { text-align: center; }
+    .stat-item strong { display: block; font-family: "Poppins"; font-size: 26px; color: var(--dark); }
+    .stat-item span { color: var(--muted); font-size: 13px; }
+
+    /* LANGUAGE CARDS */
+    .section-header { text-align: center; margin-bottom: 32px; }
+    .section-header h2 { font-family: "Poppins"; font-size: 28px; margin-bottom: 8px; }
+    .section-header p { color: var(--muted); font-size: 15px; }
+
+    .lang-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 0 5% 80px; max-width: 1100px; margin: 0 auto; }
+
+    .lang-card { position: relative; overflow: hidden; background: white; border: 1.5px solid var(--border); border-radius: var(--radius); padding: 32px 28px; transition: all 0.3s ease; }
+    .lang-card::after { content: ""; position: absolute; width: 120px; height: 120px; border-radius: 50%; right: -40px; top: -40px; background: var(--card-glow, rgba(79,70,229,0.06)); pointer-events: none; }
+    .lang-card:hover { transform: translateY(-8px); box-shadow: var(--shadow); border-color: var(--card-border, #c7d2fe); }
+
+    .lang-card.html { --card-border: #f97316; --card-glow: rgba(249,115,22,0.08); }
+    .lang-card.css  { --card-border: #3b82f6; --card-glow: rgba(59,130,246,0.08); }
+    .lang-card.js   { --card-border: #eab308; --card-glow: rgba(234,179,8,0.1); }
+
+    .lang-icon { width: 64px; height: 64px; border-radius: 16px; display: grid; place-items: center; font-size: 30px; margin-bottom: 20px; }
+    .html .lang-icon { background: #fff7ed; }
+    .css  .lang-icon { background: #eff6ff; }
+    .js   .lang-icon { background: #fefce8; }
+
+    .lang-card h3 { font-family: "Poppins"; font-size: 22px; margin-bottom: 8px; }
+    .lang-card p { color: var(--muted); font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
+
+    .lang-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+    .meta-chip { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 50px; }
+    .chip-green { background: #ecfdf5; color: #059669; }
+    .chip-blue  { background: #eff6ff; color: #2563eb; }
+    .chip-gray  { background: #f3f4f6; color: var(--muted); }
+
+    .progress-mini { margin-bottom: 16px; }
+    .progress-mini-bar { height: 6px; background: #e5e7eb; border-radius: 50px; overflow: hidden; }
+    .progress-mini-fill { height: 100%; border-radius: 50px; width: 0; transition: width 0.5s ease; }
+    .html .progress-mini-fill { background: #f97316; }
+    .css  .progress-mini-fill { background: #3b82f6; }
+    .js   .progress-mini-fill { background: #eab308; }
+    .progress-mini-label { font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 600; }
+
+    .enroll-btn { width: 100%; padding: 13px; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; font-family: "Inter"; cursor: pointer; transition: all 0.25s ease; }
+    .html .enroll-btn { background: linear-gradient(135deg, #f97316, #fb923c); color: white; box-shadow: 0 6px 18px rgba(249,115,22,0.25); }
+    .css  .enroll-btn { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: white; box-shadow: 0 6px 18px rgba(59,130,246,0.25); }
+    .js   .enroll-btn { background: linear-gradient(135deg, #eab308, #facc15); color: #1a1a00; box-shadow: 0 6px 18px rgba(234,179,8,0.25); }
+    .enroll-btn:hover { transform: translateY(-2px); filter: brightness(1.06); }
+    .enroll-btn.enrolled { background: #ecfdf5 !important; color: #059669 !important; box-shadow: none !important; border: 1.5px solid #d1fae5; cursor: pointer; transform: none; filter: none; }
+    .enroll-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; filter: none; }
+
+    /* HOW IT WORKS */
+    .how-section { background: var(--light); padding: 70px 5%; }
+    .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 900px; margin: 0 auto; }
+    .how-card { background: white; padding: 28px; border-radius: 18px; border: 1px solid var(--border); text-align: center; }
+    .how-num { width: 48px; height: 48px; border-radius: 50%; background: #eef2ff; color: var(--primary); font-family: "Poppins"; font-size: 20px; font-weight: 800; display: grid; place-items: center; margin: 0 auto 16px; }
+    .how-card h4 { font-family: "Poppins"; font-size: 16px; margin-bottom: 8px; }
+    .how-card p { font-size: 13px; color: var(--muted); }
+
+    /* FOOTER */
+    .page-footer { padding: 30px 5%; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 13px; }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 30px; right: 30px; background: var(--dark); color: white; padding: 14px 22px; border-radius: 12px; font-size: 14px; font-weight: 600; transform: translateY(100px); opacity: 0; transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); z-index: 9999; max-width: 320px; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: #059669; }
+    .toast.error { background: #dc2626; }
+
+    @media (max-width: 900px) { .lang-grid { grid-template-columns: 1fr; } .how-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 600px) { .stats-bar { gap: 20px; } }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header>
+    <div class="navbar">
+      <a href="/learn_coding/homepage.html" class="logo">
+        <div class="logo-icon">G</div>
+        Gyan<span>Bazi</span>
+      </a>
+      <div class="nav-right">
+        <span class="nav-badge">🆓 Free Learning</span>
+        <span id="nav-user-info">Loading...</span>
+        <a href="/learn_coding/homepage.html" class="back-link">← Dashboard</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">💻 CodeQuest by GyanBazi</div>
+    <h1>Learn to <span>Code</span>,<br>Completely Free.</h1>
+    <p class="hero-sub">Theory, quiz, and hands-on code practice — for every concept. Designed for beginners starting from scratch.</p>
+    <div class="free-tag">🎉 No subscription. No paywall. 100% Free.</div>
+    <div class="stats-bar">
+      <div class="stat-item"><strong>3</strong><span>Languages</span></div>
+      <div class="stat-item"><strong>10+</strong><span>HTML Lessons</span></div>
+      <div class="stat-item"><strong>⭐ XP</strong><span>Earn as you learn</span></div>
+      <div class="stat-item"><strong>🔥 Streaks</strong><span>Daily progress</span></div>
+    </div>
+  </section>
+
+  <!-- LANGUAGE CARDS -->
+  <div style="padding: 0 5%; max-width: 1100px; margin: 0 auto;">
+    <div class="section-header">
+      <h2>Choose Your Language</h2>
+      <p>Enroll for free and start your coding journey today</p>
+    </div>
+  </div>
+
+  <div class="lang-grid">
+    <!-- HTML -->
+    <div class="lang-card html">
+      <div class="lang-icon">🌐</div>
+      <h3>HTML</h3>
+      <p>The foundation of web development. Learn how to structure web pages with headings, paragraphs, links, images, and more.</p>
+      <div class="lang-meta">
+        <span class="meta-chip chip-green">✅ Available Now</span>
+        <span class="meta-chip chip-blue">10 Lessons</span>
+        <span class="meta-chip chip-gray">Beginner</span>
+      </div>
+      <div class="progress-mini" id="progress-html" style="display:none;">
+        <div class="progress-mini-bar"><div class="progress-mini-fill" id="fill-html"></div></div>
+        <div class="progress-mini-label" id="label-html">0 / 10 lessons</div>
+      </div>
+      <button class="enroll-btn" id="btn-html" onclick="handleEnroll('html')">🚀 Enroll Free &amp; Start Now</button>
+    </div>
+
+    <!-- CSS -->
+    <div class="lang-card css">
+      <div class="lang-icon">🎨</div>
+      <h3>CSS</h3>
+      <p>Make your web pages beautiful. Colors, fonts, layouts, animations — CSS brings websites to life.</p>
+      <div class="lang-meta">
+        <span class="meta-chip chip-green">✅ Available Now</span>
+        <span class="meta-chip chip-blue">8 Lessons</span>
+        <span class="meta-chip chip-gray">Beginner</span>
+      </div>
+      <div class="progress-mini" id="progress-css" style="display:none;">
+        <div class="progress-mini-bar"><div class="progress-mini-fill" id="fill-css"></div></div>
+        <div class="progress-mini-label" id="label-css">0 / 8 lessons</div>
+      </div>
+      <button class="enroll-btn" id="btn-css" onclick="handleEnroll('css')">🚀 Enroll Free &amp; Start Now</button>
+    </div>
+
+    <!-- JS -->
+    <div class="lang-card js">
+      <div class="lang-icon">⚡</div>
+      <h3>JavaScript</h3>
+      <p>Make websites interactive. Variables, functions, events — JavaScript makes web pages come alive.</p>
+      <div class="lang-meta">
+        <span class="meta-chip chip-green">✅ Available Now</span>
+        <span class="meta-chip chip-blue">12 Lessons</span>
+        <span class="meta-chip chip-gray">Beginner</span>
+      </div>
+      <div class="progress-mini" id="progress-js" style="display:none;">
+        <div class="progress-mini-bar"><div class="progress-mini-fill" id="fill-js"></div></div>
+        <div class="progress-mini-label" id="label-js">0 / 12 lessons</div>
+      </div>
+      <button class="enroll-btn" id="btn-js" onclick="handleEnroll('js')">🚀 Enroll Free &amp; Start Now</button>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section">
+    <div class="section-header" style="margin-bottom:40px;">
+      <h2>How does it work?</h2>
+      <p>A simple 3-step process to learn coding effectively</p>
+    </div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">1</div>
+        <h4>📖 Read the Theory</h4>
+        <p>Every lesson starts with a short, clear explanation — straight to the point, no fluff.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">2</div>
+        <h4>🧠 Take the Quiz</h4>
+        <p>A quick multiple-choice question to check if you understood the concept before writing code.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">3</div>
+        <h4>💻 Write Code</h4>
+        <p>Code directly in your browser. Submit and get instant feedback. Earn XP and move forward!</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="page-footer">
+    <span>© 2026 GyanBazi — NextGen Innovations Nepal</span>
+    <span>CodeQuest is 100% Free. Always.</span>
+  </footer>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="/learn_coding/js/firebase-config.js"></script>
+
+  <script>
+    const TOTAL_LESSONS = { html: 10, css: 8, js: 12 };
+    let currentUser = null;
+    let userDoc = {};
+    let db = null;
+
+    // Wait for Firebase to be ready
+    window.addEventListener('load', () => {
+      try {
+        db = firebase.firestore();
+      } catch(e) {
+        console.error('Firestore init error:', e);
+      }
+
+      firebase.auth().onAuthStateChanged(async (user) => {
+        if (!user) {
+          document.getElementById('nav-user-info').innerHTML =
+            '<a href="/learn_coding/login.html" style="color:var(--primary);font-weight:700;">Login to track progress →</a>';
+          return;
+        }
+        currentUser = user;
+        const name = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
+        document.getElementById('nav-user-info').textContent = `👋 ${name}`;
+        await loadUserData(user.uid);
+      });
+    });
+
+    async function loadUserData(uid) {
+      if (!db) return;
+      try {
+        const doc = await db.collection('codequest_users').doc(uid).get();
+        if (doc.exists) {
+          userDoc = doc.data();
+          updateAllCards();
+        }
+      } catch(e) { console.error('Load user data error:', e); }
+    }
+
+    function updateAllCards() {
+      ['html', 'css', 'js'].forEach(lang => {
+        const enrolled = userDoc.enrolledCourses && userDoc.enrolledCourses.includes(lang);
+        if (!enrolled) return;
+
+        const progressObj = (userDoc.progress && userDoc.progress[lang]) ? userDoc.progress[lang] : {};
+        const completed = Object.keys(progressObj).length;
+        const total = TOTAL_LESSONS[lang];
+        const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+        const btn = document.getElementById(`btn-${lang}`);
+        btn.textContent = completed > 0 ? `▶ Continue ${lang.toUpperCase()} (${pct}% done)` : `▶ Start ${lang.toUpperCase()} Course`;
+        btn.classList.add('enrolled');
+
+        const progressEl = document.getElementById(`progress-${lang}`);
+        if (progressEl) {
+          progressEl.style.display = 'block';
+          document.getElementById(`fill-${lang}`).style.width = pct + '%';
+          document.getElementById(`label-${lang}`).textContent = `${completed} / ${total} lessons completed`;
+        }
+      });
+    }
+
+    async function handleEnroll(lang) {
+      // Not logged in — redirect to login
+      if (!currentUser) {
+        showToast('⚠️ Please login first to enroll!', 'error');
+        setTimeout(() => {
+          window.location.href = '/learn_coding/login.html';
+        }, 1500);
+        return;
+      }
+
+      // Already enrolled — just navigate to course
+      if (userDoc.enrolledCourses && userDoc.enrolledCourses.includes(lang)) {
+        window.location.href = `/learn_coding/learn.html?lang=${lang}`;
+        return;
+      }
+
+      // Enroll button: disable to prevent double click
+      const btn = document.getElementById(`btn-${lang}`);
+      btn.disabled = true;
+      btn.textContent = 'Enrolling...';
+
+      if (!db) {
+        showToast('❌ Database connection error. Please refresh.', 'error');
+        btn.disabled = false;
+        btn.textContent = '🚀 Enroll Free & Start Now';
+        return;
+      }
+
+      try {
+        await db.collection('codequest_users').doc(currentUser.uid).set({
+          uid: currentUser.uid,
+          email: currentUser.email,
+          displayName: currentUser.displayName || '',
+          enrolledCourses: firebase.firestore.FieldValue.arrayUnion(lang),
+          xp: 0,
+          streak: 0,
+          enrolledAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+
+        // Update local state
+        if (!userDoc.enrolledCourses) userDoc.enrolledCourses = [];
+        userDoc.enrolledCourses.push(lang);
+
+        showToast(`🎉 Enrolled in ${lang.toUpperCase()} successfully! Loading course...`, 'success');
+        updateAllCards();
+
+        setTimeout(() => {
+          window.location.href = `/learn_coding/learn.html?lang=${lang}`;
+        }, 1200);
+
+      } catch(e) {
+        console.error('Enroll error:', e);
+        showToast('❌ Enrollment failed: ' + e.message, 'error');
+        btn.disabled = false;
+        btn.textContent = '🚀 Enroll Free & Start Now';
+      }
+    }
+
+    function showToast(msg, type = '') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast show ${type}`;
+      setTimeout(() => t.classList.remove('show'), 4000);
+    }
+  </script>
+</body>
+</html>

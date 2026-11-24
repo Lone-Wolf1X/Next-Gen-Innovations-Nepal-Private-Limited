@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeQuest — GyanBazi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+  <style>
+    /* ── Reset & Base ───────────────────────────────────────── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #4f46e5; --primary-light: #eef2ff;
+      --green: #10b981;   --green-light: #ecfdf5;
+      --red: #ef4444;     --red-light: #fef2f2;
+      --yellow-light: #fef9c3;
+      --dark: #111827; --text: #374151; --muted: #6b7280;
+      --border: #e5e7eb; --light: #f8fafc; --white: #ffffff;
+      --nav-h: 56px;
+      --sidebar-w: 230px;
+      --editor-bg: #282a36;
+    }
+    html, body { height: 100%; font-family: "Inter", sans-serif; color: var(--dark); background: var(--light); }
+    a { text-decoration: none; color: inherit; }
+    code { font-family: "Fira Code", monospace; background: var(--primary-light); color: var(--primary); padding: 2px 6px; border-radius: 4px; font-size: 0.88em; }
+
+    /* ── NAV ────────────────────────────────────────────────── */
+    .top-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: var(--nav-h);
+      background: var(--white); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 16px; gap: 12px;
+      box-shadow: 0 1px 6px rgba(15,23,42,0.06);
+    }
+    .nav-left  { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .nav-center{ flex: 1; display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .nav-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    .nav-back { width: 30px; height: 30px; border-radius: 8px; background: var(--light); border: 1px solid var(--border); display: grid; place-items: center; font-size: 17px; color: var(--muted); transition: 0.2s; cursor: pointer; }
+    .nav-back:hover { color: var(--primary); border-color: var(--primary); }
+    .nav-logo { display: flex; align-items: center; gap: 8px; font-size: 15px; font-family: "Poppins"; font-weight: 700; }
+    .nav-logo-icon { width: 28px; height: 28px; background: linear-gradient(135deg, var(--primary), #7c3aed); border-radius: 7px; display: grid; place-items: center; color: white; font-size: 13px; font-weight: 800; }
+    .nav-course-tag { background: var(--primary-light); color: var(--primary); font-size: 11px; padding: 2px 8px; border-radius: 50px; font-weight: 700; }
+
+    .lesson-prog-bar { flex: 1; height: 7px; background: var(--border); border-radius: 50px; overflow: hidden; }
+    .lesson-prog-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, var(--primary), #818cf8); width: 0; transition: width 0.5s ease; }
+    .lesson-prog-label { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+
+    .stat-pill { background: var(--light); border: 1px solid var(--border); border-radius: 50px; padding: 4px 10px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .user-pill  { font-size: 12px; color: var(--muted); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* ── BODY LAYOUT ────────────────────────────────────────── */
+    .cq-wrap {
+      display: flex;
+      position: fixed;
+      top: var(--nav-h); bottom: 0; left: 0; right: 0;
+    }
+
+    /* ── SIDEBAR ────────────────────────────────────────────── */
+    .cq-sidebar {
+      width: var(--sidebar-w); flex-shrink: 0;
+      background: var(--white); border-right: 1px solid var(--border);
+      overflow-y: auto; padding: 14px 10px;
+    }
+    .sidebar-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin-bottom: 8px; padding: 0 6px; }
+    .sidebar-list  { list-style: none; }
+    .sidebar-item  { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text); transition: background 0.15s; margin-bottom: 1px; }
+    .sidebar-item:hover    { background: var(--light); }
+    .sidebar-item.active   { background: var(--primary-light); color: var(--primary); font-weight: 700; }
+    .sidebar-item.completed{ color: var(--green); }
+    .si-num  { width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; font-size: 10px; font-weight: 800; display: grid; place-items: center; flex-shrink: 0; }
+    .sidebar-item.active    .si-num { background: var(--primary); color: white; }
+    .sidebar-item.completed .si-num { background: var(--green); color: white; }
+    .si-title { flex: 1; font-size: 12px; line-height: 1.3; }
+    .si-check { font-size: 12px; flex-shrink: 0; }
+
+    /* ── MAIN AREA ───────────────────────────────────────────── */
+    .cq-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 14px 16px; gap: 12px; min-width: 0; }
+
+    /* ── STEPPER ─────────────────────────────────────────────── */
+    .step-stepper { display: flex; align-items: center; background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 10px 18px; gap: 0; flex-shrink: 0; }
+    .step-item { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--muted); }
+    .step-item.active { color: var(--primary); }
+    .step-item.done   { color: var(--green); }
+    .step-dot { width: 26px; height: 26px; border-radius: 50%; background: #f3f4f6; display: grid; place-items: center; font-size: 12px; font-weight: 800; transition: all 0.25s; }
+    .step-item.active .step-dot { background: var(--primary); color: white; }
+    .step-item.done   .step-dot { background: var(--green); color: white; }
+    .step-line { flex: 1; height: 2px; background: var(--border); margin: 0 10px; }
+
+    /* ── PANES ───────────────────────────────────────────────── */
+    .cq-pane { display: none; flex: 1; overflow: hidden; }
+    .cq-pane.active { display: flex; flex-direction: column; animation: fadeUp 0.3s ease; }
+    @keyframes fadeUp { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+
+    /* ─ Theory ─ */
+    .theory-scroll { flex: 1; overflow-y: auto; padding-right: 4px; }
+    .theory-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 24px; }
+    /* Curriculum uses .theory-block — alias it */
+    .theory-block { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 24px; }
+    .theory-tag { display: inline-block; background: var(--primary-light); color: var(--primary); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 50px; margin-bottom: 10px; }
+    .theory-intro h2, .theory-block h2 { font-family: "Poppins"; font-size: 22px; margin-bottom: 10px; }
+    .theory-intro p, .theory-block p { color: var(--text); line-height: 1.7; margin-bottom: 10px; font-size: 15px; }
+    .theory-card h2 { font-family: "Poppins"; font-size: 22px; margin-bottom: 10px; }
+    .theory-card p  { color: var(--text); line-height: 1.7; margin-bottom: 10px; font-size: 15px; }
+    .code-label, .theory-code-label { font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
+    .theory-example { margin: 16px 0; }
+    .theory-card pre, .theory-block pre, .theory-example pre { background: var(--editor-bg); color: #f8f8f2; padding: 16px 18px; border-radius: 10px; font-family: "Fira Code", monospace; font-size: 13px; line-height: 1.6; overflow-x: auto; margin-bottom: 14px; }
+    .theory-card pre code, .theory-block pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+    .theory-points { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+    .point { background: var(--green-light); border: 1px solid #d1fae5; border-radius: 8px; padding: 9px 12px; font-size: 14px; line-height: 1.5; }
+    .pane-actions { padding-top: 12px; display: flex; justify-content: flex-end; flex-shrink: 0; }
+
+    /* ─ Quiz ─ */
+    .quiz-scroll { flex: 1; overflow-y: auto; }
+    .quiz-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 28px; }
+    .quiz-badge { display: inline-block; background: var(--yellow-light); color: #854d0e; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 50px; margin-bottom: 14px; border: 1px solid #fef08a; }
+    .quiz-question { font-family: "Poppins"; font-size: 19px; margin-bottom: 20px; line-height: 1.4; }
+    .quiz-options { display: flex; flex-direction: column; gap: 9px; max-width: 600px; }
+    .quiz-opt { padding: 13px 16px; background: var(--light); border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.18s; text-align: left; font-family: "Inter"; color: var(--dark); }
+    .quiz-opt:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+    .quiz-opt.correct { background: var(--green-light); border-color: #34d399; color: #065f46; font-weight: 700; }
+    .quiz-opt.wrong   { background: var(--red-light); border-color: #f87171; color: #991b1b; }
+    .quiz-opt:disabled{ cursor: default; }
+    .quiz-feedback { margin-top: 14px; font-weight: 700; font-size: 14px; min-height: 18px; }
+    .quiz-feedback.ok  { color: var(--green); }
+    .quiz-feedback.err { color: var(--red); }
+    .quiz-explanation { margin-top: 10px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #1e40af; }
+
+    /* ─ Code ─ */
+    .cq-pane-code { flex-direction: row !important; gap: 12px; }
+    .code-left  { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+    .code-right { flex: 1; display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); min-width: 0; }
+
+    .code-instr-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+    .code-badge { display: inline-block; background: var(--green-light); color: #065f46; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 50px; margin-bottom: 8px; border: 1px solid #d1fae5; }
+    .code-instr-text { font-size: 13px; line-height: 1.7; color: var(--text); }
+
+    .console-card { flex: 1; background: var(--editor-bg); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; overflow: hidden; min-height: 120px; }
+    .console-label { font-size: 10px; font-weight: 700; color: #6272a4; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .console-pre { flex: 1; font-family: "Fira Code", monospace; font-size: 12px; color: #f8f8f2; white-space: pre-wrap; overflow-y: auto; }
+    .console-pre.s { color: #50fa7b; }
+    .console-pre.e { color: #ff5555; }
+
+    .editor-topbar { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: #1e1f2b; border-bottom: 1px solid #44475a; flex-shrink: 0; }
+    .editor-lang-tag { font-size: 12px; font-weight: 700; color: #bd93f9; font-family: "Fira Code"; }
+    .reset-btn { background: none; border: 1px solid #44475a; color: #6272a4; padding: 3px 10px; border-radius: 5px; font-size: 11px; cursor: pointer; font-family: "Inter"; transition: 0.15s; }
+    .reset-btn:hover { color: #f8f8f2; border-color: #f8f8f2; }
+    .cm-wrapper { flex: 1; overflow: hidden; }
+    .CodeMirror { height: 100% !important; font-family: "Fira Code", monospace !important; font-size: 14px !important; line-height: 1.6 !important; }
+    .CodeMirror-scroll { height: 100% !important; }
+
+    /* ── BUTTONS ─────────────────────────────────────────────── */
+    .cq-btn { border: none; border-radius: 9px; padding: 10px 20px; font-family: "Inter"; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.18s; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-next { background: linear-gradient(135deg, var(--primary), #6366f1); color: white; box-shadow: 0 4px 12px rgba(79,70,229,0.22); }
+    .btn-next:hover { transform: translateY(-2px); box-shadow: 0 7px 18px rgba(79,70,229,0.3); }
+    .btn-run  { background: linear-gradient(135deg, var(--green), #34d399); color: white; box-shadow: 0 4px 12px rgba(16,185,129,0.22); width: 100%; justify-content: center; }
+    .btn-run:hover { transform: translateY(-2px); box-shadow: 0 7px 18px rgba(16,185,129,0.3); }
+
+    /* ── MODAL ───────────────────────────────────────────────── */
+    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(3px); }
+    .modal-bg.hidden { display: none; }
+    .modal-box { background: var(--white); border-radius: 20px; padding: 40px 36px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 25px 60px rgba(15,23,42,0.2); animation: popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
+    @keyframes popIn { from { transform:scale(0.8); opacity:0; } to { transform:scale(1); opacity:1; } }
+    .modal-emoji  { font-size: 56px; margin-bottom: 10px; }
+    .modal-title  { font-family: "Poppins"; font-size: 26px; margin-bottom: 6px; }
+    .modal-sub    { color: var(--muted); font-size: 13px; margin-bottom: 14px; }
+    .modal-xp     { display: inline-block; background: linear-gradient(135deg, var(--primary), #7c3aed); color: white; font-family: "Poppins"; font-size: 20px; font-weight: 800; padding: 7px 22px; border-radius: 50px; margin-bottom: 20px; box-shadow: 0 4px 14px rgba(79,70,229,0.28); }
+    .btn-next-lesson { background: linear-gradient(135deg, var(--primary), #6366f1); color: white; width: 100%; justify-content: center; font-size: 15px; padding: 13px; box-shadow: 0 4px 14px rgba(79,70,229,0.22); }
+    .btn-next-lesson:hover { transform: translateY(-2px); }
+    .modal-hint { margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+    /* ── TOAST ───────────────────────────────────────────────── */
+    .cq-toast { position: fixed; bottom: 22px; right: 22px; background: var(--dark); color: white; padding: 11px 18px; border-radius: 10px; font-size: 13px; font-weight: 600; transform: translateY(70px); opacity: 0; transition: all 0.3s cubic-bezier(0.175,0.885,0.32,1.275); z-index: 9999; max-width: 300px; }
+    .cq-toast.show { transform: translateY(0); opacity: 1; }
+    .cq-toast.toast-success, .cq-toast.ts { background: var(--green); }
+    .cq-toast.toast-error,   .cq-toast.te { background: var(--red); }
+
+    /* ── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .cq-sidebar { display: none; }
+      .cq-pane-code { flex-direction: column !important; }
+      .code-left { width: 100%; }
+      .nav-center { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="top-nav">
+    <div class="nav-left">
+      <a href="/learn_coding/index.html" class="nav-back" title="Back">←</a>
+      <div class="nav-logo">
+        <span class="nav-logo-icon">G</span>
+        <span>Gyan<b>Bazi</b> <span class="nav-course-tag" id="nav-course-tag">HTML</span></span>
+      </div>
+    </div>
+    <div class="nav-center">
+      <div class="lesson-prog-bar"><div class="lesson-prog-fill" id="lesson-progress-fill"></div></div>
+      <span class="lesson-prog-label" id="lesson-progress-label">0 / 10</span>
+    </div>
+    <div class="nav-right">
+      <div class="stat-pill">🔥 <span id="nav-streak">0</span></div>
+      <div class="stat-pill">⭐ <span id="nav-xp">0</span> XP</div>
+      <div class="user-pill" id="nav-user">—</div>
+    </div>
+  </nav>
+
+  <!-- MAIN WRAP -->
+  <div class="cq-wrap">
+
+    <!-- SIDEBAR -->
+    <aside class="cq-sidebar">
+      <div class="sidebar-title">Lessons</div>
+      <ul id="sidebar-lessons" class="sidebar-list"></ul>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="cq-main">
+
+      <!-- STEPPER -->
+      <div class="step-stepper">
+        <div class="step-item active" id="si-1"><div class="step-dot">1</div><span>Theory</span></div>
+        <div class="step-line"></div>
+        <div class="step-item" id="si-2"><div class="step-dot">2</div><span>Quiz</span></div>
+        <div class="step-line"></div>
+        <div class="step-item" id="si-3"><div class="step-dot">3</div><span>Code</span></div>
+      </div>
+
+      <!-- PANE 1: THEORY -->
+      <div id="pane-theory" class="cq-pane active">
+        <div class="theory-scroll">
+          <div id="theory-body"></div>
+        </div>
+        <div class="pane-actions">
+          <button class="cq-btn btn-next" id="btn-to-quiz">I understand! Next →</button>
+        </div>
+      </div>
+
+      <!-- PANE 2: QUIZ -->
+      <div id="pane-quiz" class="cq-pane">
+        <div class="quiz-scroll">
+          <div class="quiz-card">
+            <div class="quiz-badge">🧠 Quick Check</div>
+            <h2 id="quiz-q" class="quiz-question"></h2>
+            <div id="quiz-options" class="quiz-options"></div>
+            <div id="quiz-feedback" class="quiz-feedback"></div>
+            <div id="quiz-explanation" class="quiz-explanation" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANE 3: CODE -->
+      <div id="pane-code" class="cq-pane cq-pane-code">
+        <!-- Left: instructions + run + console -->
+        <div class="code-left">
+          <div class="code-instr-card">
+            <div class="code-badge">💻 Code Challenge</div>
+            <p id="code-instructions" class="code-instr-text"></p>
+          </div>
+          <button class="cq-btn btn-run" id="btn-run">▶ Run &amp; Check</button>
+          <div class="console-card">
+            <div class="console-label">📟 Output</div>
+            <pre id="console-out" class="console-pre">// Output will appear here...</pre>
+          </div>
+        </div>
+        <!-- Right: editor -->
+        <div class="code-right">
+          <div class="editor-topbar">
+            <span class="editor-lang-tag" id="editor-lang-label">HTML</span>
+            <button class="reset-btn" id="btn-reset">↺ Reset</button>
+          </div>
+          <div class="cm-wrapper">
+            <textarea id="code-editor"></textarea>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- SUCCESS MODAL -->
+  <div id="modal-success" class="modal-bg hidden">
+    <div class="modal-box">
+      <div class="modal-emoji">🎉</div>
+      <h2 class="modal-title">Correct!</h2>
+      <p class="modal-sub" id="modal-xp-text">You completed this lesson</p>
+      <div class="modal-xp" id="modal-xp-badge">+50 XP</div>
+      <button class="cq-btn btn-next-lesson" id="btn-next-lesson">Next Lesson →</button>
+      <p class="modal-hint" id="modal-completion-msg"></p>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="cq-toast"></div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="/learn_coding/js/firebase-config.js"></script>
+
+  <!-- CodeMirror -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closetag.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/matchbrackets.min.js"></script>
+
+  <!-- Curriculum & App -->
+  <script src="/learn_coding/js/curriculum.js?v=2"></script>
+  <script src="/learn_coding/js/app.js?v=2"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "917024364153",
+    "project_id": "nextgen-learn-2c351",
+    "storage_bucket": "nextgen-learn-2c351.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:917024364153:android:6ba392e180ef6dc2a466a8",
+        "android_client_info": {
+          "package_name": "com.example.gyanbazi_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "917024364153-psidno447sdebs33tg9859994bsljc31.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE7eHxt0J8LvDjAJqgxG1V2CwRhTRZFuk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "917024364153-psidno447sdebs33tg9859994bsljc31.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "917024364153-uvrru3kkdmaccokb3mp6lhon2cvenlg9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.gyanbaziFlutter"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

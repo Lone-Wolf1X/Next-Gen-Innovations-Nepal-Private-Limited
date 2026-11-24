@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Result | GyanBazi</title>
+  <link rel="icon" href="/logo/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/gyanbazi/css/learn-platform.css">
+  <link rel="manifest" href="/gyanbazi/manifest.json">
+  <meta name="theme-color" content="#2563eb">
+</head>
+<body>
+
+<div class="page-loader" id="pageLoader">
+  <div class="logo">NL</div>
+  <div class="loading-spinner"></div>
+</div>
+
+<div id="resultPage" style="display:none;">
+
+  <!-- Result Hero -->
+  <div class="result-hero" id="resultHero">
+    <!-- Back button -->
+    <div style="position:absolute;top:20px;left:24px;">
+      <a href="/gyanbazi/index.html" style="color:rgba(255,255,255,0.8);font-size:0.875rem;display:flex;align-items:center;gap:6px;">
+        ← Dashboard
+      </a>
+    </div>
+
+    <div style="position:absolute;top:20px;right:24px;">
+      <span id="personalBestBadge" style="display:none;background:rgba(255,255,255,0.2);color:white;padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:700;">🏆 Personal Best!</span>
+    </div>
+
+    <h1 style="color:white;font-size:1.5rem;font-weight:700;margin-bottom:24px;opacity:0.9;">Test Completed</h1>
+
+    <!-- Score Ring -->
+    <div class="score-ring-wrap">
+      <div class="score-ring">
+        <svg width="160" height="160" viewBox="0 0 160 160">
+          <circle class="score-ring-bg" cx="80" cy="80" r="68"/>
+          <circle class="score-ring-fill" id="scoreRingFill" cx="80" cy="80" r="68"
+            stroke-dasharray="427"
+            stroke-dashoffset="427"/>
+        </svg>
+        <div class="score-ring-text">
+          <span class="score-pct" id="scorePct">0%</span>
+          <span class="score-label">Score</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result Stats Bar -->
+    <div class="result-stats">
+      <div class="result-stat">
+        <span class="result-stat-val" id="rCorrect">0</span>
+        <div class="result-stat-label">✅ Correct</div>
+      </div>
+      <div class="result-stat">
+        <span class="result-stat-val" id="rIncorrect">0</span>
+        <div class="result-stat-label">❌ Incorrect</div>
+      </div>
+      <div class="result-stat">
+        <span class="result-stat-val" id="rUnattempted">0</span>
+        <div class="result-stat-label">— Unattempted</div>
+      </div>
+      <div class="result-stat">
+        <span class="result-stat-val" id="rTime">—</span>
+        <div class="result-stat-label">⏱ Time Taken</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result Body -->
+  <div class="result-body">
+
+    <!-- Score Summary Cards -->
+    <div class="result-summary-grid" style="margin-bottom:32px;">
+      <div class="card card-padded" style="text-align:center;">
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;">Marks Obtained</div>
+        <div style="font-size:2rem;font-weight:800;color:var(--primary);font-family:'JetBrains Mono',monospace;" id="marksObtained">—</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);" id="totalMarks">out of —</div>
+      </div>
+      <div class="card card-padded" style="text-align:center;">
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;">Accuracy</div>
+        <div style="font-size:2rem;font-weight:800;color:var(--success);font-family:'JetBrains Mono',monospace;" id="accuracy">—</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);">of answered Qs</div>
+      </div>
+      <div class="card card-padded" style="text-align:center;">
+        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;">Negative Marks</div>
+        <div style="font-size:2rem;font-weight:800;color:var(--danger);font-family:'JetBrains Mono',monospace;" id="negMarks">—</div>
+        <div style="font-size:0.8rem;color:var(--text-muted);">deducted</div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:36px;">
+      <a href="/gyanbazi/categories.html" class="btn btn-primary">Practice Again →</a>
+      <a href="/gyanbazi/index.html" class="btn btn-outline">← Dashboard</a>
+      <button class="btn btn-ghost" onclick="scrollToReview()">View Answer Review ↓</button>
+    </div>
+
+    <!-- Answer Review Grid -->
+    <div>
+      <h2 style="font-size:1.2rem;font-weight:700;margin-bottom:20px;" id="reviewHeading">Answer Review</h2>
+      <div class="nav-legend" style="margin-bottom:16px;">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--success);"></div>Correct</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--danger);"></div>Incorrect</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--border);"></div>Unattempted</div>
+      </div>
+      <div id="answerReviewGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:8px;">
+        <div class="skeleton" style="height:48px;border-radius:8px;"></div>
+        <div class="skeleton" style="height:48px;border-radius:8px;"></div>
+        <div class="skeleton" style="height:48px;border-radius:8px;"></div>
+      </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div id="reviewModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:100;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);">
+      <div class="modal-content" style="background:var(--bg);width:100%;max-width:600px;border-radius:var(--radius-lg);box-shadow:0 10px 25px rgba(0,0,0,0.2);overflow:hidden;display:flex;flex-direction:column;max-height:90vh;animation:modalIn 0.3s ease;">
+        <div class="modal-header" style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <h3 id="modalQNum" style="font-size:1.1rem;font-weight:700;margin:0;">Question 1</h3>
+          <button onclick="closeReviewModal()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--text-muted);">&times;</button>
+        </div>
+        <div class="modal-body" id="modalBody" style="padding:20px;overflow-y:auto;flex:1;">
+          <!-- Content populated by JS -->
+        </div>
+      </div>
+    </div>
+    
+    <style>
+      @keyframes modalIn {
+        from { opacity: 0; transform: scale(0.95) translateY(10px); }
+        to { opacity: 1; transform: scale(1) translateY(0); }
+      }
+      .grid-number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 48px;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        color: white;
+        transition: transform 0.2s, opacity 0.2s;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .grid-number:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+      }
+      .grid-correct { background: var(--success); }
+      .grid-incorrect { background: var(--danger); }
+      .grid-unattempted { background: var(--text-muted); color: var(--bg); }
+    </style>
+
+  </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="/gyanbazi/js/firebase-config.js"></script>
+<script src="/gyanbazi/js/auth.js?v=5"></script>
+<script src="/gyanbazi/js/db.js?v=6"></script>
+<script>
+const CIRCUMFERENCE = 2 * Math.PI * 68; // r=68
+
+async function initResult() {
+  const params = new URLSearchParams(window.location.search);
+  const resultId = params.get('id');
+  if (!resultId) { window.location.href = '/gyanbazi/index.html'; return; }
+
+  await Auth.requireAuth();
+
+  const result = await DB.results.getById(resultId);
+  if (!result) {
+    document.getElementById('pageLoader').innerHTML = '<div style="text-align:center;padding:40px;"><p>Result not found.</p><a href="/gyanbazi/index.html" class="btn btn-primary">← Dashboard</a></div>';
+    return;
+  }
+
+  // Populate hero stats
+  document.getElementById('scorePct').textContent = `${result.scorePercentage}%`;
+  document.getElementById('rCorrect').textContent = result.correctAnswers;
+  document.getElementById('rIncorrect').textContent = result.incorrectAnswers;
+  document.getElementById('rUnattempted').textContent = result.unattemptedQuestions;
+  document.getElementById('rTime').textContent = formatTime(result.timeTakenSeconds || 0);
+  document.getElementById('marksObtained').textContent = result.finalScore?.toFixed(2) ?? '0';
+  document.getElementById('totalMarks').textContent = `out of ${result.totalMarks}`;
+  document.getElementById('accuracy').textContent = `${result.accuracy}%`;
+  document.getElementById('negMarks').textContent = result.negativeMarks?.toFixed(2) ?? '0';
+
+  if (result.isPersonalBest) {
+    document.getElementById('personalBestBadge').style.display = 'inline-block';
+  }
+
+  // Animate score ring
+  setTimeout(() => {
+    const pct = result.scorePercentage / 100;
+    const offset = CIRCUMFERENCE - (pct * CIRCUMFERENCE);
+    document.getElementById('scoreRingFill').style.strokeDashoffset = offset;
+
+    // Color the ring based on score
+    const ringColor = result.scorePercentage >= 70 ? '#4ade80' : result.scorePercentage >= 40 ? '#fbbf24' : '#f87171';
+    document.getElementById('scoreRingFill').style.stroke = ringColor;
+  }, 300);
+
+  // Color hero based on score
+  const heroBg = result.scorePercentage >= 70
+    ? 'linear-gradient(135deg, #15803d, #16a34a)'
+    : result.scorePercentage >= 40
+      ? 'linear-gradient(135deg, #b45309, #d97706)'
+      : 'linear-gradient(135deg, #b91c1c, #dc2626)';
+  document.getElementById('resultHero').style.background = heroBg;
+
+  // Render answer review
+  renderAnswerReview(result.questionReview || []);
+
+  // Show page
+  document.getElementById('pageLoader').style.display = 'none';
+  document.getElementById('resultPage').style.display = 'block';
+}
+
+let globalQuestionReview = [];
+
+function renderAnswerReview(questions) {
+  globalQuestionReview = questions;
+  const container = document.getElementById('answerReviewGrid');
+  document.getElementById('reviewHeading').textContent = `Answer Review (${questions.length} Questions)`;
+
+  container.innerHTML = questions.map((q, i) => {
+    let bgClass = q.status === 'correct' ? 'grid-correct' : (q.status === 'incorrect' ? 'grid-incorrect' : 'grid-unattempted');
+    return `<div class="grid-number ${bgClass}" onclick="openReviewModal(${i})">${i + 1}</div>`;
+  }).join('');
+}
+
+function openReviewModal(index) {
+  const q = globalQuestionReview[index];
+  if (!q) return;
+
+  const optKeys = ['a','b','c','d'];
+  const optLabels = ['A','B','C','D'];
+  
+  const statusIcon = q.status === 'correct' ? '✅ Correct' : q.status === 'incorrect' ? '❌ Incorrect' : '— Unattempted';
+
+  const optionsHtml = optKeys.map((key, ki) => {
+    let cls = 'review-option';
+    if (key === q.correctOption) cls += ' correct-opt';
+    else if (key === q.userAnswer && q.status === 'incorrect') cls += ' user-wrong';
+    return `<div class="${cls}"><span class="opt-key">${optLabels[ki]}</span><span>${q.options?.[key] || ''}</span></div>`;
+  }).join('');
+
+  document.getElementById('modalQNum').innerHTML = `Question ${index + 1} <span class="badge badge-neutral" style="margin-left:8px;">${statusIcon}</span>`;
+  document.getElementById('modalBody').innerHTML = `
+    <div class="review-item" style="border:none;padding:0;background:transparent;">
+      <div class="review-question">${q.questionText}</div>
+      <div class="review-options">${optionsHtml}</div>
+      ${q.explanation ? `<div class="review-explanation" style="margin-top:20px;"><strong>Explanation:</strong><br/>${q.explanation}</div>` : ''}
+    </div>
+  `;
+
+  document.getElementById('reviewModal').style.display = 'flex';
+}
+
+function closeReviewModal() {
+  document.getElementById('reviewModal').style.display = 'none';
+}
+
+function scrollToReview() {
+  document.getElementById('reviewHeading').scrollIntoView({ behavior: 'smooth' });
+}
+
+initResult();
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/gyanbazi/sw.js')
+        .then(reg => console.log('SW registered'))
+        .catch(err => console.log('SW fail: ', err));
+    });
+  }
+</script>
+</body>
+</html>

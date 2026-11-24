@@ -32,7 +32,6 @@
         <li><a href="services.html">Services</a></li>
         <li><a href="technologies.html">Technologies</a></li>
         <li><a href="portfolio.html" class="active">Portfolio</a></li>
-        <li><a href="learn/homepage.html">Learning</a></li>
         <li><a href="contact.html" class="nav-cta">Contact Us</a></li>
       </ul>
       <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
@@ -41,19 +40,29 @@
 
   <section class="page-hero">
     <div class="container">
-      <span class="section-eyebrow">Our Work</span>
-      <h1 class="section-title">Our <span class="highlight">Portfolio</span></h1>
+      <span class="section-eyebrow">Projects & Pipelines</span>
+      <h1 class="section-title">Our <span class="highlight">Portfolio & Lab</span></h1>
       <p class="section-subtitle" style="margin:16px auto 0;">
-        A selection of projects that showcase our expertise across FinTech, web, mobile, and AI.
+        Bespoke tech solutions engineered to exact client specifications. Explore our active development pipeline, proprietary platforms, and tailored architectures.
       </p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
+      <!-- Pipeline Notice -->
+      <div class="pipeline-notice reveal">
+        <div class="pipeline-badge">⚡ Active Engineering Phase</div>
+        <h3>Tailor-Made Solutions for Your Exact Business Needs</h3>
+        <p>
+          We are an emerging Nepali IT solutions company currently in an active building phase with several projects underway. We do not push rigid, off-the-shelf templates — we design, prototype, and engineer custom web, mobile, and FinTech systems tailored specifically to each client's operational workflow.
+        </p>
+      </div>
+
       <!-- Filter -->
       <div class="filter-bar reveal">
         <button class="filter-btn active" data-cat="all">All Projects</button>
+        <button class="filter-btn" data-cat="active">Under Development</button>
         <button class="filter-btn" data-cat="fintech">FinTech</button>
         <button class="filter-btn" data-cat="web">Web & SaaS</button>
         <button class="filter-btn" data-cat="mobile">Mobile</button>
@@ -62,14 +71,33 @@
 
       <div class="portfolio-grid">
 
-        <div class="portfolio-card reveal" data-cat="fintech">
+        <!-- Custom Enterprise ERP - Active Project -->
+        <div class="portfolio-card reveal" data-cat="web active">
+          <div class="portfolio-thumb" style="background:linear-gradient(135deg,#0ea5e9,#6366f1);">
+            🏢
+            <span class="portfolio-cat">Enterprise / SaaS</span>
+            <span class="portfolio-status active">🚀 In Active Development</span>
+          </div>
+          <div class="portfolio-body">
+            <h3>Enterprise ERP & Operations Platform</h3>
+            <p>Bespoke cloud-based operations management platform: role-based staff access, department workflows, inventory control, and automated billing.</p>
+            <div class="portfolio-tags">
+              <span class="portfolio-tag">React</span>
+              <span class="portfolio-tag">Node.js</span>
+              <span class="portfolio-tag">PostgreSQL</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="portfolio-card reveal reveal-delay-1" data-cat="fintech active">
           <div class="portfolio-thumb" style="background:linear-gradient(135deg,#0F1C3F,#1A348A);">
             💳
             <span class="portfolio-cat">FinTech</span>
+            <span class="portfolio-status">🛠️ Prototype Underway</span>
           </div>
           <div class="portfolio-body">
-            <h3>Digital e-Wallet Platform</h3>
-            <p>Full-featured mobile e-wallet with QR payments, fund transfers, bill payments, and merchant dashboard. NRB compliant.</p>
+            <h3>Digital e-Wallet & QR Gateway</h3>
+            <p>Tailor-engineered digital wallet architecture with QR payment flow, fund transfer protocols, and eSewa/Khalti gateway integration.</p>
             <div class="portfolio-tags">
               <span class="portfolio-tag">Flutter</span>
               <span class="portfolio-tag">Node.js</span>
@@ -78,30 +106,32 @@
           </div>
         </div>
 
-        <div class="portfolio-card reveal reveal-delay-1" data-cat="web">
+        <div class="portfolio-card reveal reveal-delay-2" data-cat="web">
           <div class="portfolio-thumb" style="background:linear-gradient(135deg,#1A348A,#2a4bc4);">
             💻
             <span class="portfolio-cat">Web / SaaS</span>
+            <span class="portfolio-status blueprint">📐 Solution Blueprint</span>
           </div>
           <div class="portfolio-body">
-            <h3>Enterprise Loan Management System</h3>
-            <p>End-to-end loan origination, processing, and management SaaS for MFIs and NBFIs in Nepal.</p>
+            <h3>Enterprise Loan & Cooperative Management</h3>
+            <p>Custom software architecture for cooperatives and small financial institutions in Nepal: loan origination, EMI schedules, and audit tracking.</p>
             <div class="portfolio-tags">
               <span class="portfolio-tag">React</span>
               <span class="portfolio-tag">Python</span>
-              <span class="portfolio-tag">AWS</span>
+              <span class="portfolio-tag">Cloud Ready</span>
             </div>
           </div>
         </div>
 
-        <div class="portfolio-card reveal reveal-delay-2" data-cat="mobile">
+        <div class="portfolio-card reveal" data-cat="mobile active">
           <div class="portfolio-thumb" style="background:linear-gradient(135deg,#00C9B1,#00aaa0);">
             📱
             <span class="portfolio-cat">Mobile</span>
+            <span class="portfolio-status">🛠️ In Development</span>
           </div>
           <div class="portfolio-body">
             <h3>Merchant POS Mobile App</h3>
-            <p>Android/iOS POS app for retail merchants with inventory management, sales tracking, and eSewa/Khalti integration.</p>
+            <p>Cross-platform POS app designed for retail merchants with fast barcode billing, offline inventory caching, and daily revenue reports.</p>
             <div class="portfolio-tags">
               <span class="portfolio-tag">Flutter</span>
               <span class="portfolio-tag">Firebase</span>
@@ -110,50 +140,36 @@
           </div>
         </div>
 
-        <div class="portfolio-card reveal" data-cat="ai">
+        <div class="portfolio-card reveal reveal-delay-1" data-cat="ai">
           <div class="portfolio-thumb" style="background:linear-gradient(135deg,#7c3aed,#1A348A);">
             🤖
             <span class="portfolio-cat">AI & Data</span>
+            <span class="portfolio-status blueprint">📐 R&D Model</span>
           </div>
           <div class="portfolio-body">
             <h3>Credit Risk Scoring Engine</h3>
-            <p>ML-powered credit scoring model analyzing 50+ behavioral and financial signals to predict loan default probability.</p>
+            <p>Experimental ML credit scoring model designed to analyze transaction metrics and behavioral signals for low-risk micro-lending.</p>
             <div class="portfolio-tags">
               <span class="portfolio-tag">Python</span>
-              <span class="portfolio-tag">TensorFlow</span>
               <span class="portfolio-tag">FastAPI</span>
+              <span class="portfolio-tag">Scikit-Learn</span>
             </div>
           </div>
         </div>
 
-        <div class="portfolio-card reveal reveal-delay-1" data-cat="web">
+        <div class="portfolio-card reveal reveal-delay-2" data-cat="web">
           <div class="portfolio-thumb" style="background:linear-gradient(135deg,#0ea5e9,#1A348A);">
             🛒
             <span class="portfolio-cat">Web / SaaS</span>
+            <span class="portfolio-status blueprint">📐 Solution Blueprint</span>
           </div>
           <div class="portfolio-body">
-            <h3>E-Commerce Platform — Nepal</h3>
-            <p>Multi-vendor e-commerce marketplace with product listings, payment gateway, delivery tracking, and vendor dashboards.</p>
+            <h3>Custom E-Commerce & Inventory Hub</h3>
+            <p>Modular e-commerce backend and modern storefront designed to be customized for local Nepali distributors and retailers.</p>
             <div class="portfolio-tags">
               <span class="portfolio-tag">Next.js</span>
               <span class="portfolio-tag">Node.js</span>
-              <span class="portfolio-tag">MongoDB</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="portfolio-card reveal reveal-delay-2" data-cat="fintech">
-          <div class="portfolio-thumb" style="background:linear-gradient(135deg,#059669,#0F1C3F);">
-            📊
-            <span class="portfolio-cat">FinTech</span>
-          </div>
-          <div class="portfolio-body">
-            <h3>Bank Compliance Dashboard</h3>
-            <p>Real-time compliance monitoring, NRB regulatory report generation, and risk alert system for commercial banks.</p>
-            <div class="portfolio-tags">
-              <span class="portfolio-tag">Vue.js</span>
-              <span class="portfolio-tag">Laravel</span>
-              <span class="portfolio-tag">MySQL</span>
+              <span class="portfolio-tag">PostgreSQL</span>
             </div>
           </div>
         </div>
@@ -164,9 +180,9 @@
 
   <section class="cta-banner">
     <div class="container">
-      <h2 class="reveal">Have a Project in Mind?</h2>
-      <p class="reveal reveal-delay-1">Let's add your project to our portfolio. We're ready to build.</p>
-      <a href="contact.html" class="btn btn-primary btn-lg btn-ripple reveal reveal-delay-2">Start a Project →</a>
+      <h2 class="reveal">Have a Unique Requirement?</h2>
+      <p class="reveal reveal-delay-1">Tell us your operational problem. We will architect and build a solution tailored for you.</p>
+      <a href="contact.html" class="btn btn-primary btn-lg btn-ripple reveal reveal-delay-2">Discuss Your Requirement →</a>
     </div>
   </section>
 

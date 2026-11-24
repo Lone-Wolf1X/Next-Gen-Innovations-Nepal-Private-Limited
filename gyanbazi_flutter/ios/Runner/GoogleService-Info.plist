@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>917024364153-uvrru3kkdmaccokb3mp6lhon2cvenlg9.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.917024364153-uvrru3kkdmaccokb3mp6lhon2cvenlg9</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCcI3xOPZ3pj5pkyuH1hQ-8UySzOwqIk4A</string>
+	<key>GCM_SENDER_ID</key>
+	<string>917024364153</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.gyanbaziFlutter</string>
+	<key>PROJECT_ID</key>
+	<string>nextgen-learn-2c351</string>
+	<key>STORAGE_BUCKET</key>
+	<string>nextgen-learn-2c351.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:917024364153:ios:957e1a9d2a8a9e0da466a8</string>
+</dict>
+</plist>

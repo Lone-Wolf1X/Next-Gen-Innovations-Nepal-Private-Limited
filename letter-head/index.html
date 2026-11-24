@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Gen Innovations — Letterhead & Business Card Suite</title>
+    <meta name="description" content="Generate professional letterheads and business cards for Next Gen Innovations Nepal Pvt. Ltd.">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="assets/3d-logo.jpg" type="image/jpeg">
+</head>
+<body>
+
+    <!-- ═══════════════════ HEADER ═══════════════════ -->
+    <header class="main-header" id="main-header">
+        <div class="header-content">
+            <img src="assets/Logo.png" alt="Next Gen Logo" class="header-logo">
+            <div class="header-text">
+                <h1>Letterhead & Business Card Suite</h1>
+                <p>नेक्स्ट जेन इनोभेसनस् नेपाल प्राइभेट लिमिटेड</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══════════════════ TAB NAVIGATION ═══════════════════ -->
+    <nav class="tab-nav" id="tab-nav">
+        <button class="tab-btn active" data-tab="letterhead" id="tab-letterhead-btn">
+            <span class="tab-icon">📄</span>Letterhead
+        </button>
+        <button class="tab-btn" data-tab="business-card" id="tab-business-card-btn">
+            <span class="tab-icon">💳</span>Business Card
+        </button>
+    </nav>
+
+    <!-- ═══════════════════ LETTERHEAD SECTION ═══════════════════ -->
+    <section class="tab-content active" id="letterhead-section">
+        <div class="layout-container">
+            <!-- ── Sidebar ── -->
+            <aside class="sidebar" id="lh-sidebar">
+                <div class="sidebar-title">
+                    <span class="icon">📄</span>
+                    Letterhead Settings
+                </div>
+
+                <!-- Language Variant -->
+                <div class="section-label">Language / भाषा</div>
+                <div class="variant-selector" id="variant-selector">
+                    <div class="variant-option">
+                        <input type="radio" name="variant" id="var-english" value="english" checked>
+                        <label for="var-english">English</label>
+                    </div>
+                    <div class="variant-option">
+                        <input type="radio" name="variant" id="var-nepali" value="nepali">
+                        <label for="var-nepali">नेपाली</label>
+                    </div>
+                    <div class="variant-option">
+                        <input type="radio" name="variant" id="var-mixed" value="mixed">
+                        <label for="var-mixed">Mixed</label>
+                    </div>
+                </div>
+
+                <hr class="section-divider">
+
+                <!-- Letter Details -->
+                <div class="section-label">Letter Details</div>
+
+                <div class="form-group">
+                    <label for="lh-ref">Reference No <span class="nepali-label">/ सन्दर्भ नं.</span></label>
+                    <input type="text" id="lh-ref" placeholder="NGIN/2083/..." value="">
+                </div>
+
+                <div class="form-group">
+                    <label for="lh-date">Date <span class="nepali-label">/ मिति</span></label>
+                    <input type="text" id="lh-date" placeholder="2083/06/14" value="">
+                </div>
+
+                <div class="form-group">
+                    <label for="lh-to">To <span class="nepali-label">/ श्री</span></label>
+                    <textarea id="lh-to" rows="2" placeholder="Name / Organization..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="lh-subject">Subject <span class="nepali-label">/ विषय</span></label>
+                    <input type="text" id="lh-subject" placeholder="Regarding...">
+                </div>
+
+                <hr class="section-divider">
+
+                <!-- Signature -->
+                <div class="section-label">Signature</div>
+
+                <div class="form-group">
+                    <label for="lh-sig-name">Name</label>
+                    <input type="text" id="lh-sig-name" placeholder="Signatory Name">
+                </div>
+
+                <div class="form-group">
+                    <label for="lh-sig-desig">Designation</label>
+                    <input type="text" id="lh-sig-desig" placeholder="Managing Director">
+                </div>
+
+                <hr class="section-divider">
+
+                <!-- Actions -->
+                <div class="btn-group">
+                    <button class="btn-primary" id="btn-download-word" onclick="downloadAsWord()">
+                        📥 Word
+                    </button>
+                    <button class="btn-secondary" id="btn-print-lh" onclick="printLetterhead()">
+                        🖨️ Print
+                    </button>
+                </div>
+            </aside>
+
+            <!-- ── Preview Area ── -->
+            <main class="preview-area">
+                <div class="preview-label">Live Preview</div>
+                <div class="a4-wrapper">
+                    <div class="a4-page" id="letterhead-preview">
+
+                        <!-- Letterhead Header -->
+                        <div class="lh-header" id="lh-header-area">
+                            <div class="lh-header-left">
+                                <img src="assets/Logo.png" alt="Logo" class="lh-logo" id="lh-logo-img">
+                            </div>
+                            <div class="lh-header-right">
+                                <!-- English Name -->
+                                <div class="lh-company-name" id="lh-name-en">
+                                    <span class="highlight">NEXT GEN</span> INNOVATIONS
+                                    <br><span style="font-size:9pt;font-weight:600;letter-spacing:0.02em;">Nepal Private Limited</span>
+                                </div>
+                                <!-- Nepali Name (hidden by default) -->
+                                <div class="lh-company-name-np" id="lh-name-np" style="display:none;">
+                                    नेक्स्ट जेन इनोभेसनस् नेपाल प्राइभेट लिमिटेड
+                                </div>
+                                <!-- Address -->
+                                <div class="lh-address" id="lh-address-en">
+                                    Mahalaxmi Nagarpalika-5, Lalitpur, Nepal
+                                </div>
+                                <div class="lh-address-np" id="lh-address-np" style="display:none;">
+                                    महालक्ष्मी नगरपालिका-५, ललितपुर, नेपाल
+                                </div>
+                                <!-- Company Details -->
+                                <div class="lh-header-details" id="lh-header-details">
+                                    <span class="detail-item"><span class="detail-icon">📋</span> <span id="ff-reg">Reg No: 389207/82/83</span></span>
+                                    <span class="detail-sep">|</span>
+                                    <span class="detail-item"><span class="detail-icon">🏷️</span> <span id="ff-pan">PAN: 623585229</span></span>
+                                    <span class="detail-sep">|</span>
+                                    <span class="detail-item"><span class="detail-icon">📞</span> +977-XXXXXXXXXX</span>
+                                </div>
+                                <div class="lh-header-details">
+                                    <span class="detail-item"><span class="detail-icon">✉️</span> info@nextgeninnovations.com.np</span>
+                                    <span class="detail-sep">|</span>
+                                    <span class="detail-item"><span class="detail-icon">🌐</span> nextgeninnovations.com.np</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Accent Lines -->
+                        <div class="lh-accent-line"></div>
+                        <div class="lh-sub-line"></div>
+
+
+                        <!-- Content Area with Watermark -->
+                        <div class="lh-content">
+
+
+                            <!-- Fields -->
+                            <div class="lh-fields" id="lh-fields">
+                                <div class="lh-field-row">
+                                    <span>
+                                        <span class="lh-field-label" id="fl-ref">Ref No:</span>
+                                        <span class="lh-field-value" id="fv-ref"></span>
+                                    </span>
+                                    <span>
+                                        <span class="lh-field-label" id="fl-date">Date:</span>
+                                        <span class="lh-field-value" id="fv-date"></span>
+                                    </span>
+                                </div>
+
+                                <div class="lh-to-section">
+                                    <span class="lh-field-label" id="fl-to">To,</span>
+                                    <div class="lh-field-value" id="fv-to" style="white-space:pre-line;margin-top:2px;"></div>
+                                </div>
+
+                                <div class="lh-subject-line" id="lh-subject-display"></div>
+                            </div>
+
+                            <!-- Editable Body -->
+                            <div class="lh-body" id="lh-body" contenteditable="true"></div>
+
+                            <!-- Signature -->
+                            <div class="lh-signature" id="lh-signature">
+                                <div style="margin-top:20mm;"></div>
+                                <div class="lh-signature-line"></div>
+                                <div class="lh-signature-name" id="lh-sig-name-display"></div>
+                                <div class="lh-signature-desig" id="lh-sig-desig-display"></div>
+                            </div>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="lh-footer">
+                            <div class="lh-footer-accent"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </main>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ BUSINESS CARD SECTION ═══════════════════ -->
+    <section class="tab-content" id="business-card-section">
+        <div class="bc-layout">
+            <!-- ── Form Panel ── -->
+            <aside class="bc-form-panel" id="bc-form-panel">
+                <div class="sidebar-title">
+                    <span class="icon">💳</span>
+                    Business Card Details
+                </div>
+
+                <!-- Card Theme Selector -->
+                <div class="section-label">Card Theme / Style</div>
+                <div class="variant-selector" id="card-theme-selector">
+                    <div class="variant-option">
+                        <input type="radio" name="card-theme" id="theme-light" value="light" checked>
+                        <label for="theme-light">☀️ Light</label>
+                    </div>
+                    <div class="variant-option">
+                        <input type="radio" name="card-theme" id="theme-dark" value="dark">
+                        <label for="theme-dark">🌙 Dark</label>
+                    </div>
+                </div>
+
+                <hr class="section-divider">
+
+                <!-- Photo Upload -->
+                <label class="photo-upload" id="photo-upload-area">
+                    <span class="upload-icon" id="upload-icon-span">📷</span>
+                    <span class="upload-text" id="upload-text-span">Photo</span>
+                    <input type="file" id="bc-photo" accept="image/*" onchange="handlePhotoUpload(event)">
+                </label>
+
+                <!-- Form Fields -->
+                <div class="form-group">
+                    <label for="bc-name">Full Name</label>
+                    <input type="text" id="bc-name" placeholder="John Doe">
+                </div>
+
+                <div class="form-group">
+                    <label for="bc-name-np">Name (Nepali)</label>
+                    <input type="text" id="bc-name-np" placeholder="जोन डो" style="font-family: var(--font-nepali);">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bc-designation">Designation</label>
+                        <input type="text" id="bc-designation" placeholder="Managing Director">
+                    </div>
+                    <div class="form-group">
+                        <label for="bc-department">Department</label>
+                        <input type="text" id="bc-department" placeholder="Management">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bc-phone">Phone</label>
+                        <input type="text" id="bc-phone" placeholder="+977-98XXXXXXXX">
+                    </div>
+                    <div class="form-group">
+                        <label for="bc-email">Email</label>
+                        <input type="email" id="bc-email" placeholder="name@nextgen...">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="bc-address">Address (optional)</label>
+                    <input type="text" id="bc-address" placeholder="Custom address if different">
+                </div>
+
+                <!-- Add Card Button -->
+                <div class="btn-group" style="margin-top:14px;">
+                    <button class="btn-primary" id="btn-add-card" onclick="addOrUpdateCard()">
+                        ➕ Add Card
+                    </button>
+                    <button class="btn-secondary" id="btn-clear-form" onclick="clearCardForm()">
+                        🔄 Clear
+                    </button>
+                </div>
+
+                <hr class="section-divider">
+
+                <!-- Card List -->
+                <div class="card-list">
+                    <div class="card-list-title">
+                        <span>Saved Cards</span>
+                        <span id="card-count" style="font-size:0.7rem;color:var(--text-muted);">0 cards</span>
+                    </div>
+                    <div id="card-list-container">
+                        <div class="empty-state" id="empty-card-state">
+                            <div class="empty-icon">💳</div>
+                            <p>No cards yet. Add your first card above.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="section-divider">
+
+                <!-- Print/Download Actions -->
+                <div class="section-label">Export</div>
+                <div class="btn-group">
+                    <button class="btn-primary" id="btn-print-cards" onclick="printCards()">
+                        🖨️ Print All
+                    </button>
+                    <button class="btn-secondary" id="btn-download-cards" onclick="downloadCards()">
+                        📥 Download
+                    </button>
+                </div>
+            </aside>
+
+            <!-- ── Card Preview ── -->
+            <main class="bc-preview-area" id="bc-preview-area">
+                <div class="preview-label">Card Preview</div>
+
+                <div class="card-preview-wrapper" id="card-preview-wrapper">
+                    <!-- Front -->
+                    <div>
+                        <div class="card-label">FRONT</div>
+                        <div class="business-card" id="card-front-preview">
+                            <!-- LIGHT FRONT (default) -->
+                            <div class="card-front card-front-light" id="card-front-light">
+                                <div class="card-front-top-bar"></div>
+                                <div class="card-front-header">
+                                    <img src="assets/Logo.png" alt="Logo" class="card-front-logo">
+                                    <div class="card-front-company" id="card-company-text">
+                                        <span style="color:#0D47A1;font-weight:800;">NEXT GEN</span> INNOVATIONS<br>
+                                        <span style="font-size:5pt;color:#4a5568;">Nepal Private Limited</span>
+                                    </div>
+                                </div>
+                                <div class="card-front-divider"></div>
+                                <div class="card-front-info">
+                                    <div class="card-front-photo" id="card-photo-area" style="display:none;">
+                                        <img src="" alt="Photo" id="card-photo-img">
+                                    </div>
+                                    <div class="card-front-details">
+                                        <div class="card-person-name" id="card-name-display">Your Name</div>
+                                        <div class="card-person-desig" id="card-desig-display">Designation</div>
+                                        <div class="card-contact-row" id="card-phone-row">
+                                            <span class="cc-icon">📞</span>
+                                            <span id="card-phone-display">+977-98XXXXXXXX</span>
+                                        </div>
+                                        <div class="card-contact-row" id="card-email-row">
+                                            <span class="cc-icon">✉️</span>
+                                            <span id="card-email-display">info@nextgeninnovations.com.np</span>
+                                        </div>
+                                        <div class="card-contact-row">
+                                            <span class="cc-icon">🌐</span>
+                                            <span>nextgeninnovations.com.np</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- DARK FRONT (hidden by default) -->
+                            <div class="card-front card-front-dark" id="card-front-dark" style="display:none;">
+                                <div class="card-dark-accent-top"></div>
+                                <div class="card-dark-bg-glow"></div>
+                                <div class="card-front-header">
+                                    <img src="assets/Logo.png" alt="Logo" class="card-front-logo card-logo-invert">
+                                    <div class="card-front-company card-dark-company">
+                                        <span style="color:#64B5F6;font-weight:800;">NEXT GEN</span> <span style="color:#fff;">INNOVATIONS</span><br>
+                                        <span style="font-size:5pt;color:rgba(255,255,255,0.5);">Nepal Private Limited</span>
+                                    </div>
+                                </div>
+                                <div class="card-front-divider card-dark-divider"></div>
+                                <div class="card-front-info">
+                                    <div class="card-front-photo" id="card-photo-area-dark" style="display:none;">
+                                        <img src="" alt="Photo" id="card-photo-img-dark">
+                                    </div>
+                                    <div class="card-front-details">
+                                        <div class="card-person-name card-dark-name" id="card-name-display-dark">Your Name</div>
+                                        <div class="card-person-desig card-dark-desig" id="card-desig-display-dark">Designation</div>
+                                        <div class="card-contact-row card-dark-contact">
+                                            <span class="cc-icon">📞</span>
+                                            <span id="card-phone-display-dark">+977-98XXXXXXXX</span>
+                                        </div>
+                                        <div class="card-contact-row card-dark-contact">
+                                            <span class="cc-icon">✉️</span>
+                                            <span id="card-email-display-dark">info@nextgeninnovations.com.np</span>
+                                        </div>
+                                        <div class="card-contact-row card-dark-contact">
+                                            <span class="cc-icon">🌐</span>
+                                            <span>nextgeninnovations.com.np</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Back -->
+                    <div>
+                        <div class="card-label">BACK</div>
+                        <div class="business-card" id="card-back-preview">
+                            <!-- LIGHT BACK -->
+                            <div class="card-back card-back-light" id="card-back-light" style="display:none;">
+                                <div class="card-back-light-pattern"></div>
+                                <img src="assets/Logo.png" alt="Logo" class="card-back-logo card-back-logo-blue">
+                                <div class="card-back-name" style="color:#0D47A1;">NEXT GEN INNOVATIONS</div>
+                                <div class="card-back-gold-line" style="background:#1E88E5;"></div>
+                                <div class="card-back-info" style="color:#4a5568;">
+                                    नेक्स्ट जेन इनोभेसनस् नेपाल प्रा. लि.<br>
+                                    Mahalaxmi Nagarpalika-5, Lalitpur<br>
+                                    nextgeninnovations.com.np
+                                </div>
+                                <div class="card-back-qr">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://nextgeninnovations.com.np" alt="QR Code">
+                                </div>
+                            </div>
+                            <!-- DARK BACK (default) -->
+                            <div class="card-back card-back-dark" id="card-back-dark">
+                                <img src="assets/Logo.png" alt="Logo" class="card-back-logo">
+                                <div class="card-back-name">NEXT GEN INNOVATIONS</div>
+                                <div class="card-back-gold-line"></div>
+                                <div class="card-back-info">
+                                    नेक्स्ट जेन इनोभेसनस् नेपाल प्रा. लि.<br>
+                                    Mahalaxmi Nagarpalika-5, Lalitpur<br>
+                                    nextgeninnovations.com.np
+                                </div>
+                                <div class="card-back-qr">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://nextgeninnovations.com.np" alt="QR Code">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Print Grid (hidden, used for printing) -->
+                <div class="bc-print-grid" id="bc-print-grid"></div>
+            </main>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ FOOTER ═══════════════════ -->
+    <footer class="page-footer" id="page-footer">
+        © 2083 BS | Next Gen Innovations Nepal Pvt. Ltd. | 
+        <a href="https://nextgeninnovations.com.np" target="_blank">nextgeninnovations.com.np</a>
+    </footer>
+
+    <!-- ═══════════════════ TOAST ═══════════════════ -->
+    <div class="toast" id="toast-notification">
+        <span id="toast-icon">✅</span>
+        <span id="toast-message">Success!</span>
+    </div>
+
+    <!-- ═══════════════════ SCRIPTS ═══════════════════ -->
+    <script src="js/app.js"></script>
+
+</body>
+</html>
